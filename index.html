@@ -936,8 +936,8 @@ function renderDetail() {
     const fakCls = fak != null ? 'fak-input custom' : 'fak-input';
     const fakTitle = `Honorarfaktor (leer = global ${state.settings.fak}×)`;
     const pktCell = dbPos.fix != null
-      ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right">€ ${dbPos.fix.toFixed(2)}</span>`
-      : `<span class="pos-num" style="color:var(--text3);text-align:right">${dbPos.pkt} Pkt</span>`;
+      ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right;font-size:9px">€ ${dbPos.fix.toFixed(2)}</span>`
+      : `<span class="pos-num" style="color:var(--text3);text-align:right;font-size:9px">${dbPos.pkt} Pkt</span>`;
     return `<div class="pos-row">
       <span class="pos-code">${esc(dbPos.code)}</span>${pktCell}
       <span class="pos-name">${esc(dbPos.name)}${wb}${ni}</span>
