@@ -70,14 +70,17 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
 .metric-val{font-size:17px;font-weight:500;font-variant-numeric:tabular-nums}
 .poslist-wrap{flex:1;overflow-y:auto}
 .poslist{padding:8px 14px}
-.pos-head{display:grid;grid-template-columns:72px 1fr 56px 60px 78px 80px 74px 74px 30px;gap:5px;padding:5px 7px;font-size:11px;color:var(--text3);font-weight:500;border-bottom:0.5px solid var(--border);margin-bottom:3px}
-.pos-row{display:grid;grid-template-columns:72px 1fr 56px 60px 78px 80px 74px 74px 30px;gap:5px;align-items:center;padding:6px 7px;border-radius:6px}
+.pos-head{display:grid;grid-template-columns:72px 52px 1fr 56px 60px 78px 80px 74px 74px 30px;gap:5px;padding:5px 7px;font-size:11px;color:var(--text3);font-weight:500;border-bottom:0.5px solid var(--border);margin-bottom:3px}
+.pos-row{display:grid;grid-template-columns:72px 52px 1fr 56px 60px 78px 80px 74px 74px 30px;gap:5px;align-items:center;padding:6px 7px;border-radius:6px}
 .pos-row:hover{background:var(--bg2)}
 .pos-code{font-size:11px;color:var(--text2);font-family:monospace}
 .pos-name{font-size:13px}
 .pos-num{font-size:13px;text-align:right;font-variant-numeric:tabular-nums;font-family:monospace}
 .qty-input{width:44px;text-align:center;padding:2px 3px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:13px}
 .fak-input{width:54px;text-align:center;padding:2px 3px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:12px}
+.pos-code-wrap{display:flex;flex-direction:column;gap:1px}
+.pos-code-sub{font-size:10px;color:var(--text3);white-space:nowrap}
+.pos-code-sub.is-fix{color:var(--green)}
 .fak-input.custom{border-color:var(--amber);color:var(--amber);font-weight:500}
 .del-btn{width:24px;height:24px;border:none;background:none;cursor:pointer;color:var(--text3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:15px}
 .del-btn:hover{background:#fcebeb;color:var(--red)}
@@ -200,7 +203,7 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
           <div class="conflict-banner" id="conflict-banner" style="display:none"></div>
           <div class="poslist">
             <div class="pos-head">
-              <span>Pos.</span><span>Bezeichnung</span><span style="text-align:right">Mge.</span>
+              <span>Pos.</span><span style="text-align:right">Pkt / €</span><span>Bezeichnung</span><span style="text-align:right">Mge.</span>
               <span style="text-align:right;color:var(--amber)">Faktor</span>
               <span style="text-align:right;color:var(--blue)">Kassensatz</span>
               <span style="text-align:right;color:var(--green)">Rückerstattung</span>
@@ -247,7 +250,7 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
       </div>
       <div class="field-group">
         <div class="field-label">Honorarfaktor (× Kassensatz)</div>
-        <input class="field-in" type="number" id="s-fak" step="0.1" min="1" max="10" value="2.5" oninput="window.saveSettings()">
+        <input class="field-in" type="number" id="s-fak" step="0.01" min="1" max="10" value="2.5" oninput="window.saveSettings()">
         <div class="field-hint">Mein Honorar = Kassensatz × Faktor</div>
       </div>
       <div class="field-group">
@@ -913,6 +916,7 @@ function renderDetail() {
       const total = parseFloat(((p.betrag||0)*q).toFixed(2));
       return `<div class="pos-row">
         <span><span class="pill-grp" style="font-size:10px">FREI</span></span>
+        <span></span>
         <span class="pos-name" style="cursor:pointer;text-decoration:underline;text-decoration-style:dotted;color:var(--text2)" onclick="window.openFreePosModal(${i})" title="Bearbeiten">${esc(p.name||'–')}</span>
         <input class="qty-input" type="number" min="1" max="99" value="${q}" onchange="window.updateQty('${v.id}',${i},this.value)">
         <span class="pos-num" style="color:var(--text3)">—</span>
@@ -931,11 +935,14 @@ function renderDetail() {
     const fakVal = fak != null ? fak : '';
     const fakCls = fak != null ? 'fak-input custom' : 'fak-input';
     const fakTitle = `Honorarfaktor (leer = global ${state.settings.fak}×)`;
+    const pktCell = dbPos.fix != null
+      ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right">€ ${dbPos.fix.toFixed(2)}</span>`
+      : `<span class="pos-num" style="color:var(--text3);text-align:right">${dbPos.pkt} Pkt</span>`;
     return `<div class="pos-row">
-      <span class="pos-code">${esc(dbPos.code)}</span>
+      <span class="pos-code">${esc(dbPos.code)}</span>${pktCell}
       <span class="pos-name">${esc(dbPos.name)}${wb}${ni}</span>
       <input class="qty-input" type="number" min="1" max="99" value="${q}" onchange="window.updateQty('${v.id}',${i},this.value)">
-      <input class="${fakCls}" type="number" min="0.1" max="20" step="0.1" value="${fakVal}" placeholder="${state.settings.fak}" title="${fakTitle}" onchange="window.updateFaktor('${v.id}',${i},this.value)">
+      <input class="${fakCls}" type="number" min="0.1" max="20" step="0.01" value="${fakVal}" placeholder="${state.settings.fak}" title="${fakTitle}" onchange="window.updateFaktor('${v.id}',${i},this.value)">
       <span class="pos-num" style="color:var(--blue)">${fmt(ks(dbPos)*q)}</span>
       <span class="pos-num" style="color:var(--green)">${fmt(rueck(dbPos)*q)}</span>
       <span class="pos-num" style="color:var(--amber)">${fmt(hon(dbPos,fak)*q)}</span>
