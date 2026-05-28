@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honorar-System — werkeins</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f8f7f4;--bg3:#f0efe9;
+  --text:#1a1a1a;--text2:#6b6a65;--text3:#9b9a95;
+  --border:rgba(0,0,0,.10);--border2:rgba(0,0,0,.18);
+  --blue:#185FA5;--green:#1D9E75;--amber:#BA7517;--red:#A32D2D;--violet:#534AB7;
+  --radius:8px;--radius-lg:12px;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#1e1e1e;--bg2:#262626;--bg3:#2e2e2e;--text:#e8e7e2;--text2:#9b9a95;--text3:#6b6a65;--border:rgba(255,255,255,.10);--border2:rgba(255,255,255,.20);--blue:#5BAFF5;--green:#3DC99A;--amber:#EFC050;--red:#E87070;--violet:#9B91EF;}
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;color:var(--text);background:var(--bg)}
+input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
+
+/* ── Login ── */
+#login-screen{display:flex;align-items:center;justify-content:center;height:100vh}
+.login-card{display:flex;flex-direction:column;align-items:center;gap:18px;padding:40px 36px;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:var(--bg2);width:300px}
+.login-logo{font-size:15px;font-weight:600;letter-spacing:.04em;color:var(--text)}
+.login-sub{font-size:12px;color:var(--text2);text-align:center;line-height:1.5}
+.btn-google{display:flex;align-items:center;gap:10px;padding:9px 16px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);cursor:pointer;font-size:13px;width:100%;justify-content:center}
+.btn-google:hover{background:var(--bg3)}
+.btn-google svg{width:18px;height:18px;flex-shrink:0}
+
+/* ── Loading ── */
+#loading-screen{display:flex;align-items:center;justify-content:center;height:100vh;color:var(--text2);font-size:13px;gap:8px}
+
+/* ── App ── */
+#app{display:none;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{display:flex;align-items:center;padding:0 16px;border-bottom:0.5px solid var(--border);background:var(--bg);flex-shrink:0}
+.logo{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--text2);margin-right:20px;padding:10px 0;border-right:0.5px solid var(--border);padding-right:16px;white-space:nowrap}
+.tab{padding:11px 14px;cursor:pointer;font-size:13px;color:var(--text2);border-bottom:2px solid transparent;white-space:nowrap;user-select:none}
+.tab.active{color:var(--text);border-bottom-color:var(--text);font-weight:500}
+.tab:hover:not(.active){background:var(--bg2)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.user-name{font-size:12px;color:var(--text3)}
+.content{display:flex;flex:1;overflow:hidden}
+.sidebar{width:220px;border-right:0.5px solid var(--border);display:flex;flex-direction:column;background:var(--bg2);flex-shrink:0;position:relative}
+.sidebar-resize{position:absolute;top:0;right:-3px;bottom:0;width:6px;cursor:col-resize;z-index:10}
+.sidebar-resize:hover,.sidebar-resize.dragging{background:var(--blue);opacity:.35}
+.sidebar-head{padding:10px 12px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.sidebar-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.btn-icon{width:28px;height:28px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;font-size:16px}
+.btn-icon:hover{background:var(--bg3)}
+.tlist{flex:1;overflow-y:auto;padding:4px}
+.titem{padding:8px 10px;cursor:pointer;border-radius:var(--radius);display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.titem:hover{background:var(--bg3)}
+.titem.active{background:var(--bg);box-shadow:0 0 0 0.5px var(--border2)}
+.titem-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.titem-name{font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.titem-total{font-size:12px;color:var(--text2);font-variant-numeric:tabular-nums}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.main-head{padding:10px 14px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.main-title{font-size:15px;font-weight:500;flex:1;min-width:120px}
+.btn{padding:5px 11px;font-size:13px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg2);color:var(--text);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn:hover{background:var(--bg3)}
+.btn-primary{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn-primary:hover{opacity:.85}
+.color-sel{padding:4px 7px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg2);color:var(--text);cursor:pointer}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 14px;border-bottom:0.5px solid var(--border);flex-shrink:0}
+.metric{background:var(--bg2);border-radius:var(--radius);padding:9px 11px}
+.metric-label{font-size:11px;color:var(--text2);margin-bottom:3px}
+.metric-val{font-size:17px;font-weight:500;font-variant-numeric:tabular-nums}
+.poslist-wrap{flex:1;overflow-y:auto}
+.poslist{padding:8px 14px}
+.pos-head{display:grid;grid-template-columns:72px 1fr 56px 60px 78px 80px 74px 74px 30px;gap:5px;padding:5px 7px;font-size:11px;color:var(--text3);font-weight:500;border-bottom:0.5px solid var(--border);margin-bottom:3px}
+.pos-row{display:grid;grid-template-columns:72px 1fr 56px 60px 78px 80px 74px 74px 30px;gap:5px;align-items:center;padding:6px 7px;border-radius:6px}
+.pos-row:hover{background:var(--bg2)}
+.pos-code{font-size:11px;color:var(--text2);font-family:monospace}
+.pos-name{font-size:13px}
+.pos-num{font-size:13px;text-align:right;font-variant-numeric:tabular-nums;font-family:monospace}
+.qty-input{width:44px;text-align:center;padding:2px 3px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:13px}
+.fak-input{width:54px;text-align:center;padding:2px 3px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:12px}
+.fak-input.custom{border-color:var(--amber);color:var(--amber);font-weight:500}
+.del-btn{width:24px;height:24px;border:none;background:none;cursor:pointer;color:var(--text3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.del-btn:hover{background:#fcebeb;color:var(--red)}
+.action-bar{padding:9px 14px;border-top:0.5px solid var(--border);display:flex;gap:7px;background:var(--bg);flex-shrink:0}
+.empty-state{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:14px}
+.catalog-toolbar{padding:9px 14px;display:flex;gap:7px;border-bottom:0.5px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.search-in{flex:1;min-width:140px;padding:6px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text)}
+.cat-sel{padding:6px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:13px}
+.cat-wrap{flex:1;overflow-y:auto}
+.ct-head{display:grid;grid-template-columns:68px 1fr 70px 78px 80px 74px 74px 88px;gap:5px;padding:6px 14px;font-size:11px;color:var(--text3);font-weight:500;position:sticky;top:0;background:var(--bg);border-bottom:0.5px solid var(--border);z-index:1}
+.ct-row{display:grid;grid-template-columns:68px 1fr 70px 78px 80px 74px 74px 88px;gap:5px;align-items:center;padding:6px 14px;border-bottom:0.5px solid var(--border)}
+.ct-row:hover{background:var(--bg2)}
+.ct-grp{padding:5px 14px 3px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;background:var(--bg2);border-bottom:0.5px solid var(--border);position:sticky;top:32px;z-index:1}
+.add-btn{padding:3px 9px;font-size:12px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg);color:var(--text)}
+.add-btn:hover{background:var(--bg2)}
+.settings-wrap{padding:22px;max-width:450px;overflow-y:auto}
+.field-group{margin-bottom:16px}
+.field-label{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
+.field-in{width:100%;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text)}
+.field-hint{font-size:12px;color:var(--text3);margin-top:4px}
+.divider{border:none;border-top:0.5px solid var(--border);margin:18px 0}
+.pill-warn{display:inline-flex;align-items:center;gap:3px;padding:1px 5px;border-radius:9px;font-size:10px;font-weight:500;background:#FAEEDA;color:#854F0B;margin-left:4px;vertical-align:middle}
+.pill-grp{display:inline-flex;align-items:center;padding:1px 6px;border-radius:9px;font-size:10px;color:var(--text3);background:var(--bg2);margin-left:4px;vertical-align:middle;border:0.5px solid var(--border)}
+.note-icon{color:var(--text3);cursor:help;font-size:12px;vertical-align:middle;margin-left:3px}
+.note-icon:hover{color:var(--blue)}
+.conflict-banner{padding:8px 14px;background:#FAEEDA;color:#854F0B;font-size:12px;display:flex;align-items:flex-start;gap:8px;border-bottom:0.5px solid #e8c98a;line-height:1.6;flex-shrink:0}
+@media(prefers-color-scheme:dark){.conflict-banner{background:#3d2800;color:#EFC050;border-bottom-color:#5a3a00}}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg);border-radius:var(--radius-lg);padding:18px;width:380px;border:0.5px solid var(--border2);max-height:82vh;display:flex;flex-direction:column}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:12px;flex-shrink:0}
+.modal-list{flex:1;overflow-y:auto;border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px}
+.modal-actions{display:flex;gap:7px;justify-content:flex-end;flex-shrink:0}
+.mitem{display:flex;align-items:flex-start;gap:7px;padding:7px 9px;border-bottom:0.5px solid var(--border);cursor:pointer}
+.mitem:hover{background:var(--bg2)}
+.mitem:last-child{border-bottom:none}
+.mitem-name{font-size:13px;line-height:1.3}
+.mitem-note{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4}
+#add-modal .modal{width:620px}
+.mgrp{padding:4px 9px 2px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;background:var(--bg2);border-bottom:0.5px solid var(--border)}
+.save-indicator{font-size:11px;color:var(--text3);padding:0 8px;opacity:0;transition:opacity .3s}
+.save-indicator.visible{opacity:1}
+@media print{
+  .topbar,.sidebar,.main-head,.metrics,.action-bar,.del-btn,.add-btn,.btn,.catalog-toolbar,.modal-bg{display:none!important}
+  .poslist-wrap{overflow:visible!important}
+  .print-header{display:block!important}
+  body,html{overflow:visible!important;height:auto!important}
+  .content,.main{overflow:visible!important;height:auto!important}
+  #app{display:block!important;height:auto!important}
+}
+.print-header{display:none;padding:0 0 14px;border-bottom:1px solid #000;margin-bottom:14px;font-size:12px}
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading-screen">
+  <i class="ti ti-loader" style="font-size:18px;animation:spin 1s linear infinite"></i>
+  <span>Wird geladen…</span>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+<!-- Login -->
+<div id="login-screen" style="display:none">
+  <div class="login-card">
+    <div class="login-logo">werkeins · Honorar</div>
+    <div class="login-sub">Melde dich an, um deine Honorarvorlagen zu verwalten.</div>
+    <button class="btn-google" id="signin-btn">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Mit Google anmelden
+    </button>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <div class="topbar">
+    <div class="logo">werkeins · Honorar</div>
+    <div class="tab active" data-tab="vorlagen">Vorlagen</div>
+    <div class="tab" data-tab="katalog">Positionenkatalog</div>
+    <div class="tab" data-tab="settings">Einstellungen</div>
+    <div class="topbar-right">
+      <span class="save-indicator" id="save-indicator"><i class="ti ti-cloud-check"></i> Gespeichert</span>
+      <span class="user-name" id="user-name"></span>
+      <button class="btn" id="logout-btn" style="font-size:12px;padding:3px 8px"><i class="ti ti-logout"></i> Abmelden</button>
+    </div>
+  </div>
+
+  <div class="content" id="view-vorlagen">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-resize" id="sidebar-resize"></div>
+      <div class="sidebar-head">
+        <span class="sidebar-label">Vorlagen</span>
+        <button class="btn-icon" id="new-vorlage-btn" title="Neue Vorlage"><i class="ti ti-plus"></i></button>
+      </div>
+      <div class="tlist" id="tlist"></div>
+    </div>
+    <div class="main">
+      <div class="empty-state" id="empty-state">Vorlage auswählen oder neue erstellen</div>
+      <div id="detail-wrap" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+        <div class="main-head">
+          <div class="main-title" id="v-title"></div>
+          <select class="color-sel" id="v-color" onchange="window.updateColor()">
+            <option value="#185FA5">● Blau</option><option value="#1D9E75">● Grün</option>
+            <option value="#BA7517">● Amber</option><option value="#A32D2D">● Rot</option>
+            <option value="#534AB7">● Violett</option><option value="#5F5E5A">● Grau</option>
+          </select>
+          <button class="btn" onclick="window.renameVorlage()"><i class="ti ti-edit"></i></button>
+          <button class="btn" onclick="window.deleteVorlage()" style="color:var(--red)"><i class="ti ti-trash"></i></button>
+          <button class="btn" onclick="window.printNote()"><i class="ti ti-printer"></i> Drucken</button>
+        </div>
+        <div class="metrics" id="metrics-bar"></div>
+        <div class="poslist-wrap">
+          <div class="print-header" id="print-header"></div>
+          <div class="conflict-banner" id="conflict-banner" style="display:none"></div>
+          <div class="poslist">
+            <div class="pos-head">
+              <span>Pos.</span><span>Bezeichnung</span><span style="text-align:right">Mge.</span>
+              <span style="text-align:right;color:var(--amber)">Faktor</span>
+              <span style="text-align:right;color:var(--blue)">Kassensatz</span>
+              <span style="text-align:right;color:var(--green)">Rückerstattung</span>
+              <span style="text-align:right;color:var(--amber)">Honorar</span>
+              <span style="text-align:right;color:var(--red)">Eigenanteil</span><span></span>
+            </div>
+            <div id="pos-rows"></div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-primary" onclick="window.openAddModal()"><i class="ti ti-plus"></i> Position hinzufügen</button>
+          <button class="btn" onclick="window.openFreePosModal(null)"><i class="ti ti-pencil-plus"></i> Freie Position</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content" id="view-katalog" style="display:none;flex-direction:column">
+    <div class="catalog-toolbar">
+      <input class="search-in" id="kat-search" placeholder="Code oder Bezeichnung suchen…" oninput="window.renderKatalog()">
+      <select class="cat-sel" id="kat-cat" onchange="window.renderKatalog()">
+        <option value="">Alle Gruppen</option>
+      </select>
+    </div>
+    <div class="cat-wrap">
+      <div class="ct-head">
+        <span>Pos.</span><span>Bezeichnung</span>
+        <span style="text-align:right">Pkt / €</span>
+        <span style="text-align:right;color:var(--blue)">Kassensatz</span>
+        <span style="text-align:right;color:var(--green)">Rückerstattung</span>
+        <span style="text-align:right;color:var(--amber)">Honorar</span>
+        <span style="text-align:right;color:var(--red)">Eigenanteil</span><span></span>
+      </div>
+      <div id="kat-rows"></div>
+    </div>
+  </div>
+
+  <div class="content" id="view-settings" style="display:none">
+    <div class="settings-wrap">
+      <div class="field-group">
+        <div class="field-label">Punktewert (€ / Punkt)</div>
+        <input class="field-in" type="number" id="s-pkt" step="0.01" min="0.1" max="5" value="0.80" oninput="window.saveSettings()">
+        <div class="field-hint">Kassensatz = Punkte × Punktewert · Vorarlberg 2025: 0,80 €/Pkt</div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Honorarfaktor (× Kassensatz)</div>
+        <input class="field-in" type="number" id="s-fak" step="0.1" min="1" max="10" value="2.5" oninput="window.saveSettings()">
+        <div class="field-hint">Mein Honorar = Kassensatz × Faktor</div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Rückerstattungsquote Kasse (%)</div>
+        <input class="field-in" type="number" id="s-ruck" step="1" min="50" max="100" value="80" oninput="window.saveSettings()">
+      </div>
+      <hr class="divider">
+      <div class="field-group">
+        <div class="field-label">Name / Ordination (für Druck)</div>
+        <input class="field-in" type="text" id="s-name" placeholder="Dr. Max Mustermann" oninput="window.saveSettings()" style="margin-bottom:7px">
+        <input class="field-in" type="text" id="s-adr" placeholder="Adresse, PLZ Ort" oninput="window.saveSettings()" style="margin-bottom:7px">
+        <input class="field-in" type="text" id="s-tel" placeholder="Tel. / E-Mail" oninput="window.saveSettings()">
+      </div>
+      <div class="field-hint">Alle Einstellungen werden automatisch in der Cloud gespeichert.</div>
+      <hr class="divider">
+      <div class="field-group">
+        <div class="field-label">Vorlagen</div>
+        <button class="btn" onclick="window.resetDefaults()" style="font-size:12px;color:var(--text2)">Vorlagen auf Standard zurücksetzen (24 Vorlagen)</button>
+        <div class="field-hint">Löscht alle bestehenden Vorlagen und ersetzt sie durch die 24 Standard-Vorlagen (Normal + UV).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Position hinzufügen -->
+  <div class="modal-bg" id="add-modal" onclick="if(event.target===this)window.closeModal()">
+    <div class="modal">
+      <h3>Position hinzufügen</h3>
+      <input class="search-in" id="modal-search" placeholder="Code oder Bezeichnung suchen…" oninput="window.renderModalList()" style="width:100%;margin-bottom:7px">
+      <select class="cat-sel" id="modal-cat" onchange="window.renderModalList()" style="width:100%;margin-bottom:7px;font-size:13px">
+        <option value="">Alle Gruppen</option>
+      </select>
+      <div class="modal-list" id="modal-list"></div>
+      <div class="modal-actions"><button class="btn" onclick="window.closeModal()">Schließen</button></div>
+    </div>
+  </div>
+
+  <!-- Modal: Freie Position -->
+  <div class="modal-bg" id="free-pos-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal" style="max-height:300px">
+      <h3 id="free-pos-title">Freie Position</h3>
+      <div class="field-group">
+        <div class="field-label">Bezeichnung</div>
+        <input class="field-in" type="text" id="free-pos-name" placeholder="z.B. Hausbesuchspauschale" style="margin-bottom:10px">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Betrag (€ pro Stück)</div>
+        <input class="field-in" type="number" id="free-pos-betrag" min="0" step="0.01" placeholder="0.00">
+        <div class="field-hint">Wird direkt als Honorar übernommen — kein Faktor, keine Kassensatz-Berechnung.</div>
+      </div>
+      <div class="modal-actions" style="margin-top:10px">
+        <button class="btn" onclick="document.getElementById('free-pos-modal').classList.remove('open')">Abbrechen</button>
+        <button class="btn btn-primary" onclick="window.confirmFreePos()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Umbenennen -->
+  <div class="modal-bg" id="rename-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal" style="max-height:220px">
+      <h3>Vorlage benennen</h3>
+      <input class="field-in" type="text" id="rename-input" placeholder="Name der Vorlage" style="margin-bottom:14px">
+      <div class="modal-actions">
+        <button class="btn" onclick="document.getElementById('rename-modal').classList.remove('open')">Abbrechen</button>
+        <button class="btn btn-primary" onclick="window.confirmRename()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDjTMG12ztBFVM3bA80Bm8OjezBez3D0Fo",
+  authDomain: "werkeins-honorar.firebaseapp.com",
+  projectId: "werkeins-honorar",
+  storageBucket: "werkeins-honorar.firebasestorage.app",
+  messagingSenderId: "319630287268",
+  appId: "1:319630287268:web:65836972ac6226d5a9e131"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+let currentUser = null;
+let saveTimer = null;
+
+// ── POSITIONSDATENBANK (Honorartarif Vorarlberg, ab 01.01.2025) ──
+const DB = [
+// A/01/01 Ordination AM
+{code:'10',   name:'Erste Ordination',                                          cat:'Ordination AM',    pkt:20,  fix:null},
+{code:'11',   name:'Jede weitere Ordination',                                   cat:'Ordination AM',    pkt:10,  fix:null},
+{code:'12',   name:'ZUSCHLAG Sofortbehandlung Akutfall außerh. OZ',             cat:'Ordination AM',    pkt:4,   fix:null},
+{code:'13',   name:'ZUSCHLAG Ordination Wochenende/Feiertag (Dringlichkeit)',   cat:'Ordination AM',    pkt:10,  fix:null},
+{code:'14',   name:'ZUSCHLAG Nacht (20:00–7:00 Uhr)',                           cat:'Ordination AM',    pkt:10,  fix:null},
+{code:'15',   name:'Rezept (ohne Ordination)',                                  cat:'Ordination AM',    pkt:4,   fix:null},
+{code:'16',   name:'Ordination Wochend(Feiertags)dienst (zusätzl. Pauschale)', cat:'Ordination AM',    pkt:4,   fix:37.20},
+{code:'18NZ', name:'Weitere Ordination via KH-Zuweisung',                      cat:'Ordination AM',    pkt:18,  fix:null},
+{code:'18EZ', name:'Erste Ordination via KH-Zuweisung',                        cat:'Ordination AM',    pkt:26,  fix:null},
+{code:'18',   name:'Erste Ordination via ärztl. Zuweisung (mit Befundbericht)',cat:'Ordination AM',    pkt:26,  fix:null},
+// A/01/02 Krankenbesuche AM
+{code:'20',   name:'Krankenbesuch (1. und jeder weitere)',                      cat:'Krankenbesuch AM', pkt:42,  fix:24.80},
+{code:'21',   name:'ZUSCHLAG dringender Krankenbesuch',                         cat:'Krankenbesuch AM', pkt:10,  fix:null},
+{code:'22',   name:'ZUSCHLAG Krankenbesuch Wochenende/Feiertag (Dringlichkeit)',cat:'Krankenbesuch AM', pkt:14,  fix:null},
+{code:'23',   name:'ZUSCHLAG Krankenbesuch bei Nacht (20:00–7:00 Uhr)',         cat:'Krankenbesuch AM', pkt:14,  fix:64.45},
+{code:'24',   name:'Mitbesuch (Heim, Familie, Wohnblock; nicht gehfähig)',      cat:'Krankenbesuch AM', pkt:20,  fix:8.16},
+{code:'25',   name:'Krankenbesuch Wochend(Feiertags)dienst (zusätzl. Pauschale)',cat:'Krankenbesuch AM',pkt:4,  fix:86.81},
+// A/01/03 Zeitversäumnis
+{code:'30',   name:'Zeitversäumnis bei Tag (je angefangene 30 min)',            cat:'Zeitversäumnis',   pkt:20,  fix:null},
+{code:'31',   name:'Zeitversäumnis bei Nacht (je angefangene 30 min)',          cat:'Zeitversäumnis',   pkt:40,  fix:null},
+{code:'32LC', name:'Ärztl. Gespräch Long Covid (1× pro Patient)',               cat:'Zeitversäumnis',   pkt:14,  fix:null},
+{code:'32',   name:'Ärztl. Gespräch (je angefangene 15 min, ab 16. Min.)',      cat:'Zeitversäumnis',   pkt:14,  fix:null},
+{code:'33',   name:'Psychosomatisches Gespräch, je 20 min (ÖÄK-Diplom)',       cat:'Zeitversäumnis',   pkt:35,  fix:null, warn:true},
+{code:'34',   name:'Koordinierungszuschlag AM (1×/Quartal, max. 5% der Fälle)',cat:'Zeitversäumnis',   pkt:null,fix:24.80},
+// A/01/04 Konsilium
+{code:'40',   name:'Konsilium bei Tag – Berufener',                             cat:'Konsilium',        pkt:40,  fix:null},
+{code:'41',   name:'Konsilium bei Tag – Berufender',                            cat:'Konsilium',        pkt:30,  fix:null},
+{code:'42',   name:'Konsilium bei Nacht – Berufener',                           cat:'Konsilium',        pkt:80,  fix:null},
+{code:'43',   name:'Konsilium bei Nacht – Berufender',                          cat:'Konsilium',        pkt:60,  fix:null},
+{code:'44',   name:'Schmerzboard (je 60 min, max. 3× pro Sitzung)',             cat:'Konsilium',        pkt:null,fix:129.96},
+// A/02/01 Blutabnahme
+{code:'100',  name:'Blutabnahme aus der Vene',                                  cat:'Blutabnahme',      pkt:4,   fix:null},
+{code:'101',  name:'Blutabnahme aus der Vene – Kinder bis 10 J.',              cat:'Blutabnahme',      pkt:8,   fix:null},
+{code:'102',  name:'Aderlass (mindestens 150 ml)',                              cat:'Blutabnahme',      pkt:10,  fix:null},
+{code:'103',  name:'Mikroblutentnahme – Kinder bis 6 J. (Zuschlag)',           cat:'Blutabnahme',      pkt:4,   fix:null},
+// A/02/02 Injektionen
+{code:'110',  name:'Subcutane/intracutane Injektion (mit Ordination abgegolten)',cat:'Injektionen',    pkt:0,   fix:null},
+{code:'111',  name:'Intramuskuläre Injektion',                                  cat:'Injektionen',      pkt:4,   fix:null},
+{code:'112',  name:'Intravenöse Injektion',                                     cat:'Injektionen',      pkt:6,   fix:null},
+{code:'113',  name:'Intravenöse Injektion – Kinder bis 10 J.',                 cat:'Injektionen',      pkt:10,  fix:null},
+{code:'114',  name:'Eigenblutinjektion (Venenpunktion + i.m. Inj.)',            cat:'Injektionen',      pkt:10,  fix:null},
+{code:'115',  name:'Intraarterielle Injektion',                                 cat:'Injektionen',      pkt:14,  fix:null},
+{code:'116',  name:'Intracardiale Injektion',                                   cat:'Injektionen',      pkt:14,  fix:null},
+{code:'117',  name:'Subconjunktivale Injektion',                                cat:'Injektionen',      pkt:4,   fix:null},
+{code:'118',  name:'Parabulbäre Injektion',                                     cat:'Injektionen',      pkt:8,   fix:null},
+{code:'119',  name:'Epidurale Injektion / Injektion in Nervenknoten',           cat:'Injektionen',      pkt:24,  fix:null},
+{code:'120',  name:'Injektion Plexus coeliacus / Ganglion Gasseri',             cat:'Injektionen',      pkt:50,  fix:null},
+{code:'121',  name:'Intrapleurale / intraperitoneale Injektion',                cat:'Injektionen',      pkt:12,  fix:null},
+{code:'122',  name:'Krampfadernverödung (max. 5 pro Sitzung)',                  cat:'Injektionen',      pkt:8,   fix:null},
+{code:'123',  name:'Haemorrhoidenverödung durch Injektion',                     cat:'Injektionen',      pkt:8,   fix:null},
+{code:'124',  name:'Periarticuläre Injektion',                                  cat:'Injektionen',      pkt:10,  fix:null},
+{code:'125',  name:'Intraarticuläre Injektion (Gelenk)',                        cat:'Injektionen',      pkt:20,  fix:null},
+// A/02/03 Infiltrationen
+{code:'130',  name:'Subcutane Infiltration',                                    cat:'Infiltrationen',   pkt:8,   fix:null},
+{code:'131',  name:'Intramuskuläre Infiltration',                               cat:'Infiltrationen',   pkt:8,   fix:null},
+{code:'132',  name:'Perineurale Infiltration',                                  cat:'Infiltrationen',   pkt:8,   fix:null},
+{code:'133',  name:'Intracutane Infiltration durch Dermojet (pro Sitzung)',     cat:'Infiltrationen',   pkt:8,   fix:null},
+// A/02/04 Infusionen
+{code:'140',  name:'Intraarterielle Infusion',                                  cat:'Infusionen',       pkt:40,  fix:null},
+{code:'141',  name:'Intravenöse Dauertropfinfusion',                            cat:'Infusionen',       pkt:20,  fix:null},
+// A/02/05 Allergietestungen & Impfungen
+{code:'150',  name:'Tine-Test und ähnliche, je',                                cat:'Allergietestungen',pkt:2,   fix:null},
+{code:'151',  name:'Allergieproben, Hautfunktionsprüfung, je',                  cat:'Allergietestungen',pkt:2,   fix:null},
+{code:'152',  name:'Intradermaler Pricktest, je',                               cat:'Allergietestungen',pkt:6,   fix:null},
+{code:'153',  name:'Therapeutische Impfung',                                    cat:'Allergietestungen',pkt:8,   fix:null},
+// A/02/06 Punktionen diagnostisch
+{code:'160',  name:'Punktion oberfl. Körperteile (Cyste, Schleimbeutel u.ä.)', cat:'Punktionen diagn.',pkt:10,  fix:null},
+{code:'161',  name:'Punktion eines Gelenkes',                                   cat:'Punktionen diagn.',pkt:20,  fix:null},
+{code:'162',  name:'Punktion Brust- oder Bauchhöhle',                           cat:'Punktionen diagn.',pkt:14,  fix:null},
+{code:'163',  name:'Punktion Herzbeutel',                                       cat:'Punktionen diagn.',pkt:40,  fix:null},
+{code:'164',  name:'Lumbalpunktion',                                            cat:'Punktionen diagn.',pkt:30,  fix:null},
+{code:'165',  name:'Suboccipitalpunktion',                                      cat:'Punktionen diagn.',pkt:30,  fix:null},
+{code:'166',  name:'Sternalpunktion',                                           cat:'Punktionen diagn.',pkt:30,  fix:null},
+{code:'167',  name:'Punktion der Prostata',                                     cat:'Punktionen diagn.',pkt:20,  fix:null},
+{code:'168',  name:'Punktion Leber, Milz oder Nieren (ohne Laparoskopie)',      cat:'Punktionen diagn.',pkt:60,  fix:null},
+{code:'169',  name:'Punktion während der Laparoskopie',                         cat:'Punktionen diagn.',pkt:30,  fix:null},
+{code:'170',  name:'Punktion der Harnblase',                                    cat:'Punktionen diagn.',pkt:20,  fix:null},
+// A/02/07 Punktionen therapeutisch
+{code:'171',  name:'Punktion Cyste/Schleimbeutel/Abszeß/Hämatom (ther.)',      cat:'Punktionen ther.', pkt:16,  fix:null},
+{code:'172',  name:'Punktion größere Gelenke (inkl. ev. Füllung)',              cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'173',  name:'Punktion Brust-/Bauchhöhle oder Douglas',                  cat:'Punktionen ther.', pkt:50,  fix:null},
+{code:'174',  name:'Punktion Herzbeutel (therapeutisch)',                       cat:'Punktionen ther.', pkt:60,  fix:null},
+{code:'175',  name:'Lumbalpunktion (therapeutisch)',                             cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'176',  name:'Suboccipitalpunktion (therapeutisch)',                       cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'177',  name:'Liquorpunktion Kinder (Fontanella)',                         cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'178',  name:'Punktion Wasserbruch mit Einspritzung',                     cat:'Punktionen ther.', pkt:20,  fix:null},
+{code:'179',  name:'Punktion Harnblase (therapeutisch)',                         cat:'Punktionen ther.', pkt:30,  fix:null},
+// A/02/08 Betäubung
+{code:'180',  name:'Kälte- oder Oberflächenanästhesie',                         cat:'Betäubung',        pkt:4,   fix:null},
+{code:'181',  name:'Infiltrationsanästhesie',                                   cat:'Betäubung',        pkt:8,   fix:null},
+{code:'182',  name:'Leitungsanästhesie',                                        cat:'Betäubung',        pkt:16,  fix:null},
+{code:'183',  name:'Inhalations- oder i.v. Narkose',                            cat:'Betäubung',        pkt:30,  fix:null},
+{code:'184',  name:'Sacralanästhesie oder Plexusanästhesie',                    cat:'Betäubung',        pkt:30,  fix:null},
+{code:'185',  name:'Lumbalanästhesie',                                          cat:'Betäubung',        pkt:40,  fix:null},
+{code:'186',  name:'Narkose mit Intubation',                                    cat:'Betäubung',        pkt:50,  fix:null},
+{code:'187',  name:'Lokalanästhesie in das Bruchhämatom',                       cat:'Betäubung',        pkt:16,  fix:null},
+{code:'188',  name:'Lumbale Sympathikusblockade',                               cat:'Betäubung',        pkt:24,  fix:null},
+// A/02/09 Wiederbelebung
+{code:'190',  name:'Intensiver Belebungsversuch beim schwer asphyktischen Neugeborenen',cat:'Wiederbelebung',pkt:20,fix:null},
+{code:'191',  name:'Wiederbelebungsversuch bei Unfällen bis 30 min',            cat:'Wiederbelebung',   pkt:30,  fix:null},
+{code:'192',  name:'Apparative Beatmung durch Saugdruckverfahren (Zuschlag)',   cat:'Wiederbelebung',   pkt:10,  fix:null},
+{code:'193',  name:'Künstliche Beatmung als Wiederbelebungsversuch',            cat:'Wiederbelebung',   pkt:30,  fix:null},
+// A/02/11 Sonstige ärztliche Verrichtungen
+{code:'200',  name:'Bougierung der Speiseröhre',                                cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'201',  name:'Ausheberung und Spülung des Magens',                        cat:'Sonstige Verrichten.',pkt:40,fix:null},
+{code:'202',  name:'Zuschlag Magenspülung bei Kindern bis 10 J.',               cat:'Sonstige Verrichten.',pkt:20,fix:null},
+{code:'209',  name:'Digitaluntersuchung des Mastdarmes',                        cat:'Sonstige Verrichten.',pkt:6, fix:null},
+{code:'210',  name:'Bougierung des Mastdarmes oder einer Colostomiefistel',     cat:'Sonstige Verrichten.',pkt:6, fix:null},
+{code:'211',  name:'Proktoskopie',                                              cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'212',  name:'Sphinkterdehnung',                                          cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'213',  name:'Hohe Darmirrigation',                                       cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'214',  name:'Digitale Ausräumung des Mastdarmes',                        cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'220',  name:'Extraktion eines Zahnes, einwurzelig',                      cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'221',  name:'Extraktion eines Zahnes, mehrwurzelig',                     cat:'Sonstige Verrichten.',pkt:16,fix:null},
+{code:'222',  name:'Oszillometrie mit graphischer Dokumentation',               cat:'Sonstige Verrichten.',pkt:20,fix:null},
+{code:'223',  name:'Oszillometrie ohne graph. Dokumentation',                   cat:'Sonstige Verrichten.',pkt:12,fix:null},
+{code:'224',  name:'Untersuchung auf Pilzbefall mit Woodschem Licht',           cat:'Sonstige Verrichten.',pkt:4, fix:null},
+{code:'225',  name:'Lösung von Konglutinationen pro Fall',                      cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'226',  name:'Durchtrennung des Zungenbändchens',                         cat:'Sonstige Verrichten.',pkt:8, fix:null},
+{code:'227',  name:'Sondierung einer Fistel',                                   cat:'Sonstige Verrichten.',pkt:4, fix:null},
+{code:'228',  name:'Konservative Behandlung von Hernien, je Sitzung',           cat:'Sonstige Verrichten.',pkt:6, fix:null},
+{code:'229',  name:'Erhebung des Venenstatus (Trendelenburg, Dokumentation)',   cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'230',  name:'Ausführlicher ärztl. Befundbericht (kassenärztl. Bereich)', cat:'Sonstige Verrichten.',pkt:6, fix:null},
+{code:'231',  name:'Nicht direktionale Ultraschall-Dopplermessung distaler Arteriendrücke (beide Beine)',cat:'Sonstige Verrichten.',pkt:15,fix:null},
+{code:'235',  name:'Wechsel von Magenaustauschsonden (Gastrotube)',             cat:'Sonstige Verrichten.',pkt:14,fix:null},
+{code:'236',  name:'Wechsel von suprapubischen Blasenkathetern',                cat:'Sonstige Verrichten.',pkt:14,fix:null},
+{code:'237',  name:'Nadelakupunktur (ÄK-Diplom Akupunktur erforderlich)',       cat:'Sonstige Verrichten.',pkt:20,fix:null,warn:true},
+{code:'239',  name:'Heilmittelberatungsgespräch (max. 15% der Fälle)',          cat:'Sonstige Verrichten.',pkt:10,fix:null},
+// A/04/01 Wundversorgung
+{code:'290',  name:'Wunde mit Naht und Verband (eine Naht)',                    cat:'Wundversorgung',   pkt:20,  fix:null},
+{code:'291',  name:'Kleine Wunde mit Butterfly oder Gewebekleber',              cat:'Wundversorgung',   pkt:10,  fix:null},
+{code:'292',  name:'Abtragung mehrerer großer Blasen (eine Sitzung)',           cat:'Wundversorgung',   pkt:10,  fix:null},
+{code:'293',  name:'Nahtentfernung bei größeren Wundnähten (≥ 12 Nähte)',      cat:'Wundversorgung',   pkt:10,  fix:null},
+// A/04/02 Kleine operative Eingriffe
+{code:'300',  name:'Incision Abszess, Furunkel, Panaritium, Atherom',          cat:'Operative Eingriffe',pkt:10,fix:null},
+{code:'301',  name:'Exkochleation/Ätzung/Kaustik einer Warze oder Geschwulst', cat:'Operative Eingriffe',pkt:10,fix:null},
+{code:'302',  name:'Exkochleation/Ätzung/Kaustik mehrerer Warzen (eine Sitzung)',cat:'Operative Eingriffe',pkt:20,fix:null},
+{code:'303',  name:'Entfernung eines Finger- oder Zehennagels',                 cat:'Operative Eingriffe',pkt:20,fix:null},
+{code:'304',  name:'Bluttransfusion mit Konserve',                              cat:'Operative Eingriffe',pkt:30,fix:null},
+{code:'305',  name:'Incision nach Krampfadernverödung und Thrombektomie',       cat:'Operative Eingriffe',pkt:5, fix:null},
+// A/04/03 Verbände
+{code:'310',  name:'Größerer Verband (Kopf, Schulter, Becken; Zinkleimbinde)',  cat:'Verbände',         pkt:14,  fix:null},
+{code:'311',  name:'Gipsverband Hand und Unterarm',                             cat:'Verbände',         pkt:30,  fix:null},
+{code:'312',  name:'Gipsverband Hand, Unter- und Oberarm',                      cat:'Verbände',         pkt:50,  fix:null},
+{code:'313',  name:'Gipsverband obere Extremität und Schultergürtel',           cat:'Verbände',         pkt:120, fix:null},
+{code:'314',  name:'Gipsverband Fuß, Unterschenkel oder Hülse',                 cat:'Verbände',         pkt:50,  fix:null},
+{code:'315',  name:'Gipsverband Fuß, Unter- und Oberschenkel',                  cat:'Verbände',         pkt:80,  fix:null},
+{code:'316',  name:'Gipsverband untere Extremität und Becken',                  cat:'Verbände',         pkt:150, fix:null},
+{code:'317',  name:'Abnahme eines großen Gipsverbandes',                        cat:'Verbände',         pkt:10,  fix:null},
+{code:'318',  name:'Anbringung Gehbügel / Reparatur Gipsverband',               cat:'Verbände',         pkt:10,  fix:null},
+{code:'319',  name:'Abänderung fester Verband (Fensterung, Aufkeilung)',        cat:'Verbände',         pkt:10,  fix:null},
+{code:'320',  name:'Abduktionsschienenverband mit Stärke- oder Gipsfixation',   cat:'Verbände',         pkt:40,  fix:null},
+{code:'321',  name:'Armverband nach Desault mit Gipsfixation',                  cat:'Verbände',         pkt:50,  fix:null},
+{code:'322',  name:'Behandlung chron. Hautwunde / Ulcus (> 10 min)',            cat:'Verbände',         pkt:14,  fix:null},
+// A/04/04 Orthopädische Verrichtungen
+{code:'330',  name:'Modell für Einlagen bei Senk-/Spreiz-/Knickfuß',           cat:'Orthopädie',       pkt:30,  fix:null},
+{code:'331',  name:'Überprüfung und Anpassung eines orthopäd. Behelfs',         cat:'Orthopädie',       pkt:10,  fix:null},
+{code:'332',  name:'Elastischer Kompressionsverband mit Schaumgummi/Tape',      cat:'Orthopädie',       pkt:20,  fix:null},
+{code:'333',  name:'Manuelles Wirbelsäulenredressement (max. 3×/Krankheitsfall)',cat:'Orthopädie',      pkt:20,  fix:null},
+{code:'334',  name:'Manuelle Therapie Gelenke (nach GMM, max. 3×/Fall)',        cat:'Orthopädie',       pkt:12,  fix:null},
+{code:'335',  name:'Anleitung gymn. Übungen durch den Arzt',                    cat:'Orthopädie',       pkt:10,  fix:null},
+// A/04/05 Knochenbrüche
+{code:'340',  name:'Provisorische Versorgung kleiner Knochen (Finger, Zehen, Rippen)',cat:'Knochenbrüche',pkt:10,fix:null},
+{code:'341',  name:'Provisorische Versorgung alle übrigen Knochen',             cat:'Knochenbrüche',    pkt:30,  fix:null},
+// A/06/02 HNO – Therapeutische Verrichtungen (AM-relevant)
+{code:'376',  name:'Ohrmikroskopie',                                            cat:'HNO',              pkt:10,  fix:null},
+{code:'377',  name:'Stimmgabelprüfung',                                         cat:'HNO',              pkt:8,   fix:null},
+{code:'381',  name:'Schwierige Entfernung Fremdkörper aus Nase/Rachen/Ohr',    cat:'HNO',              pkt:10,  fix:null},
+{code:'382',  name:'Fremdkörperentfernung Nase/Rachen/Ohr – Kinder bis 10 J.',cat:'HNO',              pkt:16,  fix:null},
+{code:'383',  name:'Ätzung/Elektrokoagulation Nasenschleimhaut, Nasentamponade, je Seite',cat:'HNO',   pkt:12,  fix:null},
+{code:'384',  name:'Schichtentamponade',                                        cat:'HNO',              pkt:12,  fix:null},
+{code:'385',  name:'Cerumenentfernung, je Ohr',                                 cat:'HNO',              pkt:6,   fix:null},
+{code:'386',  name:'Anwendung des Tubenkatheters (inkl. Oberflächenanästhesie), je Seite',cat:'HNO',   pkt:6,   fix:null},
+// A/07/01 EKG
+{code:'400',  name:'Ruhe-EKG (Standard, Goldberger)',                           cat:'EKG',              pkt:10,  fix:null, warn:true},
+{code:'401',  name:'Ruhe-EKG + 3 Brustwandableitungen',                        cat:'EKG',              pkt:15,  fix:null, warn:true},
+{code:'402',  name:'Ruhe-EKG + 6 Brustwandableitungen',                        cat:'EKG',              pkt:20,  fix:null, warn:true},
+{code:'403',  name:'Ergometrie + Ruhe-EKG (Genehmigung erforderlich)',          cat:'EKG',              pkt:80,  fix:null, warn:true},
+{code:'404',  name:'ZUSCHLAG EKG am Krankenbett',                               cat:'EKG',              pkt:20,  fix:null, warn:true},
+{code:'405',  name:'Rheokardiographie, Apexcardiographie, Carotispulskurve',    cat:'EKG',              pkt:40,  fix:null},
+{code:'408',  name:'Orthostaseprüfung nach Schellong',                          cat:'EKG',              pkt:10,  fix:null},
+{code:'415',  name:'24h-Blutdruckmonitoring (Sondergenehmigung / Therapiekontrolle AM)',cat:'EKG',      pkt:50,  fix:null, warn:true},
+// A/11 Physikalische Behandlung (AM)
+{code:'500',  name:'Manuelle Teilmassage (mind. 10 min)',                       cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'501',  name:'Apparatmassage (mind. 10 min)',                             cat:'Physikalisch',     pkt:4,   fix:null},
+{code:'502',  name:'Pneumomassage des Trommelfelles',                           cat:'Physikalisch',     pkt:6,   fix:null},
+{code:'510',  name:'Anleitung zu heilgymn. Übungen',                            cat:'Physikalisch',     pkt:6,   fix:null},
+{code:'511',  name:'Extensionsbehandlung am Extensionstisch',                   cat:'Physikalisch',     pkt:14,  fix:null},
+{code:'512',  name:'Orthop. Gruppenturnen 2–4 Personen (mind. 30 min/Person)', cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'513',  name:'Glissonschlinge',                                           cat:'Physikalisch',     pkt:6,   fix:null},
+{code:'514',  name:'Kryo-Therapie',                                             cat:'Physikalisch',     pkt:4,   fix:null},
+{code:'520',  name:'Anwendung von Wärmelampen (Sollux, Rotlicht, Blaulicht)',   cat:'Physikalisch',     pkt:4,   fix:null},
+{code:'521',  name:'Schwellstrom oder Exponentialstrom (Lähmungsbehandlung)',   cat:'Physikalisch',     pkt:10,  fix:null},
+{code:'522',  name:'Galvanisation, Interferenzströme, Diadynamische Ströme',    cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'523',  name:'Iontophorese',                                              cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'524',  name:'Kurzwelle und verwandte Hochfrequenzverfahren',             cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'525',  name:'Ultraschall',                                               cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'530',  name:'Dampfinhalation',                                           cat:'Physikalisch',     pkt:4,   fix:null},
+{code:'531',  name:'Aerosolinhalation',                                         cat:'Physikalisch',     pkt:6,   fix:null},
+// A/12 Labor (AM-relevant)
+{code:'600',  name:'Blutbefund komplett (Erythro, Leuko, Hb, Diffzählung, Hkt)',cat:'Labor',           pkt:30,  fix:null},
+{code:'601',  name:'Rotes Blutbild (Erythro, Hkt, Hb, Färbeindex)',            cat:'Labor',            pkt:12,  fix:null},
+{code:'602',  name:'Weißes Blutbild (Leuko- und Differentialzählung)',          cat:'Labor',            pkt:16,  fix:null},
+{code:'603',  name:'Erythrocyten',                                              cat:'Labor',            pkt:6,   fix:null},
+{code:'604',  name:'Hämoglobin',                                                cat:'Labor',            pkt:4,   fix:null},
+{code:'606',  name:'Leukocyten',                                                cat:'Labor',            pkt:8,   fix:null},
+{code:'607',  name:'Differentialzählung',                                       cat:'Labor',            pkt:10,  fix:null},
+{code:'609',  name:'Hämatokrit',                                                cat:'Labor',            pkt:6,   fix:null},
+{code:'620',  name:'Blutsenkung / Mikrosenkung mit Blutabnahme',                cat:'Labor',            pkt:8,   fix:null},
+{code:'630',  name:'Thrombocyten',                                              cat:'Labor',            pkt:12,  fix:null},
+{code:'633',  name:'Prothrombinzeit (Quick)',                                    cat:'Labor',            pkt:10,  fix:null},
+{code:'634',  name:'Partielle Thromboplastinzeit (PTT), Thrombinzeit',          cat:'Labor',            pkt:12,  fix:null},
+{code:'635',  name:'Antikoagulantienkontrolle (AM + Innere Medizin)',           cat:'Labor',            pkt:6,   fix:null},
+{code:'636',  name:'D-Dimer',                                                   cat:'Labor',            pkt:8,   fix:null},
+{code:'640',  name:'Bestimmung von Harnstoff',                                  cat:'Labor',            pkt:14,  fix:null},
+{code:'642',  name:'Blutzucker, Streifentest',                                  cat:'Labor',            pkt:4,   fix:null},
+{code:'643',  name:'Blutzucker mittels Reflotest',                              cat:'Labor',            pkt:10,  fix:null},
+{code:'645',  name:'Latex-Rheumafaktortest',                                    cat:'Labor',            pkt:14,  fix:null},
+{code:'646',  name:'C-reaktives Protein',                                       cat:'Labor',            pkt:18,  fix:null},
+{code:'647',  name:'Bilirubin',                                                 cat:'Labor',            pkt:12,  fix:null},
+{code:'648',  name:'Blutzuckerkurve oder Tagesprofil, komplett',                cat:'Labor',            pkt:40,  fix:null},
+{code:'649',  name:'Troponin-T Test',                                           cat:'Labor',            pkt:7,   fix:null},
+{code:'660',  name:'Phosphatase (alkalisch, saure); Transaminasen (GOT, GPT)',  cat:'Labor',            pkt:11,  fix:null},
+{code:'680',  name:'Harnuntersuchung mit Streifen (einzel oder mehrfach)',      cat:'Labor',            pkt:2,   fix:null},
+{code:'681',  name:'Spez. Gewicht (Harn)',                                      cat:'Labor',            pkt:2,   fix:null},
+{code:'682',  name:'Sediment',                                                  cat:'Labor',            pkt:8,   fix:null},
+{code:'683',  name:'Harnkultur nach Objektträgermethode (Urikult)',             cat:'Labor',            pkt:6,   fix:null},
+{code:'710',  name:'Stuhl auf Blut',                                            cat:'Labor',            pkt:4,   fix:null},
+{code:'720',  name:'Bestimmung der Vitalkapazität',                             cat:'Labor',            pkt:10,  fix:null},
+{code:'721',  name:'Bestimmung der VC, Tieffenautest und Atemgrenzwert',        cat:'Labor',            pkt:16,  fix:null},
+{code:'726',  name:'Blutgasanalyse (Limit: 25% der Fälle)',                    cat:'Labor',            pkt:35,  fix:null},
+{code:'770',  name:'Serologischer Schwangerschaftstest (nur kurat. Notwendigkeit)',cat:'Labor',         pkt:32,  fix:null},
+// A/13/02 Röntgen Aufnahmen
+{code:'810',  name:'Röntgen 9×12',                                              cat:'Röntgen Aufnahmen',pkt:null,fix:6.74,  warn:true},
+{code:'811',  name:'Röntgen 10×10',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:8.72,  warn:true},
+{code:'812',  name:'Röntgen 13×18',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:7.95,  warn:true},
+{code:'813',  name:'Röntgen 18×24',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.09, warn:true},
+{code:'814',  name:'Röntgen 15×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.85, warn:true},
+{code:'815',  name:'Röntgen 24×30',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:11.78, warn:true},
+{code:'816',  name:'Röntgen 30×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:16.06, warn:true},
+{code:'817',  name:'Röntgen 35×35',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:17.62, warn:true},
+{code:'818',  name:'Röntgen 20×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:14.18, warn:true},
+{code:'819',  name:'Röntgen 35×43',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:20.96, warn:true},
+{code:'820',  name:'Röntgen 30×90',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:49.54, warn:true},
+{code:'821',  name:'Zahnfilm (je Aufnahme)',                                    cat:'Röntgen Aufnahmen',pkt:null,fix:3.55,  warn:true},
+// A/13/04 Röntgen Honorar Teilradiologen
+{code:'835',  name:'Erste Handhabung pro Quartal (Teilradiologe)',              cat:'Röntgen Honorar',  pkt:8,   fix:null, warn:true},
+{code:'836',  name:'Jede weitere Handhabung (Teilradiologe)',                   cat:'Röntgen Honorar',  pkt:2,   fix:null, warn:true},
+// A/14/01 Sonographie (AM mit Qualifikation)
+{code:'850',  name:'Oberbauch (Leber, GB, Milz, Pankreas, Gefäße, ggf. Nieren)',cat:'Sonographie',     pkt:70,  fix:null, warn:true},
+{code:'860',  name:'Nieren, Retroperitoneum, ggf. Harnwege, Blase, Prostata',  cat:'Sonographie',      pkt:60,  fix:null, warn:true},
+{code:'870',  name:'Weibl. Becken (Uterus, Adnexe, ggf. Blase)',               cat:'Sonographie',      pkt:50,  fix:null, warn:true},
+{code:'880',  name:'Männl. Becken (Blase, Prostata, ggf. Darmabschnitte)',     cat:'Sonographie',      pkt:38,  fix:null, warn:true},
+{code:'890',  name:'Ein Organ (z.B. GB+Gallenwege, beide Nieren, Uterus)',      cat:'Sonographie',      pkt:35,  fix:null, warn:true},
+{code:'892',  name:'Endovaginale Sonographie',                                  cat:'Sonographie',      pkt:42,  fix:null, warn:true},
+{code:'893',  name:'Transrektale Prostatasonographie',                          cat:'Sonographie',      pkt:42,  fix:null, warn:true},
+{code:'894',  name:'Sonographie Mamma (bei unklarem Mammographiebefund)',       cat:'Sonographie',      pkt:25,  fix:null, warn:true},
+{code:'895',  name:'Sonographie Weichteile einer Schulter',                     cat:'Sonographie',      pkt:35,  fix:null, warn:true},
+{code:'900',  name:'Geburtshilfl. Ultraschall (med. Indikation)',               cat:'Sonographie',      pkt:40,  fix:null, warn:true},
+{code:'910',  name:'Differentialdiagn. Fetaluntersuchung',                      cat:'Sonographie',      pkt:70,  fix:null, warn:true},
+{code:'920',  name:'Echokardiographie (2D-Bild + TM)',                         cat:'Sonographie',      pkt:80,  fix:null, warn:true},
+{code:'922',  name:'Dopplerechokardiographie / Farbdoppler-Echokardiographie',  cat:'Sonographie',      pkt:100, fix:null, warn:true},
+{code:'930',  name:'Schilddrüse',                                               cat:'Sonographie',      pkt:35,  fix:null, warn:true},
+{code:'940',  name:'Hüftgelenke beim Säugling',                                 cat:'Sonographie',      pkt:35,  fix:null, warn:true},
+{code:'945',  name:'Duplexsonographie Carotis-vertebralis-System',              cat:'Sonographie',      pkt:90,  fix:null, warn:true},
+{code:'946',  name:'Farbduplexsono Extremitätenarterien (path. Vorbefund)',     cat:'Sonographie',      pkt:50,  fix:null, warn:true},
+{code:'947',  name:'Farbduplexsono Extremitätenvenen (Thrombose/Insuffizienz)', cat:'Sonographie',      pkt:50,  fix:null, warn:true},
+{code:'950',  name:'ZUSCHLAG weiteres Organ (zu Pos. 850–895 und 930)',         cat:'Sonographie',      pkt:10,  fix:null, warn:true},
+];
+
+const GRP_ORDER = ['Ordination AM','Krankenbesuch AM','Zeitversäumnis','Konsilium','Blutabnahme','Injektionen','Infiltrationen','Infusionen','Allergietestungen','Punktionen diagn.','Punktionen ther.','Betäubung','Wiederbelebung','Sonstige Verrichten.','Wundversorgung','Operative Eingriffe','Verbände','Orthopädie','Knochenbrüche','HNO','EKG','Physikalisch','Labor','Röntgen Aufnahmen','Röntgen Honorar','Sonographie'];
+const GRP_LABEL = {
+  'Ordination AM':'A/01/01 · Ordination AM',
+  'Krankenbesuch AM':'A/01/02 · Krankenbesuche AM',
+  'Zeitversäumnis':'A/01/03 · Zeitversäumnis',
+  'Konsilium':'A/01/04 · Konsilium',
+  'Blutabnahme':'A/02/01 · Blutabnahme',
+  'Injektionen':'A/02/02 · Injektionen',
+  'Infiltrationen':'A/02/03 · Infiltrationen',
+  'Infusionen':'A/02/04 · Infusionen',
+  'Allergietestungen':'A/02/05 · Allergietestungen & Impfungen',
+  'Punktionen diagn.':'A/02/06 · Punktionen diagnostisch',
+  'Punktionen ther.':'A/02/07 · Punktionen therapeutisch',
+  'Betäubung':'A/02/08 · Betäubung',
+  'Wiederbelebung':'A/02/09 · Wiederbelebung',
+  'Sonstige Verrichten.':'A/02/11 · Sonstige Verrichtungen',
+  'Wundversorgung':'A/04/01 · Wundversorgung',
+  'Operative Eingriffe':'A/04/02 · Kleine operative Eingriffe',
+  'Verbände':'A/04/03 · Verbände',
+  'Orthopädie':'A/04/04 · Orthopädische Verrichtungen',
+  'Knochenbrüche':'A/04/05 · Knochenbrüche',
+  'HNO':'A/06 · HNO (Grundversorgung AM)',
+  'EKG':'A/07/01 · EKG',
+  'Physikalisch':'A/11 · Physikalische Behandlung',
+  'Labor':'A/12 · Labor',
+  'Röntgen Aufnahmen':'A/13/02 · Röntgen Aufnahmen',
+  'Röntgen Honorar':'A/13/04 · Röntgen Honorar (Teilradiologen)',
+  'Sonographie':'A/14/01 · Sonographie (mit Qualifikation)',
+};
+const COLORS = ['#185FA5','#1D9E75','#BA7517','#A32D2D','#534AB7','#5F5E5A'];
+
+// ── LIMITIERUNGEN & HINWEISE (aus Honorartarif Vorarlberg 2025) ──
+const NOTES = {
+  '12':  'Nur bei ärztlich dringenden Fällen außerhalb der Ordinationszeit',
+  '13':  'Nur bei Dringlichkeit (Erste Hilfe), außerhalb der Ordinationszeit',
+  '15':  'Nicht kombinierbar mit Ordination (Pos. 10, 11, 18 etc.)',
+  '21':  'Nur bei Verdacht auf akut lebensbedrohlichen Zustand (Unfall, Kollaps, Blutung) · Notwendigkeit begründen',
+  '22':  'Nur bei Dringlichkeit (Erste Hilfe)',
+  '23':  'Notwendigkeit ist zu begründen',
+  '30':  'Nicht verrechenbar wenn Zeitversäumnis durch Sonderleistung oder Operation verursacht',
+  '31':  'Nicht verrechenbar wenn Zeitversäumnis durch Sonderleistung oder Operation verursacht',
+  '32':  'Max. 3× pro Quartal pro Patient',
+  '32LC':'1× pro Patient (Long Covid-Verdacht, ab 5. Woche nach COVID-Erkrankung)',
+  '34':  '1× pro Fall und Quartal · Koordinationstätigkeit dokumentieren · z.B. Koordination mit Physiotherapeuten',
+  '40':  'Ich rufe einen anderen Arzt an (ich bin der Konsiliar) · Beratungsleistung des zugezogenen Arztes',
+  '41':  'Ein anderer Arzt ruft mich an und fragt mich um Rat · Ich gebe das Konsilium',
+  '44':  'Max. 3× pro Sitzung · 1× pro Patient und Quartal',
+  '111': 'Bei Serieninjektionen (>3 Injektionen): nicht mit Ordination kombinierbar',
+  '112': 'Bei Serieninjektionen (>3 Injektionen): nicht mit Ordination kombinierbar',
+  '113': 'Bei Serieninjektionen (>3 Injektionen): nicht mit Ordination kombinierbar',
+  '114': 'Bei Serieninjektionen (>3 Injektionen): nicht mit Ordination kombinierbar',
+  '122': 'Max. 5 Verödungen pro Sitzung',
+  '151': 'Pos. 151 und 152 zusammen max. 50 Punkte pro Patient und Quartal',
+  '152': 'Pos. 151 und 152 zusammen max. 50 Punkte pro Patient und Quartal',
+  '293': '1× pro Patient und Tag · mind. 12 Nähte oder Klammern erforderlich',
+  '332': 'Normaler Kompressionsverband nach Varizenverödung NICHT verrechenbar',
+  '333': 'Max. 3× pro Krankheitsfall',
+  '334': 'Max. 3× pro Krankheitsfall',
+  '335': 'Nur für Kinderärzte und Fachärzte für Orthopädie – nicht für AM!',
+  '400': 'Nicht mit Pos. 403 kombinierbar · Schriftliche Befunddokumentation erforderlich (aufzubewahren)',
+  '401': 'Nicht mit Pos. 403 kombinierbar · Schriftliche Befunddokumentation erforderlich (aufzubewahren)',
+  '402': 'Nicht mit Pos. 403 kombinierbar · Schriftliche Befunddokumentation erforderlich (aufzubewahren)',
+  '403': 'Nur nach Genehmigung verrechenbar · Nicht mit Pos. 400, 401, 402 kombinierbar',
+  '404': 'Schriftliche Befunddokumentation erforderlich (aufzubewahren)',
+  '415': 'AM: nur bei Neueinstellung/Therapiekontrolle (Indikation Ziffer 3) · Ausbildungsnachweis erforderlich',
+  '500': 'Max. 2× pro Patient und Quartal',
+  '501': 'Max. 2× pro Patient und Quartal',
+  '850': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen (860–895) · AM: abdominelle Qualifikation erforderlich',
+  '860': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen · AM: abdominelle Qualifikation erforderlich',
+  '870': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen · AM: gynäkol.-geburtshilfl. Qualifikation erforderlich',
+  '880': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen · AM: abdominelle Qualifikation erforderlich',
+  '890': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen · AM: abdominelle ODER gynäkol. Qualifikation',
+  '892': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen · AM: gynäkol.-geburtshilfl. Qualifikation erforderlich',
+  '893': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen',
+  '894': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen',
+  '895': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen',
+  '835': 'Immer die erste radiologische Untersuchung pro Quartal · Alle weiteren Untersuchungen desselben Quartals → Pos. 836',
+  '836': 'Jede weitere Röntgen-Untersuchung nach der ersten im selben Quartal · Erste Untersuchung → Pos. 835',
+  '920': 'Nicht mit Pos. 922 kombinierbar',
+  '922': 'Nicht mit Pos. 920 kombinierbar',
+  '946': 'Nur bei pathologischem Vorbefund der Druckindexbestimmung',
+  '947': 'Nur bei klinischem Hinweis auf Thrombose oder venöse Insuffizienz',
+};
+
+const CONFLICTS_WITH = {
+  '15':  ['10','11','18','18NZ','18EZ'],
+  '400': ['403'], '401': ['403'], '402': ['403'],
+  '403': ['400','401','402'],
+  '920': ['922'], '922': ['920'],
+};
+
+const CONFLICT_GROUPS = [
+  {codes:['10','18','18EZ'],   msg:'Erste Ordination: nur eine Abrechnungsposition möglich (10 / 18 / 18EZ)'},
+  {codes:['11','18NZ'],        msg:'Weitere Ordination: nur eine Abrechnungsposition möglich (11 / 18NZ)'},
+  {codes:['850','860','870','880','890','892','893','894','895'], msg:'Sono-Hauptleistungen nicht gleichzeitig verrechenbar (nur eine + ggf. Pos. 950)'},
+];
+// Kreuzgruppen: Erste- und Weitere-Ordination schließen sich gegenseitig aus
+const CROSS_CONFLICTS = [
+  {
+    groupA: ['10','18','18EZ'],
+    groupB: ['11','18NZ'],
+    msg: 'Erste und Weitere Ordination nicht kombinierbar'
+  },
+];
+
+// Populate category selects
+function populateCatSelects() {
+  const opts = GRP_ORDER.map(g => `<option value="${g}">${GRP_LABEL[g]||g}</option>`).join('');
+  ['kat-cat','modal-cat'].forEach(id => {
+    const el = document.getElementById(id);
+    el.innerHTML = '<option value="">Alle Gruppen</option>' + opts;
+  });
+}
+
+// ── STATE ──
+let state = {
+  vorlagen: [],
+  activeId: null,
+  settings: { pkt: 0.80, fak: 2.5, ruck: 80, name: '', adr: '', tel: '' }
+};
+
+// ── CALCULATIONS ──
+function ks(pos)         { return pos.fix != null ? pos.fix : parseFloat(((pos.pkt||0)*state.settings.pkt).toFixed(4)); }
+function rueck(pos)      { return parseFloat((ks(pos)*state.settings.ruck/100).toFixed(4)); }
+function hon(pos, fak)   { return parseFloat((ks(pos)*(fak??state.settings.fak)).toFixed(4)); }
+function eigen(pos, fak) { return Math.max(0, parseFloat((hon(pos,fak)-rueck(pos)).toFixed(4))); }
+function fmt(v)     { return v.toFixed(2)+' €'; }
+function esc(s)     { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function uid()      { return Math.random().toString(36).slice(2,9); }
+
+// ── FIREBASE SAVE (debounced) ──
+function save() {
+  if (!currentUser) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try {
+      await setDoc(doc(db, 'users', currentUser.uid), {
+        vorlagen: state.vorlagen,
+        settings: state.settings
+      });
+      const ind = document.getElementById('save-indicator');
+      ind.classList.add('visible');
+      setTimeout(() => ind.classList.remove('visible'), 2000);
+    } catch(e) { console.error('Speichern fehlgeschlagen:', e); }
+  }, 600);
+}
+
+async function load() {
+  if (!currentUser) return;
+  const snap = await getDoc(doc(db, 'users', currentUser.uid));
+  if (snap.exists()) {
+    const d = snap.data();
+    state.vorlagen = d.vorlagen || [];
+    state.settings = Object.assign({pkt:0.80,fak:2.5,ruck:80,name:'',adr:'',tel:''}, d.settings || {});
+  } else {
+    initDefaults();
+    await setDoc(doc(db, 'users', currentUser.uid), { vorlagen: state.vorlagen, settings: state.settings });
+  }
+  applySettings();
+  renderAll();
+}
+
+function initDefaults() {
+  const UV = 3.0;
+  const p   = (code, qty) => ({code, qty: qty||1});
+  const pUV = (code, qty) => ({code, qty: qty||1, faktor: UV});
+  const fr  = (name)      => ({type:'free', name, betrag:0, qty:1});
+
+  state.vorlagen = [
+    // ── Erstuntersuchung – Normal ──────────────────────────────
+    {id:uid(), name:'Erstuntersuchung',                       color:'#185FA5', positions:[p('10'), p('32'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono',                color:'#185FA5', positions:[p('10'), p('32'), p('890'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen',             color:'#185FA5', positions:[p('10'), p('32'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen',      color:'#185FA5', positions:[p('10'), p('32'), p('890'), p('812',2), p('835'), p('836'), p('230')]},
+    // ── Kontrolle – Normal ─────────────────────────────────────
+    {id:uid(), name:'Kontrolle',                              color:'#1D9E75', positions:[p('11'), p('32'), p('230')]},
+    {id:uid(), name:'Kontrolle + Sono',                       color:'#1D9E75', positions:[p('11'), p('32'), p('890'), p('230')]},
+    {id:uid(), name:'Kontrolle + Röntgen',                    color:'#1D9E75', positions:[p('11'), p('32'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Kontrolle + Sono + Röntgen',             color:'#1D9E75', positions:[p('11'), p('32'), p('890'), p('812',2), p('835'), p('836'), p('230')]},
+    // ── Spezialleistungen – Normal ─────────────────────────────
+    {id:uid(), name:'Stoßwellentherapie',                     color:'#BA7517', positions:[p('11'), p('32'), fr('Stoßwellentherapie (ESWT)')]},
+    {id:uid(), name:'Eigenblutinfiltration',                  color:'#534AB7', positions:[p('11'), p('32'), p('100'), p('114'), p('230')]},
+    {id:uid(), name:'US-gesteuerte Infiltration',             color:'#0D7490', positions:[p('11'), p('32'), p('890'), p('125'), p('230')]},
+    {id:uid(), name:'Blutabnahme',                            color:'#6B4226', positions:[p('100'), p('230')]},
+    // ── Erstuntersuchung – Unfalltarif [UV] ────────────────────
+    {id:uid(), name:'Erstuntersuchung [UV]',                  color:'#A32D2D', positions:[pUV('10'), pUV('32'), pUV('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono [UV]',           color:'#A32D2D', positions:[pUV('10'), pUV('32'), pUV('890'), pUV('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen [UV]',        color:'#A32D2D', positions:[pUV('10'), pUV('32'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen [UV]', color:'#A32D2D', positions:[pUV('10'), pUV('32'), pUV('890'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
+    // ── Kontrolle – Unfalltarif [UV] ───────────────────────────
+    {id:uid(), name:'Kontrolle [UV]',                         color:'#7C3AED', positions:[pUV('11'), pUV('32'), pUV('230')]},
+    {id:uid(), name:'Kontrolle + Sono [UV]',                  color:'#7C3AED', positions:[pUV('11'), pUV('32'), pUV('890'), pUV('230')]},
+    {id:uid(), name:'Kontrolle + Röntgen [UV]',               color:'#7C3AED', positions:[pUV('11'), pUV('32'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
+    {id:uid(), name:'Kontrolle + Sono + Röntgen [UV]',        color:'#7C3AED', positions:[pUV('11'), pUV('32'), pUV('890'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
+    // ── Spezialleistungen – Unfalltarif [UV] ──────────────────
+    {id:uid(), name:'Stoßwellentherapie [UV]',                color:'#92400E', positions:[pUV('11'), pUV('32'), fr('Stoßwellentherapie (ESWT)')]},
+    {id:uid(), name:'Eigenblutinfiltration [UV]',             color:'#1E40AF', positions:[pUV('11'), pUV('32'), pUV('100'), pUV('114'), pUV('230')]},
+    {id:uid(), name:'US-gesteuerte Infiltration [UV]',        color:'#065F46', positions:[pUV('11'), pUV('32'), pUV('890'), pUV('125'), pUV('230')]},
+    {id:uid(), name:'Blutabnahme [UV]',                       color:'#374151', positions:[pUV('100'), pUV('230')]},
+  ];
+}
+
+async function resetDefaults() {
+  if (!confirm('Alle bestehenden Vorlagen löschen und durch die 24 Standard-Vorlagen ersetzen?')) return;
+  initDefaults();
+  await setDoc(doc(db, 'users', currentUser.uid), { vorlagen: state.vorlagen, settings: state.settings });
+  renderAll();
+  state.activeId = state.vorlagen[0]?.id || null;
+  renderAll();
+}
+
+// ── RENDER ──
+function applySettings() {
+  const s = state.settings;
+  document.getElementById('s-pkt').value = s.pkt;
+  document.getElementById('s-fak').value = s.fak;
+  document.getElementById('s-ruck').value = s.ruck;
+  document.getElementById('s-name').value = s.name||'';
+  document.getElementById('s-adr').value  = s.adr||'';
+  document.getElementById('s-tel').value  = s.tel||'';
+}
+
+function detectConflicts(codes) {
+  const conflicts = []; const seen = new Set();
+  codes.forEach(code => {
+    (CONFLICTS_WITH[code]||[]).forEach(nw => {
+      if (!codes.includes(nw)) return;
+      const key = [code,nw].sort().join('+');
+      if (seen.has(key)) return; seen.add(key);
+      const a = DB.find(d => d.code===code), b = DB.find(d => d.code===nw);
+      conflicts.push(`Pos. ${code} und Pos. ${nw} dürfen nicht kombiniert werden (${a?a.name:code} ↔ ${b?b.name:nw})`);
+    });
+  });
+  CONFLICT_GROUPS.forEach(g => {
+    const found = codes.filter(c => g.codes.includes(c));
+    if (found.length > 1) conflicts.push(`${g.msg}: ${found.join(', ')}`);
+  });
+  CROSS_CONFLICTS.forEach(x => {
+    const foundA = codes.filter(c => x.groupA.includes(c));
+    const foundB = codes.filter(c => x.groupB.includes(c));
+    if (foundA.length > 0 && foundB.length > 0)
+      conflicts.push(`${x.msg}: ${[...foundA,...foundB].join(', ')}`);
+  });
+  return conflicts;
+}
+function renderAll() { renderSidebar(); renderDetail(); renderKatalog(); }
+
+function sumV(v) {
+  let ksT=0,rT=0,hT=0,eT=0;
+  (v.positions||[]).forEach(p => {
+    const q = p.qty||1;
+    if (p.type==='free') { const b=(p.betrag||0)*q; hT+=b; eT+=b; return; }
+    const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return;
+    const fak = (p.faktor != null && p.faktor > 0) ? p.faktor : undefined;
+    ksT+=ks(dbPos)*q; rT+=rueck(dbPos)*q; hT+=hon(dbPos,fak)*q; eT+=eigen(dbPos,fak)*q;
+  });
+  return {ks:ksT, r:rT, h:hT, e:eT};
+}
+
+function renderSidebar() {
+  document.getElementById('tlist').innerHTML = state.vorlagen.map(v => {
+    const t = sumV(v);
+    return `<div class="titem${v.id===state.activeId?' active':''}" onclick="window.selectV('${v.id}')">
+      <div class="titem-dot" style="background:${v.color||'#185FA5'}"></div>
+      <div class="titem-name">${esc(v.name)}</div>
+      <div class="titem-total">${fmt(t.h)}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectV(id) { state.activeId=id; renderSidebar(); renderDetail(); }
+
+function renderDetail() {
+  const v = state.vorlagen.find(x => x.id===state.activeId);
+  document.getElementById('empty-state').style.display = v?'none':'flex';
+  const dw = document.getElementById('detail-wrap');
+  dw.style.display = v?'flex':'none';
+  if (!v) return;
+  document.getElementById('v-title').textContent = v.name;
+  document.getElementById('v-color').value = v.color||'#185FA5';
+  const t = sumV(v);
+  document.getElementById('metrics-bar').innerHTML = `
+    <div class="metric"><div class="metric-label">Kassensatz</div><div class="metric-val" style="color:var(--blue)">${fmt(t.ks)}</div></div>
+    <div class="metric"><div class="metric-label">Rückerstattung Patient</div><div class="metric-val" style="color:var(--green)">${fmt(t.r)}</div></div>
+    <div class="metric"><div class="metric-label">Mein Honorar</div><div class="metric-val" style="color:var(--amber)">${fmt(t.h)}</div></div>
+    <div class="metric"><div class="metric-label">Eigenanteil Patient</div><div class="metric-val" style="color:var(--red)">${fmt(t.e)}</div></div>`;
+  // Conflict detection
+  const catCodes = (v.positions||[]).filter(p => !p.type || p.type!=='free').map(p => p.code);
+  const conflicts = detectConflicts(catCodes);
+  const banner = document.getElementById('conflict-banner');
+  if (conflicts.length > 0) {
+    banner.innerHTML = `<i class="ti ti-alert-triangle" style="flex-shrink:0;margin-top:2px"></i><div>${conflicts.map(c => `<div>${esc(c)}</div>`).join('')}</div>`;
+    banner.style.display = 'flex';
+  } else {
+    banner.style.display = 'none';
+  }
+
+  document.getElementById('pos-rows').innerHTML = (v.positions||[]).map((p,i) => {
+    const q = p.qty||1;
+    if (p.type==='free') {
+      const total = parseFloat(((p.betrag||0)*q).toFixed(2));
+      return `<div class="pos-row">
+        <span><span class="pill-grp" style="font-size:10px">FREI</span></span>
+        <span class="pos-name" style="cursor:pointer;text-decoration:underline;text-decoration-style:dotted;color:var(--text2)" onclick="window.openFreePosModal(${i})" title="Bearbeiten">${esc(p.name||'–')}</span>
+        <input class="qty-input" type="number" min="1" max="99" value="${q}" onchange="window.updateQty('${v.id}',${i},this.value)">
+        <span class="pos-num" style="color:var(--text3)">—</span>
+        <span class="pos-num" style="color:var(--text3)">—</span>
+        <span class="pos-num" style="color:var(--text3)">—</span>
+        <span class="pos-num" style="color:var(--amber)">${fmt(total)}</span>
+        <span class="pos-num" style="color:var(--red)">${fmt(total)}</span>
+        <button class="del-btn" onclick="window.removePos('${v.id}',${i})" title="Entfernen"><i class="ti ti-x"></i></button>
+      </div>`;
+    }
+    const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return '';
+    const fak = (p.faktor != null && p.faktor > 0) ? p.faktor : undefined;
+    const wb = dbPos.warn ? `<span class="pill-warn"><i class="ti ti-alert-triangle"></i> SG</span>` : '';
+    const noteText = NOTES[dbPos.code];
+    const ni = noteText ? `<i class="ti ti-info-circle note-icon" title="${esc(noteText)}"></i>` : '';
+    const fakVal = fak != null ? fak : '';
+    const fakCls = fak != null ? 'fak-input custom' : 'fak-input';
+    const fakTitle = `Honorarfaktor (leer = global ${state.settings.fak}×)`;
+    return `<div class="pos-row">
+      <span class="pos-code">${esc(dbPos.code)}</span>
+      <span class="pos-name">${esc(dbPos.name)}${wb}${ni}</span>
+      <input class="qty-input" type="number" min="1" max="99" value="${q}" onchange="window.updateQty('${v.id}',${i},this.value)">
+      <input class="${fakCls}" type="number" min="0.1" max="20" step="0.1" value="${fakVal}" placeholder="${state.settings.fak}" title="${fakTitle}" onchange="window.updateFaktor('${v.id}',${i},this.value)">
+      <span class="pos-num" style="color:var(--blue)">${fmt(ks(dbPos)*q)}</span>
+      <span class="pos-num" style="color:var(--green)">${fmt(rueck(dbPos)*q)}</span>
+      <span class="pos-num" style="color:var(--amber)">${fmt(hon(dbPos,fak)*q)}</span>
+      <span class="pos-num" style="color:var(--red)">${fmt(eigen(dbPos,fak)*q)}</span>
+      <button class="del-btn" onclick="window.removePos('${v.id}',${i})" title="Entfernen"><i class="ti ti-x"></i></button>
+    </div>`;
+  }).join('');
+}
+
+function renderKatalog() {
+  const q = document.getElementById('kat-search').value.toLowerCase();
+  const cat = document.getElementById('kat-cat').value;
+  const fl = DB.filter(d => {
+    if (cat && d.cat!==cat) return false;
+    if (q && !d.code.toLowerCase().includes(q) && !d.name.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  let html=''; let lastCat='';
+  fl.forEach(d => {
+    if (d.cat!==lastCat) { html+=`<div class="ct-grp">${esc(GRP_LABEL[d.cat]||d.cat)}</div>`; lastCat=d.cat; }
+    const ps = d.fix!=null ? fmt(d.fix)+' fix' : ((d.pkt||0)+' Pkt');
+    const wb = d.warn ? `<span class="pill-warn">⚠ SG</span>` : '';
+    const noteText = NOTES[d.code];
+    const ni = noteText ? `<i class="ti ti-info-circle note-icon" title="${esc(noteText)}"></i>` : '';
+    const canAdd = !!state.activeId;
+    html += `<div class="ct-row">
+      <span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(d.code)}</span>
+      <span style="font-size:13px">${esc(d.name)} ${wb}${ni}</span>
+      <span style="text-align:right;font-size:12px;color:var(--text2)">${ps}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--blue)">${fmt(ks(d))}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--green)">${fmt(rueck(d))}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--amber)">${fmt(hon(d))}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--red)">${fmt(eigen(d))}</span>
+      <button class="add-btn" onclick="window.quickAdd('${d.code}')" ${canAdd?'':'disabled title="Zuerst Vorlage auswählen"'}>${canAdd?'+ Vorlage':'—'}</button>
+    </div>`;
+  });
+  document.getElementById('kat-rows').innerHTML = html || '<div style="padding:20px;text-align:center;color:var(--text3)">Keine Positionen gefunden</div>';
+}
+
+function renderModalList() {
+  const q = document.getElementById('modal-search').value.toLowerCase();
+  const cat = document.getElementById('modal-cat').value;
+  const v = state.vorlagen.find(x => x.id===state.activeId);
+  const used = (v?v.positions:[]).map(p => p.code);
+  const fl = DB.filter(d => {
+    if (cat && d.cat!==cat) return false;
+    if (q && !d.code.toLowerCase().includes(q) && !d.name.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  let html=''; let lastCat='';
+  fl.forEach(d => {
+    if (d.cat!==lastCat) { html+=`<div class="mgrp">${esc(GRP_LABEL[d.cat]||d.cat)}</div>`; lastCat=d.cat; }
+    const inUse = used.includes(d.code);
+    const wb = d.warn ? ` <span class="pill-warn">⚠ SG</span>` : '';
+    const note = NOTES[d.code] ? `<div class="mitem-note">${esc(NOTES[d.code])}</div>` : '';
+    html += `<div class="mitem" onclick="window.addPosToV('${d.code}')">
+      <span style="font-family:monospace;font-size:11px;color:var(--text2);width:44px;flex-shrink:0;padding-top:2px">${esc(d.code)}</span>
+      <span style="flex:1"><span class="mitem-name">${esc(d.name)}${wb}</span>${note}</span>
+      <span style="font-size:12px;color:var(--amber);margin-right:7px;flex-shrink:0;padding-top:2px">${fmt(hon(d))}</span>
+      ${inUse?'<span style="color:var(--green);font-size:13px;flex-shrink:0">✓</span>':'<button class="add-btn" style="flex-shrink:0">+</button>'}
+    </div>`;
+  });
+  document.getElementById('modal-list').innerHTML = html || '<div style="padding:20px;text-align:center;color:var(--text3)">Keine Positionen gefunden</div>';
+}
+
+// ── CRUD ──
+function updateQty(vid, idx, val) {
+  const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
+  v.positions[idx].qty = Math.max(1, parseInt(val)||1);
+  save(); renderSidebar(); renderDetail();
+}
+function updateFaktor(vid, idx, val) {
+  const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
+  const f = parseFloat(val);
+  v.positions[idx].faktor = (!val || isNaN(f) || f <= 0) ? null : f;
+  save(); renderSidebar(); renderDetail();
+}
+function removePos(vid, idx) {
+  const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
+  v.positions.splice(idx,1); save(); renderSidebar(); renderDetail();
+}
+function updateColor() {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  v.color = document.getElementById('v-color').value; save(); renderSidebar();
+}
+function newVorlage() {
+  const v = {id:uid(), name:'Neue Vorlage', color:COLORS[state.vorlagen.length%COLORS.length], positions:[]};
+  state.vorlagen.push(v); state.activeId=v.id; save(); renderAll();
+  setTimeout(renameVorlage, 80);
+}
+function renameVorlage() {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  document.getElementById('rename-input').value = v.name;
+  document.getElementById('rename-modal').classList.add('open');
+  setTimeout(() => document.getElementById('rename-input').focus(), 50);
+}
+function confirmRename() {
+  const v = state.vorlagen.find(x => x.id===state.activeId);
+  const n = document.getElementById('rename-input').value.trim();
+  if (v && n) { v.name=n; save(); renderAll(); }
+  document.getElementById('rename-modal').classList.remove('open');
+}
+function deleteVorlage() {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  if (!confirm('Vorlage "'+v.name+'" wirklich löschen?')) return;
+  state.vorlagen = state.vorlagen.filter(x => x.id!==state.activeId);
+  state.activeId = state.vorlagen.length ? state.vorlagen[0].id : null;
+  save(); renderAll();
+}
+function openAddModal() {
+  if (!state.activeId) return;
+  document.getElementById('modal-search').value='';
+  document.getElementById('modal-cat').value='';
+  renderModalList();
+  document.getElementById('add-modal').classList.add('open');
+  setTimeout(() => document.getElementById('modal-search').focus(), 50);
+}
+function closeModal() { document.getElementById('add-modal').classList.remove('open'); }
+function addPosToV(code) {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  const e = v.positions.find(p => p.code===code);
+  if (e) { e.qty=(e.qty||1)+1; } else { v.positions.push({code, qty:1}); }
+  save(); renderSidebar(); renderDetail(); renderModalList();
+}
+function quickAdd(code) {
+  if (!state.activeId) { alert('Bitte zuerst eine Vorlage auswählen.'); switchTab('vorlagen'); return; }
+  addPosToV(code);
+}
+let editFreeIdx = null;
+function openFreePosModal(editIdx) {
+  if (!state.activeId) return;
+  editFreeIdx = editIdx ?? null;
+  const v = state.vorlagen.find(x => x.id===state.activeId);
+  document.getElementById('free-pos-title').textContent = editIdx != null ? 'Freie Position bearbeiten' : 'Freie Position hinzufügen';
+  if (editIdx != null && v) {
+    const p = v.positions[editIdx];
+    document.getElementById('free-pos-name').value = p.name || '';
+    document.getElementById('free-pos-betrag').value = p.betrag != null ? p.betrag : '';
+  } else {
+    document.getElementById('free-pos-name').value = '';
+    document.getElementById('free-pos-betrag').value = '';
+  }
+  document.getElementById('free-pos-modal').classList.add('open');
+  setTimeout(() => document.getElementById('free-pos-name').focus(), 50);
+}
+function confirmFreePos() {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  const name = document.getElementById('free-pos-name').value.trim();
+  const betrag = parseFloat(document.getElementById('free-pos-betrag').value);
+  if (!name) { document.getElementById('free-pos-name').focus(); return; }
+  if (isNaN(betrag) || betrag < 0) { document.getElementById('free-pos-betrag').focus(); return; }
+  if (editFreeIdx != null) {
+    v.positions[editFreeIdx].name = name;
+    v.positions[editFreeIdx].betrag = betrag;
+  } else {
+    v.positions.push({ type: 'free', name, betrag, qty: 1 });
+  }
+  document.getElementById('free-pos-modal').classList.remove('open');
+  save(); renderSidebar(); renderDetail();
+}
+function saveSettings() {
+  state.settings.pkt  = parseFloat(document.getElementById('s-pkt').value)||0.80;
+  state.settings.fak  = parseFloat(document.getElementById('s-fak').value)||2.5;
+  state.settings.ruck = parseFloat(document.getElementById('s-ruck').value)||80;
+  state.settings.name = document.getElementById('s-name').value;
+  state.settings.adr  = document.getElementById('s-adr').value;
+  state.settings.tel  = document.getElementById('s-tel').value;
+  save(); renderDetail(); renderKatalog();
+}
+function printNote() {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  const s = state.settings; const t = sumV(v);
+  const today = new Date().toLocaleDateString('de-AT');
+  document.getElementById('print-header').innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+      <div><strong>${esc(s.name||'Arzt / Ordination')}</strong><br>${esc(s.adr||'')}${s.adr?'<br>':''}${esc(s.tel||'')}</div>
+      <div style="text-align:right"><strong>Honorarnote</strong><br>Datum: ${today}<br>Vorlage: ${esc(v.name)}</div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px">
+      <thead><tr style="border-bottom:1px solid #000;font-weight:600">
+        <td>Pos.</td><td>Bezeichnung</td><td style="text-align:right">Mge.</td>
+        <td style="text-align:right">Kassensatz</td><td style="text-align:right">Rückerstattung</td>
+        <td style="text-align:right">Honorar</td><td style="text-align:right">Eigenanteil</td>
+      </tr></thead>
+      <tbody>${(v.positions||[]).map(p => {
+        const q = p.qty||1;
+        if (p.type==='free') {
+          const total = fmt((p.betrag||0)*q);
+          return `<tr style="border-bottom:0.5px solid #ddd"><td style="font-family:monospace;font-size:10px">FREI</td><td>${esc(p.name||'')}</td><td style="text-align:right">${q}</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">${total}</td><td style="text-align:right">${total}</td></tr>`;
+        }
+        const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return '';
+        const fak = (p.faktor != null && p.faktor > 0) ? p.faktor : undefined;
+        return `<tr style="border-bottom:0.5px solid #ddd"><td style="font-family:monospace">${esc(dbPos.code)}</td><td>${esc(dbPos.name)}</td><td style="text-align:right">${q}</td><td style="text-align:right">${fmt(ks(dbPos)*q)}</td><td style="text-align:right">${fmt(rueck(dbPos)*q)}</td><td style="text-align:right">${fmt(hon(dbPos,fak)*q)}</td><td style="text-align:right">${fmt(eigen(dbPos,fak)*q)}</td></tr>`;
+      }).join('')}</tbody>
+      <tfoot><tr style="border-top:2px solid #000;font-weight:600">
+        <td colspan="3">Gesamt</td>
+        <td style="text-align:right">${fmt(t.ks)}</td><td style="text-align:right">${fmt(t.r)}</td>
+        <td style="text-align:right">${fmt(t.h)}</td><td style="text-align:right">${fmt(t.e)}</td>
+      </tr></tfoot>
+    </table>
+    <div style="font-size:10px;color:#888">Punktewert: ${s.pkt.toFixed(2)} €/Pkt · Honorarfaktor: ${s.fak}× · Rückerstattungsquote: ${s.ruck}% · Honorartarif Vorarlberg, gültig ab 01.01.2025</div>`;
+  window.print();
+}
+function switchTab(tab) {
+  ['vorlagen','katalog','settings'].forEach(t => {
+    const el = document.getElementById('view-'+t);
+    el.style.display = t===tab ? 'flex' : 'none';
+    if (t==='katalog' && t===tab) el.style.flexDirection='column';
+    if (t==='settings' && t===tab) el.style.flexDirection='row';
+  });
+  document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.tab===tab));
+  if (tab==='katalog') renderKatalog();
+}
+
+// ── AUTH ──
+async function signIn() {
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+  catch(e) { alert('Anmeldung fehlgeschlagen: '+e.message); }
+}
+async function logOut() {
+  if (!confirm('Wirklich abmelden?')) return;
+  await signOut(auth);
+}
+
+onAuthStateChanged(auth, async user => {
+  document.getElementById('loading-screen').style.display = 'none';
+  if (user) {
+    currentUser = user;
+    document.getElementById('user-name').textContent = user.displayName || user.email;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    populateCatSelects();
+    await load();
+  } else {
+    currentUser = null;
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+});
+
+// ── EXPOSE TO WINDOW ──
+window.selectV       = selectV;
+window.newVorlage    = newVorlage;
+window.renameVorlage = renameVorlage;
+window.confirmRename = confirmRename;
+window.deleteVorlage = deleteVorlage;
+window.updateColor   = updateColor;
+window.updateQty     = updateQty;
+window.updateFaktor  = updateFaktor;
+window.removePos     = removePos;
+window.openAddModal    = openAddModal;
+window.closeModal      = closeModal;
+window.openFreePosModal = openFreePosModal;
+window.confirmFreePos  = confirmFreePos;
+window.addPosToV     = addPosToV;
+window.quickAdd      = quickAdd;
+window.renderKatalog = renderKatalog;
+window.renderModalList = renderModalList;
+window.saveSettings  = saveSettings;
+window.resetDefaults = resetDefaults;
+window.printNote     = printNote;
+window.switchTab     = switchTab;
+window.signIn        = signIn;
+window.logOut        = logOut;
+
+// ── EVENT LISTENERS ──
+document.getElementById('signin-btn').addEventListener('click', signIn);
+document.getElementById('logout-btn').addEventListener('click', logOut);
+document.getElementById('new-vorlage-btn').addEventListener('click', newVorlage);
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+document.getElementById('rename-input').addEventListener('keydown', e => {
+  if (e.key==='Enter') confirmRename();
+  if (e.key==='Escape') document.getElementById('rename-modal').classList.remove('open');
+});
+['free-pos-name','free-pos-betrag'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key==='Enter') confirmFreePos();
+    if (e.key==='Escape') document.getElementById('free-pos-modal').classList.remove('open');
+  });
+});
+
+// ── Sidebar resize ──
+(function() {
+  const sidebar = document.getElementById('sidebar');
+  const handle  = document.getElementById('sidebar-resize');
+  const MIN = 160, MAX = 480;
+  const saved = parseInt(localStorage.getItem('sidebarW'));
+  if (saved && saved >= MIN && saved <= MAX) sidebar.style.width = saved + 'px';
+  let startX, startW;
+  handle.addEventListener('mousedown', e => {
+    e.preventDefault();
+    startX = e.clientX;
+    startW = sidebar.offsetWidth;
+    handle.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  });
+  document.addEventListener('mousemove', e => {
+    if (!handle.classList.contains('dragging')) return;
+    const w = Math.min(MAX, Math.max(MIN, startW + e.clientX - startX));
+    sidebar.style.width = w + 'px';
+  });
+  document.addEventListener('mouseup', () => {
+    if (!handle.classList.contains('dragging')) return;
+    handle.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    localStorage.setItem('sidebarW', sidebar.offsetWidth);
+  });
+})();
+</script>
+</body>
+</html>
