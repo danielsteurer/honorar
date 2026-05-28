@@ -269,6 +269,32 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
       <div class="field-hint">Alle Einstellungen werden automatisch in der Cloud gespeichert.</div>
       <hr class="divider">
       <div class="field-group">
+        <div class="field-label">UV-Tarif Faktoren (Privat-Unfallversicherung)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px">K1 – Grundleistung / Gespräch</div>
+            <input class="field-in" type="number" id="s-uvk1" step="0.01" min="1" max="20" value="4.90" oninput="window.saveSettings()">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px">K2 – Techn. (großer Zeitaufwand)</div>
+            <input class="field-in" type="number" id="s-uvk2" step="0.01" min="1" max="20" value="3.85" oninput="window.saveSettings()">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px">K3 – Techn. (geringer Zeitaufwand)</div>
+            <input class="field-in" type="number" id="s-uvk3" step="0.01" min="1" max="20" value="2.70" oninput="window.saveSettings()">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px">K4 – Röntgenunkosten (2× ÖGK)</div>
+            <input class="field-in" type="number" id="s-uvk4" step="0.01" min="1" max="20" value="2.00" oninput="window.saveSettings()">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px">K5 – Laborleistungen</div>
+            <input class="field-in" type="number" id="s-uvk5" step="0.01" min="1" max="20" value="1.64" oninput="window.saveSettings()">
+          </div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="field-group">
         <div class="field-label">Vorlagen</div>
         <button class="btn" onclick="window.resetDefaults()" style="font-size:12px;color:var(--text2)">Vorlagen auf Standard zurücksetzen (24 Vorlagen)</button>
         <div class="field-hint">Löscht alle bestehenden Vorlagen und ersetzt sie durch die 24 Standard-Vorlagen (Normal + UV).</div>
@@ -742,7 +768,8 @@ function populateCatSelects() {
 let state = {
   vorlagen: [],
   activeId: null,
-  settings: { pkt: 0.80, fak: 2.5, ruck: 80, name: '', adr: '', tel: '' }
+  settings: { pkt: 0.80, fak: 2.5, ruck: 80, name: '', adr: '', tel: '',
+              uvFak: {1:4.90, 2:3.85, 3:2.70, 4:2.00, 5:1.64} }
 };
 
 // ── CALCULATIONS ──
@@ -777,7 +804,9 @@ async function load() {
   if (snap.exists()) {
     const d = snap.data();
     state.vorlagen = d.vorlagen || [];
-    state.settings = Object.assign({pkt:0.80,fak:2.5,ruck:80,name:'',adr:'',tel:''}, d.settings || {});
+    const defUvFak = {1:4.90,2:3.85,3:2.70,4:2.00,5:1.64};
+    state.settings = Object.assign({pkt:0.80,fak:2.5,ruck:80,name:'',adr:'',tel:'',uvFak:defUvFak}, d.settings || {});
+    if (!state.settings.uvFak) state.settings.uvFak = defUvFak;
   } else {
     initDefaults();
     await setDoc(doc(db, 'users', currentUser.uid), { vorlagen: state.vorlagen, settings: state.settings });
@@ -787,9 +816,25 @@ async function load() {
 }
 
 function initDefaults() {
-  const p   = (code, qty) => ({code, qty: qty||1});
-  const pUV = (code, qty) => ({code, qty: qty||1, uvKat: null});
-  const fr  = (name)      => ({type:'free', name, betrag:0, qty:1});
+  const p   = (code, qty)      => ({code, qty: qty||1});
+  const pUV = (code, qty, kat) => ({code, qty: qty||1, uvKat: kat||null});
+  const fr  = (name)           => ({type:'free', name, betrag:0, qty:1});
+  // Kategorie-Zuordnung nach Position
+  const K = { // code → uvKat
+    '10':1,'11':1,'18':1,'18EZ':1,'18NZ':1,'12':1,'13':1,'14':1,'16':1, // Ordination
+    '32':1,'33':1,'34':1,'230':1,                                          // Gespräch / Bericht
+    '100':3,'101':3,'102':3,'103':3,                                       // Blutabnahme
+    '110':3,'111':3,'112':3,'113':3,'114':3,'115':3,                      // Injektionen
+    '120':3,'121':3,'122':3,'123':3,'124':3,'125':3,                      // Nadeln
+    '130':3,'131':3,'132':3,'133':3,                                       // Infiltrationen
+    '181':2,'182':2,'191':2,'192':2,                                       // Anästhesie & Rea
+    '810':4,'811':4,'812':4,'813':4,'814':4,'815':4,'816':4,'817':4,      // Röntgen Aufnahmen
+    '818':4,'819':4,'820':4,'821':4,'835':4,'836':4,                      // Röntgen Honorar
+    '850':3,'860':3,'870':3,'880':3,'890':3,'892':3,'893':3,'894':3,'895':3,'950':3, // Sono
+    '400':3,'401':3,'402':3,'403':3,'404':3,'415':3,                      // EKG
+    '620':5,'630':5,'640':5,'650':5,'660':5,'670':5,'680':5,'681':5,'682':5,'683':5, // Labor
+  };
+  const pu = (code, qty) => pUV(code, qty, K[code]||null);
 
   state.vorlagen = [
     // ── Erstuntersuchung – Normal ──────────────────────────────
@@ -808,20 +853,20 @@ function initDefaults() {
     {id:uid(), name:'US-gesteuerte Infiltration',             color:'#0D7490', positions:[p('11'), p('32'), p('890'), p('125'), p('230')]},
     {id:uid(), name:'Blutabnahme',                            color:'#6B4226', positions:[p('100'), p('230')]},
     // ── Erstuntersuchung – Unfalltarif [UV] ────────────────────
-    {id:uid(), name:'Erstuntersuchung [UV]',                  color:'#A32D2D', isUV:true, positions:[pUV('10'), pUV('32'), pUV('230')]},
-    {id:uid(), name:'Erstuntersuchung + Sono [UV]',           color:'#A32D2D', isUV:true, positions:[pUV('10'), pUV('32'), pUV('890'), pUV('230')]},
-    {id:uid(), name:'Erstuntersuchung + Röntgen [UV]',        color:'#A32D2D', isUV:true, positions:[pUV('10'), pUV('32'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
-    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen [UV]', color:'#A32D2D', isUV:true, positions:[pUV('10'), pUV('32'), pUV('890'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
+    {id:uid(), name:'Erstuntersuchung [UV]',                  color:'#A32D2D', isUV:true, positions:[pu('10'), pu('32'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono [UV]',           color:'#A32D2D', isUV:true, positions:[pu('10'), pu('32'), pu('890'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen [UV]',        color:'#A32D2D', isUV:true, positions:[pu('10'), pu('32'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen [UV]', color:'#A32D2D', isUV:true, positions:[pu('10'), pu('32'), pu('890'), pu('812',2), pu('835'), pu('836'), pu('230')]},
     // ── Kontrolle – Unfalltarif [UV] ───────────────────────────
-    {id:uid(), name:'Kontrolle [UV]',                         color:'#7C3AED', isUV:true, positions:[pUV('11'), pUV('32'), pUV('230')]},
-    {id:uid(), name:'Kontrolle + Sono [UV]',                  color:'#7C3AED', isUV:true, positions:[pUV('11'), pUV('32'), pUV('890'), pUV('230')]},
-    {id:uid(), name:'Kontrolle + Röntgen [UV]',               color:'#7C3AED', isUV:true, positions:[pUV('11'), pUV('32'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
-    {id:uid(), name:'Kontrolle + Sono + Röntgen [UV]',        color:'#7C3AED', isUV:true, positions:[pUV('11'), pUV('32'), pUV('890'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
+    {id:uid(), name:'Kontrolle [UV]',                         color:'#7C3AED', isUV:true, positions:[pu('11'), pu('32'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Sono [UV]',                  color:'#7C3AED', isUV:true, positions:[pu('11'), pu('32'), pu('890'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Röntgen [UV]',               color:'#7C3AED', isUV:true, positions:[pu('11'), pu('32'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Sono + Röntgen [UV]',        color:'#7C3AED', isUV:true, positions:[pu('11'), pu('32'), pu('890'), pu('812',2), pu('835'), pu('836'), pu('230')]},
     // ── Spezialleistungen – Unfalltarif [UV] ──────────────────
-    {id:uid(), name:'Stoßwellentherapie [UV]',                color:'#92400E', isUV:true, positions:[pUV('11'), pUV('32'), fr('Stoßwellentherapie (ESWT)')]},
-    {id:uid(), name:'Eigenblutinfiltration [UV]',             color:'#1E40AF', isUV:true, positions:[pUV('11'), pUV('32'), pUV('100'), pUV('114'), pUV('230')]},
-    {id:uid(), name:'US-gesteuerte Infiltration [UV]',        color:'#065F46', isUV:true, positions:[pUV('11'), pUV('32'), pUV('890'), pUV('125'), pUV('230')]},
-    {id:uid(), name:'Blutabnahme [UV]',                       color:'#374151', isUV:true, positions:[pUV('100'), pUV('230')]},
+    {id:uid(), name:'Stoßwellentherapie [UV]',                color:'#92400E', isUV:true, positions:[pu('11'), pu('32'), fr('Stoßwellentherapie (ESWT)')]},
+    {id:uid(), name:'Eigenblutinfiltration [UV]',             color:'#1E40AF', isUV:true, positions:[pu('11'), pu('32'), pu('100'), pu('114'), pu('230')]},
+    {id:uid(), name:'US-gesteuerte Infiltration [UV]',        color:'#065F46', isUV:true, positions:[pu('11'), pu('32'), pu('890'), pu('125'), pu('230')]},
+    {id:uid(), name:'Blutabnahme [UV]',                       color:'#374151', isUV:true, positions:[pu('100'), pu('230')]},
   ];
 }
 
@@ -843,6 +888,11 @@ function applySettings() {
   document.getElementById('s-name').value = s.name||'';
   document.getElementById('s-adr').value  = s.adr||'';
   document.getElementById('s-tel').value  = s.tel||'';
+  const uvF = s.uvFak || {};
+  [1,2,3,4,5].forEach(k => {
+    const el = document.getElementById('s-uvk'+k);
+    if (el) el.value = uvF[k] ?? [4.90,3.85,2.70,2.00,1.64][k-1];
+  });
 }
 
 function detectConflicts(codes) {
@@ -871,7 +921,7 @@ function detectConflicts(codes) {
 function renderAll() { renderSidebar(); renderDetail(); renderKatalog(); }
 
 function effFak(p) {
-  if (p.uvKat && UV_KAT[p.uvKat]) return UV_KAT[p.uvKat].fak;
+  if (p.uvKat && UV_KAT[p.uvKat]) return state.settings.uvFak?.[p.uvKat] ?? UV_KAT[p.uvKat].fak;
   if (p.faktor != null && p.faktor > 0) return p.faktor;
   return undefined;
 }
@@ -954,14 +1004,15 @@ function renderDetail() {
     const pktCell = dbPos.fix != null
       ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right;font-size:9px">€ ${dbPos.fix.toFixed(2)}</span>`
       : `<span class="pos-num" style="color:var(--text3);text-align:right;font-size:9px">${dbPos.pkt} Pkt</span>`;
+    const uvF = state.settings.uvFak || {1:4.90,2:3.85,3:2.70,4:2.00,5:1.64};
     const fakCell = v.isUV
       ? `<select class="uvkat-sel${p.uvKat?' assigned':''}" onchange="window.updateUvKat('${v.id}',${i},this.value)" title="${p.uvKat ? UV_KAT[p.uvKat].label : 'UV-Kategorie wählen'}">
            <option value="0" ${!p.uvKat?'selected':''}>–</option>
-           <option value="1" ${p.uvKat===1?'selected':''}>K1 ×4,90</option>
-           <option value="2" ${p.uvKat===2?'selected':''}>K2 ×3,85</option>
-           <option value="3" ${p.uvKat===3?'selected':''}>K3 ×2,70</option>
-           <option value="4" ${p.uvKat===4?'selected':''}>K4 ×2,00</option>
-           <option value="5" ${p.uvKat===5?'selected':''}>K5 ×1,64</option>
+           <option value="1" ${p.uvKat===1?'selected':''}>K1 ×${(uvF[1]||4.90).toFixed(2)}</option>
+           <option value="2" ${p.uvKat===2?'selected':''}>K2 ×${(uvF[2]||3.85).toFixed(2)}</option>
+           <option value="3" ${p.uvKat===3?'selected':''}>K3 ×${(uvF[3]||2.70).toFixed(2)}</option>
+           <option value="4" ${p.uvKat===4?'selected':''}>K4 ×${(uvF[4]||2.00).toFixed(2)}</option>
+           <option value="5" ${p.uvKat===5?'selected':''}>K5 ×${(uvF[5]||1.64).toFixed(2)}</option>
          </select>`
       : `<input class="${p.faktor?'fak-input custom':'fak-input'}" type="number" min="0.1" max="20" step="0.01" value="${p.faktor||''}" placeholder="${state.settings.fak}" title="Honorarfaktor (leer = global ${state.settings.fak}×)" onchange="window.updateFaktor('${v.id}',${i},this.value)">`;
     return `<div class="pos-row">
@@ -1142,6 +1193,12 @@ function saveSettings() {
   state.settings.name = document.getElementById('s-name').value;
   state.settings.adr  = document.getElementById('s-adr').value;
   state.settings.tel  = document.getElementById('s-tel').value;
+  const defs = [4.90,3.85,2.70,2.00,1.64];
+  if (!state.settings.uvFak) state.settings.uvFak = {};
+  [1,2,3,4,5].forEach(k => {
+    const v = parseFloat(document.getElementById('s-uvk'+k)?.value);
+    state.settings.uvFak[k] = isNaN(v) ? defs[k-1] : v;
+  });
   save(); renderDetail(); renderKatalog();
 }
 function printNote() {
