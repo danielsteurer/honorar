@@ -78,8 +78,12 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
 .pos-num{font-size:13px;text-align:right;font-variant-numeric:tabular-nums;font-family:monospace}
 .qty-input{width:44px;text-align:center;padding:2px 3px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:13px}
 .fak-input{width:54px;text-align:center;padding:2px 3px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:12px}
-.uvkat-sel{width:76px;padding:2px 2px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:11px}
+.uvkat-sel{width:100%;padding:2px 2px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:11px}
 .uvkat-sel.assigned{border-color:var(--amber);color:var(--amber);font-weight:500}
+.fak-cell{display:flex;flex-direction:column;gap:2px;align-items:stretch}
+.uv-toggle{font-size:9px;padding:1px 0;border:0.5px solid var(--border);border-radius:3px;cursor:pointer;background:transparent;color:var(--text3);text-align:center;width:100%;line-height:1.2}
+.uv-toggle:hover{border-color:var(--amber);color:var(--amber)}
+.uv-toggle.active{border-color:var(--amber);color:var(--amber);font-weight:600}
 .pos-code-wrap{display:flex;flex-direction:column;gap:1px}
 .pos-code-sub{font-size:10px;color:var(--text3);white-space:nowrap}
 .pos-code-sub.is-fix{color:var(--green)}
@@ -754,6 +758,21 @@ const UV_KAT = {
   4: { short:'K4', label:'Kat. 4 – Röntgenunkosten (2× ÖGK)',                           fak: 2.00 },
   5: { short:'K5', label:'Kat. 5 – Laborleistungen',                                     fak: 1.64 },
 };
+// Standard UV-Kategorien nach Positions-Code (für Auto-Zuweisung)
+const UV_DEFAULT_KAT = {
+  '10':1,'11':1,'18':1,'18EZ':1,'18NZ':1,'12':1,'13':1,'14':1,'16':1,
+  '32':1,'33':1,'34':1,'230':1,
+  '100':3,'101':3,'102':3,'103':3,
+  '110':3,'111':3,'112':3,'113':3,'114':3,'115':3,
+  '120':3,'121':3,'122':3,'123':3,'124':3,'125':3,
+  '130':3,'131':3,'132':3,'133':3,
+  '181':2,'182':2,'191':2,'192':2,
+  '810':4,'811':4,'812':4,'813':4,'814':4,'815':4,'816':4,'817':4,
+  '818':4,'819':4,'820':4,'821':4,'835':4,'836':4,
+  '850':3,'860':3,'870':3,'880':3,'890':3,'892':3,'893':3,'894':3,'895':3,'950':3,
+  '400':3,'401':3,'402':3,'403':3,'404':3,'415':3,
+  '620':5,'630':5,'640':5,'650':5,'660':5,'670':5,'680':5,'681':5,'682':5,'683':5,
+};
 
 // Populate category selects
 function populateCatSelects() {
@@ -820,21 +839,7 @@ function initDefaults() {
   const pUV = (code, qty, kat) => ({code, qty: qty||1, uvKat: kat||null});
   const fr  = (name)           => ({type:'free', name, betrag:0, qty:1});
   // Kategorie-Zuordnung nach Position
-  const K = { // code → uvKat
-    '10':1,'11':1,'18':1,'18EZ':1,'18NZ':1,'12':1,'13':1,'14':1,'16':1, // Ordination
-    '32':1,'33':1,'34':1,'230':1,                                          // Gespräch / Bericht
-    '100':3,'101':3,'102':3,'103':3,                                       // Blutabnahme
-    '110':3,'111':3,'112':3,'113':3,'114':3,'115':3,                      // Injektionen
-    '120':3,'121':3,'122':3,'123':3,'124':3,'125':3,                      // Nadeln
-    '130':3,'131':3,'132':3,'133':3,                                       // Infiltrationen
-    '181':2,'182':2,'191':2,'192':2,                                       // Anästhesie & Rea
-    '810':4,'811':4,'812':4,'813':4,'814':4,'815':4,'816':4,'817':4,      // Röntgen Aufnahmen
-    '818':4,'819':4,'820':4,'821':4,'835':4,'836':4,                      // Röntgen Honorar
-    '850':3,'860':3,'870':3,'880':3,'890':3,'892':3,'893':3,'894':3,'895':3,'950':3, // Sono
-    '400':3,'401':3,'402':3,'403':3,'404':3,'415':3,                      // EKG
-    '620':5,'630':5,'640':5,'650':5,'660':5,'670':5,'680':5,'681':5,'682':5,'683':5, // Labor
-  };
-  const pu = (code, qty) => pUV(code, qty, K[code]||null);
+  const pu = (code, qty) => pUV(code, qty, UV_DEFAULT_KAT[code]||null);
 
   state.vorlagen = [
     // ── Erstuntersuchung – Normal ──────────────────────────────
@@ -976,8 +981,7 @@ function renderDetail() {
     banner.style.display = 'none';
   }
 
-  // UV-Kat Spaltenheader anpassen
-  document.getElementById('fak-col-head').textContent = v.isUV ? 'UV-Kat.' : 'Faktor';
+  document.getElementById('fak-col-head').textContent = 'Privat / UV';
 
   document.getElementById('pos-rows').innerHTML = (v.positions||[]).map((p,i) => {
     const q = p.qty||1;
@@ -1005,16 +1009,21 @@ function renderDetail() {
       ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right;font-size:9px">€ ${dbPos.fix.toFixed(2)}</span>`
       : `<span class="pos-num" style="color:var(--text3);text-align:right;font-size:9px">${dbPos.pkt} Pkt</span>`;
     const uvF = state.settings.uvFak || {1:4.90,2:3.85,3:2.70,4:2.00,5:1.64};
-    const fakCell = v.isUV
-      ? `<select class="uvkat-sel${p.uvKat?' assigned':''}" onchange="window.updateUvKat('${v.id}',${i},this.value)" title="${p.uvKat ? UV_KAT[p.uvKat].label : 'UV-Kategorie wählen'}">
+    const uvSel = `<select class="uvkat-sel${p.uvKat?' assigned':''}" onchange="window.updateUvKat('${v.id}',${i},this.value)" title="${p.uvKat ? UV_KAT[p.uvKat].label : ''}">
            <option value="0" ${!p.uvKat?'selected':''}>–</option>
            <option value="1" ${p.uvKat===1?'selected':''}>K1 ×${(uvF[1]||4.90).toFixed(2)}</option>
            <option value="2" ${p.uvKat===2?'selected':''}>K2 ×${(uvF[2]||3.85).toFixed(2)}</option>
            <option value="3" ${p.uvKat===3?'selected':''}>K3 ×${(uvF[3]||2.70).toFixed(2)}</option>
            <option value="4" ${p.uvKat===4?'selected':''}>K4 ×${(uvF[4]||2.00).toFixed(2)}</option>
            <option value="5" ${p.uvKat===5?'selected':''}>K5 ×${(uvF[5]||1.64).toFixed(2)}</option>
-         </select>`
-      : `<input class="${p.faktor?'fak-input custom':'fak-input'}" type="number" min="0.1" max="20" step="0.01" value="${p.faktor||''}" placeholder="${state.settings.fak}" title="Honorarfaktor (leer = global ${state.settings.fak}×)" onchange="window.updateFaktor('${v.id}',${i},this.value)">`;
+         </select>`;
+    const privInput = `<input class="${p.faktor?'fak-input custom':'fak-input'}" type="number" min="0.1" max="20" step="0.01" value="${p.faktor||''}" placeholder="${state.settings.fak}" title="Honorarfaktor (leer = global ${state.settings.fak}×)" onchange="window.updateFaktor('${v.id}',${i},this.value)" style="width:100%">`;
+    const fakCell = `<div class="fak-cell">
+      <button class="uv-toggle${p.uvKat?' active':''}" onclick="window.toggleUvMode('${v.id}',${i},'${dbPos.code}')" title="${p.uvKat?'Zurück zu Privatfaktor':'UV-Kategorie aktivieren'}">
+        ${p.uvKat ? `UV ${UV_KAT[p.uvKat].short}` : 'UV'}
+      </button>
+      ${p.uvKat ? uvSel : privInput}
+    </div>`;
     return `<div class="pos-row">
       <span class="pos-code">${esc(dbPos.code)}</span>${pktCell}
       <span class="pos-name">${esc(dbPos.name)}${wb}${ni}</span>
@@ -1101,6 +1110,16 @@ function updateUvKat(vid, idx, val) {
   const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
   const k = parseInt(val);
   v.positions[idx].uvKat = (k >= 1 && k <= 5) ? k : null;
+  save(); renderSidebar(); renderDetail();
+}
+function toggleUvMode(vid, idx, code) {
+  const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
+  const p = v.positions[idx];
+  if (p.uvKat) {
+    p.uvKat = null;
+  } else {
+    p.uvKat = UV_DEFAULT_KAT[code] || 1;
+  }
   save(); renderSidebar(); renderDetail();
 }
 function removePos(vid, idx) {
@@ -1282,6 +1301,7 @@ window.updateColor   = updateColor;
 window.updateQty     = updateQty;
 window.updateFaktor  = updateFaktor;
 window.updateUvKat   = updateUvKat;
+window.toggleUvMode  = toggleUvMode;
 window.removePos     = removePos;
 window.openAddModal    = openAddModal;
 window.closeModal      = closeModal;
