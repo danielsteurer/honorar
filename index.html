@@ -70,14 +70,16 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
 .metric-val{font-size:17px;font-weight:500;font-variant-numeric:tabular-nums}
 .poslist-wrap{flex:1;overflow-y:auto}
 .poslist{padding:8px 14px}
-.pos-head{display:grid;grid-template-columns:72px 52px 1fr 56px 60px 78px 80px 74px 74px 30px;gap:5px;padding:5px 7px;font-size:11px;color:var(--text3);font-weight:500;border-bottom:0.5px solid var(--border);margin-bottom:3px}
-.pos-row{display:grid;grid-template-columns:72px 52px 1fr 56px 60px 78px 80px 74px 74px 30px;gap:5px;align-items:center;padding:6px 7px;border-radius:6px}
+.pos-head{display:grid;grid-template-columns:72px 52px 1fr 56px 82px 78px 80px 74px 74px 30px;gap:5px;padding:5px 7px;font-size:11px;color:var(--text3);font-weight:500;border-bottom:0.5px solid var(--border);margin-bottom:3px}
+.pos-row{display:grid;grid-template-columns:72px 52px 1fr 56px 82px 78px 80px 74px 74px 30px;gap:5px;align-items:center;padding:6px 7px;border-radius:6px}
 .pos-row:hover{background:var(--bg2)}
 .pos-code{font-size:11px;color:var(--text2);font-family:monospace}
 .pos-name{font-size:13px}
 .pos-num{font-size:13px;text-align:right;font-variant-numeric:tabular-nums;font-family:monospace}
 .qty-input{width:44px;text-align:center;padding:2px 3px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:13px}
 .fak-input{width:54px;text-align:center;padding:2px 3px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:12px}
+.uvkat-sel{width:76px;padding:2px 2px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:11px}
+.uvkat-sel.assigned{border-color:var(--amber);color:var(--amber);font-weight:500}
 .pos-code-wrap{display:flex;flex-direction:column;gap:1px}
 .pos-code-sub{font-size:10px;color:var(--text3);white-space:nowrap}
 .pos-code-sub.is-fix{color:var(--green)}
@@ -204,7 +206,7 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
           <div class="poslist">
             <div class="pos-head">
               <span>Pos.</span><span style="text-align:right">Pkt / €</span><span>Bezeichnung</span><span style="text-align:right">Mge.</span>
-              <span style="text-align:right;color:var(--amber)">Faktor</span>
+              <span id="fak-col-head" style="text-align:right;color:var(--amber)">Faktor</span>
               <span style="text-align:right;color:var(--blue)">Kassensatz</span>
               <span style="text-align:right;color:var(--green)">Rückerstattung</span>
               <span style="text-align:right;color:var(--amber)">Honorar</span>
@@ -718,6 +720,15 @@ const CROSS_CONFLICTS = [
   },
 ];
 
+// UV-Tarif Kategorien (Privat-Unfallversicherung)
+const UV_KAT = {
+  1: { short:'K1', label:'Kat. 1 – Grundleistung / Gesprächsmedizin',                   fak: 4.90 },
+  2: { short:'K2', label:'Kat. 2 – Technische Leistung (großer Zeitaufwand)',            fak: 3.85 },
+  3: { short:'K3', label:'Kat. 3 – Technische Leistung (geringer Zeitaufwand)',          fak: 2.70 },
+  4: { short:'K4', label:'Kat. 4 – Röntgenunkosten (2× ÖGK)',                           fak: 2.00 },
+  5: { short:'K5', label:'Kat. 5 – Laborleistungen',                                     fak: 1.64 },
+};
+
 // Populate category selects
 function populateCatSelects() {
   const opts = GRP_ORDER.map(g => `<option value="${g}">${GRP_LABEL[g]||g}</option>`).join('');
@@ -776,9 +787,8 @@ async function load() {
 }
 
 function initDefaults() {
-  const UV = 3.0;
   const p   = (code, qty) => ({code, qty: qty||1});
-  const pUV = (code, qty) => ({code, qty: qty||1, faktor: UV});
+  const pUV = (code, qty) => ({code, qty: qty||1, uvKat: null});
   const fr  = (name)      => ({type:'free', name, betrag:0, qty:1});
 
   state.vorlagen = [
@@ -798,20 +808,20 @@ function initDefaults() {
     {id:uid(), name:'US-gesteuerte Infiltration',             color:'#0D7490', positions:[p('11'), p('32'), p('890'), p('125'), p('230')]},
     {id:uid(), name:'Blutabnahme',                            color:'#6B4226', positions:[p('100'), p('230')]},
     // ── Erstuntersuchung – Unfalltarif [UV] ────────────────────
-    {id:uid(), name:'Erstuntersuchung [UV]',                  color:'#A32D2D', positions:[pUV('10'), pUV('32'), pUV('230')]},
-    {id:uid(), name:'Erstuntersuchung + Sono [UV]',           color:'#A32D2D', positions:[pUV('10'), pUV('32'), pUV('890'), pUV('230')]},
-    {id:uid(), name:'Erstuntersuchung + Röntgen [UV]',        color:'#A32D2D', positions:[pUV('10'), pUV('32'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
-    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen [UV]', color:'#A32D2D', positions:[pUV('10'), pUV('32'), pUV('890'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
+    {id:uid(), name:'Erstuntersuchung [UV]',                  color:'#A32D2D', isUV:true, positions:[pUV('10'), pUV('32'), pUV('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono [UV]',           color:'#A32D2D', isUV:true, positions:[pUV('10'), pUV('32'), pUV('890'), pUV('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen [UV]',        color:'#A32D2D', isUV:true, positions:[pUV('10'), pUV('32'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen [UV]', color:'#A32D2D', isUV:true, positions:[pUV('10'), pUV('32'), pUV('890'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
     // ── Kontrolle – Unfalltarif [UV] ───────────────────────────
-    {id:uid(), name:'Kontrolle [UV]',                         color:'#7C3AED', positions:[pUV('11'), pUV('32'), pUV('230')]},
-    {id:uid(), name:'Kontrolle + Sono [UV]',                  color:'#7C3AED', positions:[pUV('11'), pUV('32'), pUV('890'), pUV('230')]},
-    {id:uid(), name:'Kontrolle + Röntgen [UV]',               color:'#7C3AED', positions:[pUV('11'), pUV('32'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
-    {id:uid(), name:'Kontrolle + Sono + Röntgen [UV]',        color:'#7C3AED', positions:[pUV('11'), pUV('32'), pUV('890'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
+    {id:uid(), name:'Kontrolle [UV]',                         color:'#7C3AED', isUV:true, positions:[pUV('11'), pUV('32'), pUV('230')]},
+    {id:uid(), name:'Kontrolle + Sono [UV]',                  color:'#7C3AED', isUV:true, positions:[pUV('11'), pUV('32'), pUV('890'), pUV('230')]},
+    {id:uid(), name:'Kontrolle + Röntgen [UV]',               color:'#7C3AED', isUV:true, positions:[pUV('11'), pUV('32'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
+    {id:uid(), name:'Kontrolle + Sono + Röntgen [UV]',        color:'#7C3AED', isUV:true, positions:[pUV('11'), pUV('32'), pUV('890'), pUV('812',2), pUV('835'), pUV('836'), pUV('230')]},
     // ── Spezialleistungen – Unfalltarif [UV] ──────────────────
-    {id:uid(), name:'Stoßwellentherapie [UV]',                color:'#92400E', positions:[pUV('11'), pUV('32'), fr('Stoßwellentherapie (ESWT)')]},
-    {id:uid(), name:'Eigenblutinfiltration [UV]',             color:'#1E40AF', positions:[pUV('11'), pUV('32'), pUV('100'), pUV('114'), pUV('230')]},
-    {id:uid(), name:'US-gesteuerte Infiltration [UV]',        color:'#065F46', positions:[pUV('11'), pUV('32'), pUV('890'), pUV('125'), pUV('230')]},
-    {id:uid(), name:'Blutabnahme [UV]',                       color:'#374151', positions:[pUV('100'), pUV('230')]},
+    {id:uid(), name:'Stoßwellentherapie [UV]',                color:'#92400E', isUV:true, positions:[pUV('11'), pUV('32'), fr('Stoßwellentherapie (ESWT)')]},
+    {id:uid(), name:'Eigenblutinfiltration [UV]',             color:'#1E40AF', isUV:true, positions:[pUV('11'), pUV('32'), pUV('100'), pUV('114'), pUV('230')]},
+    {id:uid(), name:'US-gesteuerte Infiltration [UV]',        color:'#065F46', isUV:true, positions:[pUV('11'), pUV('32'), pUV('890'), pUV('125'), pUV('230')]},
+    {id:uid(), name:'Blutabnahme [UV]',                       color:'#374151', isUV:true, positions:[pUV('100'), pUV('230')]},
   ];
 }
 
@@ -860,13 +870,19 @@ function detectConflicts(codes) {
 }
 function renderAll() { renderSidebar(); renderDetail(); renderKatalog(); }
 
+function effFak(p) {
+  if (p.uvKat && UV_KAT[p.uvKat]) return UV_KAT[p.uvKat].fak;
+  if (p.faktor != null && p.faktor > 0) return p.faktor;
+  return undefined;
+}
+
 function sumV(v) {
   let ksT=0,rT=0,hT=0,eT=0;
   (v.positions||[]).forEach(p => {
     const q = p.qty||1;
     if (p.type==='free') { const b=(p.betrag||0)*q; hT+=b; eT+=b; return; }
     const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return;
-    const fak = (p.faktor != null && p.faktor > 0) ? p.faktor : undefined;
+    const fak = effFak(p);
     ksT+=ks(dbPos)*q; rT+=rueck(dbPos)*q; hT+=hon(dbPos,fak)*q; eT+=eigen(dbPos,fak)*q;
   });
   return {ks:ksT, r:rT, h:hT, e:eT};
@@ -910,6 +926,9 @@ function renderDetail() {
     banner.style.display = 'none';
   }
 
+  // UV-Kat Spaltenheader anpassen
+  document.getElementById('fak-col-head').textContent = v.isUV ? 'UV-Kat.' : 'Faktor';
+
   document.getElementById('pos-rows').innerHTML = (v.positions||[]).map((p,i) => {
     const q = p.qty||1;
     if (p.type==='free') {
@@ -928,21 +947,28 @@ function renderDetail() {
       </div>`;
     }
     const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return '';
-    const fak = (p.faktor != null && p.faktor > 0) ? p.faktor : undefined;
+    const fak = effFak(p);
     const wb = dbPos.warn ? `<span class="pill-warn"><i class="ti ti-alert-triangle"></i> SG</span>` : '';
     const noteText = NOTES[dbPos.code];
     const ni = noteText ? `<i class="ti ti-info-circle note-icon" title="${esc(noteText)}"></i>` : '';
-    const fakVal = fak != null ? fak : '';
-    const fakCls = fak != null ? 'fak-input custom' : 'fak-input';
-    const fakTitle = `Honorarfaktor (leer = global ${state.settings.fak}×)`;
     const pktCell = dbPos.fix != null
       ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right;font-size:9px">€ ${dbPos.fix.toFixed(2)}</span>`
       : `<span class="pos-num" style="color:var(--text3);text-align:right;font-size:9px">${dbPos.pkt} Pkt</span>`;
+    const fakCell = v.isUV
+      ? `<select class="uvkat-sel${p.uvKat?' assigned':''}" onchange="window.updateUvKat('${v.id}',${i},this.value)" title="${p.uvKat ? UV_KAT[p.uvKat].label : 'UV-Kategorie wählen'}">
+           <option value="0" ${!p.uvKat?'selected':''}>–</option>
+           <option value="1" ${p.uvKat===1?'selected':''}>K1 ×4,90</option>
+           <option value="2" ${p.uvKat===2?'selected':''}>K2 ×3,85</option>
+           <option value="3" ${p.uvKat===3?'selected':''}>K3 ×2,70</option>
+           <option value="4" ${p.uvKat===4?'selected':''}>K4 ×2,00</option>
+           <option value="5" ${p.uvKat===5?'selected':''}>K5 ×1,64</option>
+         </select>`
+      : `<input class="${p.faktor?'fak-input custom':'fak-input'}" type="number" min="0.1" max="20" step="0.01" value="${p.faktor||''}" placeholder="${state.settings.fak}" title="Honorarfaktor (leer = global ${state.settings.fak}×)" onchange="window.updateFaktor('${v.id}',${i},this.value)">`;
     return `<div class="pos-row">
       <span class="pos-code">${esc(dbPos.code)}</span>${pktCell}
       <span class="pos-name">${esc(dbPos.name)}${wb}${ni}</span>
       <input class="qty-input" type="number" min="1" max="99" value="${q}" onchange="window.updateQty('${v.id}',${i},this.value)">
-      <input class="${fakCls}" type="number" min="0.1" max="20" step="0.01" value="${fakVal}" placeholder="${state.settings.fak}" title="${fakTitle}" onchange="window.updateFaktor('${v.id}',${i},this.value)">
+      ${fakCell}
       <span class="pos-num" style="color:var(--blue)">${fmt(ks(dbPos)*q)}</span>
       <span class="pos-num" style="color:var(--green)">${fmt(rueck(dbPos)*q)}</span>
       <span class="pos-num" style="color:var(--amber)">${fmt(hon(dbPos,fak)*q)}</span>
@@ -1018,6 +1044,12 @@ function updateFaktor(vid, idx, val) {
   const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
   const f = parseFloat(val);
   v.positions[idx].faktor = (!val || isNaN(f) || f <= 0) ? null : f;
+  save(); renderSidebar(); renderDetail();
+}
+function updateUvKat(vid, idx, val) {
+  const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
+  const k = parseInt(val);
+  v.positions[idx].uvKat = (k >= 1 && k <= 5) ? k : null;
   save(); renderSidebar(); renderDetail();
 }
 function removePos(vid, idx) {
@@ -1192,6 +1224,7 @@ window.deleteVorlage = deleteVorlage;
 window.updateColor   = updateColor;
 window.updateQty     = updateQty;
 window.updateFaktor  = updateFaktor;
+window.updateUvKat   = updateUvKat;
 window.removePos     = removePos;
 window.openAddModal    = openAddModal;
 window.closeModal      = closeModal;
