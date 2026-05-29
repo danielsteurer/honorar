@@ -96,8 +96,8 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
 .search-in{flex:1;min-width:140px;padding:6px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text)}
 .cat-sel{padding:6px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:13px}
 .cat-wrap{flex:1;overflow-y:auto}
-.ct-head{display:grid;grid-template-columns:68px 1fr 70px 78px 80px 74px 74px 88px;gap:5px;padding:6px 14px;font-size:11px;color:var(--text3);font-weight:500;position:sticky;top:0;background:var(--bg);border-bottom:0.5px solid var(--border);z-index:1}
-.ct-row{display:grid;grid-template-columns:68px 1fr 70px 78px 80px 74px 74px 88px;gap:5px;align-items:center;padding:6px 14px;border-bottom:0.5px solid var(--border)}
+.ct-head{display:grid;grid-template-columns:68px 1fr 66px 66px 70px 78px 80px 74px 74px 88px;gap:5px;padding:6px 14px;font-size:11px;color:var(--text3);font-weight:500;position:sticky;top:0;background:var(--bg);border-bottom:0.5px solid var(--border);z-index:1}
+.ct-row{display:grid;grid-template-columns:68px 1fr 66px 66px 70px 78px 80px 74px 74px 88px;gap:5px;align-items:center;padding:6px 14px;border-bottom:0.5px solid var(--border)}
 .ct-row:hover{background:var(--bg2)}
 .ct-grp{padding:5px 14px 3px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;background:var(--bg2);border-bottom:0.5px solid var(--border);position:sticky;top:32px;z-index:1}
 .add-btn{padding:3px 9px;font-size:12px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg);color:var(--text)}
@@ -252,6 +252,8 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
     <div class="cat-wrap">
       <div class="ct-head">
         <span>Pos.</span><span>Bezeichnung</span>
+        <span id="kat-comp1-head" style="text-align:right;color:var(--violet)">BVAEB</span>
+        <span id="kat-comp2-head" style="text-align:right;color:var(--green)">SVS</span>
         <span style="text-align:right">Pkt / €</span>
         <span id="kat-ks-head" style="text-align:right;color:var(--blue)">Kassensatz</span>
         <span id="kat-ruck-head" style="text-align:right;color:var(--green)">Rückerstattung</span>
@@ -1203,14 +1205,44 @@ function renderDetail() {
   }).join('');
 }
 
+function compCell(d, k) {
+  let code, pkt, ksAmt;
+  if (k === 'oegk') {
+    if (d.kasseOnly) return `<span style="color:var(--text3);font-size:11px;text-align:right">—</span>`;
+    code = d.code;
+    pkt = d.fix!=null ? `€ ${d.fix.toFixed(2)}` : `${d.pkt||0} Pkt`;
+    ksAmt = fmt(ksK(d,'oegk'));
+  } else if (k === 'bvaeb') {
+    if (!d.bva) return `<span style="color:var(--text3);font-size:11px;text-align:right">—</span>`;
+    code = d.bva.code;
+    pkt = d.bva.fix!=null ? `€ ${d.bva.fix.toFixed(2)}` : `${d.bva.pkt||0} Pkt`;
+    ksAmt = fmt(ksK(d,'bvaeb'));
+  } else {
+    if (!d.svs) return `<span style="color:var(--text3);font-size:11px;text-align:right">—</span>`;
+    code = d.svs.code;
+    pkt = d.svs.fix!=null ? `€ ${d.svs.fix.toFixed(2)}` : `${d.svs.pkt||0} Pkt`;
+    ksAmt = fmt(ksK(d,'svs'));
+  }
+  const col = k==='bvaeb'?'var(--violet)':k==='svs'?'var(--green)':'var(--blue)';
+  return `<div style="display:flex;flex-direction:column;gap:1px;text-align:right"><span style="font-size:9px;color:var(--text3);font-family:monospace">${esc(code)}</span><span style="font-size:9px;color:var(--text2)">${pkt}</span><span style="font-family:monospace;font-size:11px;font-weight:600;color:${col}">${ksAmt}</span></div>`;
+}
+
 function renderKatalog() {
   const kk = state.katKasse || 'oegk';
   const q = document.getElementById('kat-search').value.toLowerCase();
   const cat = document.getElementById('kat-cat').value;
-  const ksH = kk==='bvaeb'?'BVAEB-Kassensatz':kk==='svs'?'SVS-Kassensatz':'Kassensatz';
+  const ksH = kk==='bvaeb'?'BVAEB-Kassensatz':kk==='svs'?'SVS-Kassensatz':'ÖGK-Kassensatz';
   const rH  = kk==='bvaeb'?'BVAEB-Erstattung':kk==='svs'?'SVS-Erstattung':'Rückerstattung';
   document.getElementById('kat-ks-head').textContent = ksH;
   document.getElementById('kat-ruck-head').textContent = rH;
+  const compKassen = {oegk:['bvaeb','svs'], bvaeb:['oegk','svs'], svs:['oegk','bvaeb']};
+  const [c1, c2] = compKassen[kk];
+  const compLabels = {oegk:'ÖGK', bvaeb:'BVAEB', svs:'SVS'};
+  const compColors = {oegk:'var(--blue)', bvaeb:'var(--violet)', svs:'var(--green)'};
+  const comp1El = document.getElementById('kat-comp1-head');
+  const comp2El = document.getElementById('kat-comp2-head');
+  comp1El.textContent = compLabels[c1]; comp1El.style.color = compColors[c1];
+  comp2El.textContent = compLabels[c2]; comp2El.style.color = compColors[c2];
   document.querySelectorAll('.kat-kasse-tab').forEach(el => el.classList.toggle('active', el.dataset.kk===kk));
   const fl = DB.filter(d => {
     if (kk==='bvaeb' && !d.bva) return false;
@@ -1242,6 +1274,8 @@ function renderKatalog() {
     html += `<div class="ct-row">
       ${codeDiv}
       <span style="font-size:13px">${esc(d.name)} ${wb}${ni}</span>
+      ${compCell(d, c1)}
+      ${compCell(d, c2)}
       <span style="text-align:right;font-size:12px;color:var(--text2)">${ps}</span>
       <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--blue)">${fmt(ksK(d,kk))}</span>
       <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--green)">${fmt(rueckK(d,kk))}</span>
