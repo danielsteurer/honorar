@@ -2078,15 +2078,13 @@ document.getElementById('rename-input').addEventListener('keydown', e => {
       </div>
     </div>
 
-    <!-- Kategorie -->
-    <div style="margin-bottom:10px">
-      <div class="pe-label">Kategorie <span style="color:var(--red)">*</span></div>
-      <select class="field-in pe-grp-sel" id="pe-cat" style="font-size:13px"></select>
-    </div>
-
     <!-- ÖGK -->
     <div class="pe-section">
       <div class="pe-section-head" style="color:var(--blue)">ÖGK</div>
+      <div style="margin-bottom:8px">
+        <div class="pe-label">ÖGK-Kategorie <span style="color:var(--red)">*</span></div>
+        <select class="pe-grp-sel" id="pe-cat" style="font-size:12px"></select>
+      </div>
       <div class="pe-radio">
         <label><input type="radio" name="pe-oegk-type" value="pkt" onchange="window.updatePeOegkType('pkt')"> Punkte × Punktewert</label>
         <label><input type="radio" name="pe-oegk-type" value="fix" onchange="window.updatePeOegkType('fix')"> Fixbetrag €</label>
