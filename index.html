@@ -129,6 +129,7 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
 .mgrp{padding:4px 9px 2px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;background:var(--bg2);border-bottom:0.5px solid var(--border)}
 .save-indicator{font-size:11px;color:var(--text3);padding:0 8px;opacity:0;transition:opacity .3s}
 .save-indicator.visible{opacity:1}
+.kasse-sel{padding:4px 9px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg2);color:var(--text);cursor:pointer;font-weight:600}
 @media print{
   .topbar,.sidebar,.main-head,.metrics,.action-bar,.del-btn,.add-btn,.btn,.catalog-toolbar,.modal-bg{display:none!important}
   .poslist-wrap{overflow:visible!important}
@@ -194,6 +195,11 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
       <div id="detail-wrap" style="display:none;flex:1;flex-direction:column;overflow:hidden">
         <div class="main-head">
           <div class="main-title" id="v-title"></div>
+          <select class="kasse-sel" id="v-kasse" onchange="window.setKasse(this.value)" title="Krankenversicherung für Rückerstattungsberechnung">
+            <option value="oegk">ÖGK</option>
+            <option value="bvaeb">BVAEB</option>
+            <option value="svs">SVS</option>
+          </select>
           <select class="color-sel" id="v-color" onchange="window.updateColor()">
             <option value="#185FA5">● Blau</option><option value="#1D9E75">● Grün</option>
             <option value="#BA7517">● Amber</option><option value="#A32D2D">● Rot</option>
@@ -211,8 +217,8 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
             <div class="pos-head">
               <span>Pos.</span><span style="text-align:right">Pkt / €</span><span>Bezeichnung</span><span style="text-align:right">Mge.</span>
               <span id="fak-col-head" style="text-align:right;color:var(--amber)">Faktor</span>
-              <span style="text-align:right;color:var(--blue)">Kassensatz</span>
-              <span style="text-align:right;color:var(--green)">Rückerstattung</span>
+              <span id="ks-col-head" style="text-align:right;color:var(--blue)">Kassensatz</span>
+              <span id="ruck-col-head" style="text-align:right;color:var(--green)">Rückerstattung</span>
               <span style="text-align:right;color:var(--amber)">Honorar</span>
               <span style="text-align:right;color:var(--red)">Eigenanteil</span><span></span>
             </div>
@@ -260,8 +266,32 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
         <div class="field-hint">Mein Honorar = Kassensatz × Faktor</div>
       </div>
       <div class="field-group">
-        <div class="field-label">Rückerstattungsquote Kasse (%)</div>
+        <div class="field-label">ÖGK Rückerstattungsquote (%)</div>
         <input class="field-in" type="number" id="s-ruck" step="1" min="50" max="100" value="80" oninput="window.saveSettings()">
+      </div>
+      <hr class="divider">
+      <div class="field-group">
+        <div class="field-label" style="font-size:13px;font-weight:600;margin-bottom:8px">BVAEB – Beamtenversicherung</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
+          <div>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:5px">Rückerstattungsquote (%)</div>
+            <input class="field-in" type="number" id="s-bvaeb-ruck" step="1" min="50" max="100" value="90" oninput="window.saveSettings()">
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:5px">Selbstbehalt (%)</div>
+            <input class="field-in" type="number" id="s-bvaeb-selbst" step="1" min="0" max="50" value="10" oninput="window.saveSettings()">
+          </div>
+        </div>
+        <div class="field-hint">Erstattung = Kassensatz × Ruck% × (1 – Selbst%) · Standard: 90 % × 90 % = 81 %</div>
+      </div>
+      <hr class="divider">
+      <div class="field-group">
+        <div class="field-label" style="font-size:13px;font-weight:600;margin-bottom:8px">SVS – Selbständigenversicherung</div>
+        <div style="margin-bottom:4px">
+          <div style="font-size:12px;color:var(--text2);margin-bottom:5px">Rückerstattungsquote (%)</div>
+          <input class="field-in" type="number" id="s-svs-ruck" step="1" min="50" max="100" value="80" oninput="window.saveSettings()">
+        </div>
+        <div class="field-hint">Erstattung = Kassensatz des Vertragspartners × Ruck% · kein Selbstbehalt</div>
       </div>
       <hr class="divider">
       <div class="field-group">
@@ -375,16 +405,16 @@ let saveTimer = null;
 // ── POSITIONSDATENBANK (Honorartarif Vorarlberg, ab 01.01.2025) ──
 const DB = [
 // A/01/01 Ordination AM
-{code:'10',   name:'Erste Ordination',                                          cat:'Ordination AM',    pkt:20,  fix:null},
-{code:'11',   name:'Jede weitere Ordination',                                   cat:'Ordination AM',    pkt:10,  fix:null},
+{code:'10',   name:'Erste Ordination',                                          cat:'Ordination AM',    pkt:20,  fix:null, bva:{code:'A1',pkt:20,pktWert:1.3567}, svs:{code:'A1',pkt:26,pktWert:0.7989}},
+{code:'11',   name:'Jede weitere Ordination',                                   cat:'Ordination AM',    pkt:10,  fix:null, bva:{code:'A2',pkt:11.5,pktWert:1.3567}, svs:{code:'A2',pkt:18,pktWert:0.7989}},
 {code:'12',   name:'ZUSCHLAG Sofortbehandlung Akutfall außerh. OZ',             cat:'Ordination AM',    pkt:4,   fix:null},
 {code:'13',   name:'ZUSCHLAG Ordination Wochenende/Feiertag (Dringlichkeit)',   cat:'Ordination AM',    pkt:10,  fix:null},
 {code:'14',   name:'ZUSCHLAG Nacht (20:00–7:00 Uhr)',                           cat:'Ordination AM',    pkt:10,  fix:null},
 {code:'15',   name:'Rezept (ohne Ordination)',                                  cat:'Ordination AM',    pkt:4,   fix:null},
 {code:'16',   name:'Ordination Wochend(Feiertags)dienst (zusätzl. Pauschale)', cat:'Ordination AM',    pkt:4,   fix:37.20},
-{code:'18NZ', name:'Weitere Ordination via KH-Zuweisung',                      cat:'Ordination AM',    pkt:18,  fix:null},
-{code:'18EZ', name:'Erste Ordination via KH-Zuweisung',                        cat:'Ordination AM',    pkt:26,  fix:null},
-{code:'18',   name:'Erste Ordination via ärztl. Zuweisung (mit Befundbericht)',cat:'Ordination AM',    pkt:26,  fix:null},
+{code:'18NZ', name:'Weitere Ordination via KH-Zuweisung',                      cat:'Ordination AM',    pkt:18,  fix:null, bva:{code:'A2',pkt:11.5,pktWert:1.3567}, svs:{code:'A2',pkt:18,pktWert:0.7989}},
+{code:'18EZ', name:'Erste Ordination via KH-Zuweisung',                        cat:'Ordination AM',    pkt:26,  fix:null, bva:{code:'A1',pkt:20,pktWert:1.3567}, svs:{code:'A1',pkt:26,pktWert:0.7989}},
+{code:'18',   name:'Erste Ordination via ärztl. Zuweisung (mit Befundbericht)',cat:'Ordination AM',    pkt:26,  fix:null, bva:{code:'A1',pkt:20,pktWert:1.3567}, svs:{code:'A1',pkt:26,pktWert:0.7989}},
 // A/01/02 Krankenbesuche AM
 {code:'20',   name:'Krankenbesuch (1. und jeder weitere)',                      cat:'Krankenbesuch AM', pkt:42,  fix:24.80},
 {code:'21',   name:'ZUSCHLAG dringender Krankenbesuch',                         cat:'Krankenbesuch AM', pkt:10,  fix:null},
@@ -396,26 +426,26 @@ const DB = [
 {code:'30',   name:'Zeitversäumnis bei Tag (je angefangene 30 min)',            cat:'Zeitversäumnis',   pkt:20,  fix:null},
 {code:'31',   name:'Zeitversäumnis bei Nacht (je angefangene 30 min)',          cat:'Zeitversäumnis',   pkt:40,  fix:null},
 {code:'32LC', name:'Ärztl. Gespräch Long Covid (1× pro Patient)',               cat:'Zeitversäumnis',   pkt:14,  fix:null},
-{code:'32',   name:'Ärztl. Gespräch (je angefangene 15 min, ab 16. Min.)',      cat:'Zeitversäumnis',   pkt:14,  fix:null},
+{code:'32',   name:'Ärztl. Gespräch (je angefangene 15 min, ab 16. Min.)',      cat:'Zeitversäumnis',   pkt:14,  fix:null, bva:{code:'C1',pkt:8,pktWert:1.2194}, svs:{code:'3a',pkt:20,pktWert:0.7989}},
 {code:'33',   name:'Psychosomatisches Gespräch, je 20 min (ÖÄK-Diplom)',       cat:'Zeitversäumnis',   pkt:35,  fix:null, warn:true},
-{code:'34',   name:'Koordinierungszuschlag AM (1×/Quartal, max. 5% der Fälle)',cat:'Zeitversäumnis',   pkt:null,fix:24.80},
+{code:'34',   name:'Koordinierungszuschlag AM (1×/Quartal, max. 5% der Fälle)',cat:'Zeitversäumnis',   pkt:null,fix:24.80, bva:{code:'J1',pkt:null,fix:18.412}, svs:{code:'1j',pkt:23,pktWert:0.7989}},
 // A/01/04 Konsilium
-{code:'40',   name:'Konsilium bei Tag – Berufener',                             cat:'Konsilium',        pkt:40,  fix:null},
-{code:'41',   name:'Konsilium bei Tag – Berufender',                            cat:'Konsilium',        pkt:30,  fix:null},
+{code:'40',   name:'Konsilium bei Tag – Berufener',                             cat:'Konsilium',        pkt:40,  fix:null, bva:{code:'D1',pkt:15,pktWert:1.2194}, svs:{code:'4a',pkt:30,pktWert:0.7989}},
+{code:'41',   name:'Konsilium bei Tag – Berufender',                            cat:'Konsilium',        pkt:30,  fix:null, bva:{code:'D1',pkt:15,pktWert:1.2194}, svs:{code:'4a',pkt:30,pktWert:0.7989}},
 {code:'42',   name:'Konsilium bei Nacht – Berufener',                           cat:'Konsilium',        pkt:80,  fix:null},
 {code:'43',   name:'Konsilium bei Nacht – Berufender',                          cat:'Konsilium',        pkt:60,  fix:null},
 {code:'44',   name:'Schmerzboard (je 60 min, max. 3× pro Sitzung)',             cat:'Konsilium',        pkt:null,fix:129.96},
 // A/02/01 Blutabnahme
-{code:'100',  name:'Blutabnahme aus der Vene',                                  cat:'Blutabnahme',      pkt:4,   fix:null},
+{code:'100',  name:'Blutabnahme aus der Vene',                                  cat:'Blutabnahme',      pkt:4,   fix:null, bva:{code:'10a',pkt:4,pktWert:1.2194}, svs:{code:'10a',pkt:8,pktWert:0.7989}},
 {code:'101',  name:'Blutabnahme aus der Vene – Kinder bis 10 J.',              cat:'Blutabnahme',      pkt:8,   fix:null},
 {code:'102',  name:'Aderlass (mindestens 150 ml)',                              cat:'Blutabnahme',      pkt:10,  fix:null},
 {code:'103',  name:'Mikroblutentnahme – Kinder bis 6 J. (Zuschlag)',           cat:'Blutabnahme',      pkt:4,   fix:null},
 // A/02/02 Injektionen
 {code:'110',  name:'Subcutane/intracutane Injektion (mit Ordination abgegolten)',cat:'Injektionen',    pkt:0,   fix:null},
-{code:'111',  name:'Intramuskuläre Injektion',                                  cat:'Injektionen',      pkt:4,   fix:null},
-{code:'112',  name:'Intravenöse Injektion',                                     cat:'Injektionen',      pkt:6,   fix:null},
+{code:'111',  name:'Intramuskuläre Injektion',                                  cat:'Injektionen',      pkt:4,   fix:null, bva:{code:'11b',pkt:2,pktWert:1.2194}, svs:{code:'11b',pkt:2,pktWert:0.7989}},
+{code:'112',  name:'Intravenöse Injektion',                                     cat:'Injektionen',      pkt:6,   fix:null, bva:{code:'11c',pkt:3,pktWert:1.2194}, svs:{code:'11c',pkt:6,pktWert:0.7989}},
 {code:'113',  name:'Intravenöse Injektion – Kinder bis 10 J.',                 cat:'Injektionen',      pkt:10,  fix:null},
-{code:'114',  name:'Eigenblutinjektion (Venenpunktion + i.m. Inj.)',            cat:'Injektionen',      pkt:10,  fix:null},
+{code:'114',  name:'Eigenblutinjektion (Venenpunktion + i.m. Inj.)',            cat:'Injektionen',      pkt:10,  fix:null, bva:{code:'11e',pkt:6,pktWert:1.2194}},
 {code:'115',  name:'Intraarterielle Injektion',                                 cat:'Injektionen',      pkt:14,  fix:null},
 {code:'116',  name:'Intracardiale Injektion',                                   cat:'Injektionen',      pkt:14,  fix:null},
 {code:'117',  name:'Subconjunktivale Injektion',                                cat:'Injektionen',      pkt:4,   fix:null},
@@ -425,16 +455,16 @@ const DB = [
 {code:'121',  name:'Intrapleurale / intraperitoneale Injektion',                cat:'Injektionen',      pkt:12,  fix:null},
 {code:'122',  name:'Krampfadernverödung (max. 5 pro Sitzung)',                  cat:'Injektionen',      pkt:8,   fix:null},
 {code:'123',  name:'Haemorrhoidenverödung durch Injektion',                     cat:'Injektionen',      pkt:8,   fix:null},
-{code:'124',  name:'Periarticuläre Injektion',                                  cat:'Injektionen',      pkt:10,  fix:null},
-{code:'125',  name:'Intraarticuläre Injektion (Gelenk)',                        cat:'Injektionen',      pkt:20,  fix:null},
+{code:'124',  name:'Periarticuläre Injektion',                                  cat:'Injektionen',      pkt:10,  fix:null, bva:{code:'11u',pkt:10,pktWert:1.2194}, svs:{code:'11u',pkt:18,pktWert:0.7989}},
+{code:'125',  name:'Intraarticuläre Injektion (Gelenk)',                        cat:'Injektionen',      pkt:20,  fix:null, bva:{code:'11v',pkt:23,pktWert:1.2194}, svs:{code:'11v',pkt:50,pktWert:0.7989}},
 // A/02/03 Infiltrationen
-{code:'130',  name:'Subcutane Infiltration',                                    cat:'Infiltrationen',   pkt:8,   fix:null},
-{code:'131',  name:'Intramuskuläre Infiltration',                               cat:'Infiltrationen',   pkt:8,   fix:null},
+{code:'130',  name:'Subcutane Infiltration',                                    cat:'Infiltrationen',   pkt:8,   fix:null, bva:{code:'12a',pkt:4,pktWert:1.2194}, svs:{code:'12a',pkt:7,pktWert:0.7989}},
+{code:'131',  name:'Intramuskuläre Infiltration',                               cat:'Infiltrationen',   pkt:8,   fix:null, bva:{code:'12b',pkt:4,pktWert:1.2194}, svs:{code:'12b',pkt:7,pktWert:0.7989}},
 {code:'132',  name:'Perineurale Infiltration',                                  cat:'Infiltrationen',   pkt:8,   fix:null},
 {code:'133',  name:'Intracutane Infiltration durch Dermojet (pro Sitzung)',     cat:'Infiltrationen',   pkt:8,   fix:null},
 // A/02/04 Infusionen
 {code:'140',  name:'Intraarterielle Infusion',                                  cat:'Infusionen',       pkt:40,  fix:null},
-{code:'141',  name:'Intravenöse Dauertropfinfusion',                            cat:'Infusionen',       pkt:20,  fix:null},
+{code:'141',  name:'Intravenöse Dauertropfinfusion',                            cat:'Infusionen',       pkt:20,  fix:null, bva:{code:'13b',pkt:20,pktWert:1.2194}, svs:{code:'13b',pkt:25,pktWert:0.7989}},
 // A/02/05 Allergietestungen & Impfungen
 {code:'150',  name:'Tine-Test und ähnliche, je',                                cat:'Allergietestungen',pkt:2,   fix:null},
 {code:'151',  name:'Allergieproben, Hautfunktionsprüfung, je',                  cat:'Allergietestungen',pkt:2,   fix:null},
@@ -610,7 +640,7 @@ const DB = [
 // A/13/02 Röntgen Aufnahmen
 {code:'810',  name:'Röntgen 9×12',                                              cat:'Röntgen Aufnahmen',pkt:null,fix:6.74,  warn:true},
 {code:'811',  name:'Röntgen 10×10',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:8.72,  warn:true},
-{code:'812',  name:'Röntgen 13×18',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:7.95,  warn:true},
+{code:'812',  name:'Röntgen 13×18',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:7.95,  warn:true, svs:{code:'r5b',pkt:22,pktWert:0.5332}},
 {code:'813',  name:'Röntgen 18×24',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.09, warn:true},
 {code:'814',  name:'Röntgen 15×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.85, warn:true},
 {code:'815',  name:'Röntgen 24×30',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:11.78, warn:true},
@@ -628,7 +658,7 @@ const DB = [
 {code:'860',  name:'Nieren, Retroperitoneum, ggf. Harnwege, Blase, Prostata',  cat:'Sonographie',      pkt:60,  fix:null, warn:true},
 {code:'870',  name:'Weibl. Becken (Uterus, Adnexe, ggf. Blase)',               cat:'Sonographie',      pkt:50,  fix:null, warn:true},
 {code:'880',  name:'Männl. Becken (Blase, Prostata, ggf. Darmabschnitte)',     cat:'Sonographie',      pkt:38,  fix:null, warn:true},
-{code:'890',  name:'Ein Organ (z.B. GB+Gallenwege, beide Nieren, Uterus)',      cat:'Sonographie',      pkt:35,  fix:null, warn:true},
+{code:'890',  name:'Ein Organ (z.B. GB+Gallenwege, beide Nieren, Uterus)',      cat:'Sonographie',      pkt:35,  fix:null, warn:true, svs:{code:'US12',pkt:60,pktWert:0.5964}},
 {code:'892',  name:'Endovaginale Sonographie',                                  cat:'Sonographie',      pkt:42,  fix:null, warn:true},
 {code:'893',  name:'Transrektale Prostatasonographie',                          cat:'Sonographie',      pkt:42,  fix:null, warn:true},
 {code:'894',  name:'Sonographie Mamma (bei unklarem Mammographiebefund)',       cat:'Sonographie',      pkt:25,  fix:null, warn:true},
@@ -787,8 +817,11 @@ function populateCatSelects() {
 let state = {
   vorlagen: [],
   activeId: null,
+  kasse: 'oegk',
   settings: { pkt: 0.80, fak: 2.5, ruck: 80, name: '', adr: '', tel: '',
-              uvFak: {1:4.90, 2:3.85, 3:2.70, 4:2.00, 5:1.64} }
+              uvFak: {1:4.90, 2:3.85, 3:2.70, 4:2.00, 5:1.64},
+              bvaeb: {ruck:90, selbst:10},
+              svs: {ruck:80} }
 };
 
 // ── CALCULATIONS ──
@@ -796,6 +829,32 @@ function ks(pos)         { return pos.fix != null ? pos.fix : parseFloat(((pos.p
 function rueck(pos)      { return parseFloat((ks(pos)*state.settings.ruck/100).toFixed(4)); }
 function hon(pos, fak)   { return parseFloat((ks(pos)*(fak??state.settings.fak)).toFixed(4)); }
 function eigen(pos, fak) { return Math.max(0, parseFloat((hon(pos,fak)-rueck(pos)).toFixed(4))); }
+function ksK(dbPos) {
+  if (state.kasse === 'bvaeb') {
+    if (!dbPos.bva) return 0;
+    return dbPos.bva.fix != null ? dbPos.bva.fix : parseFloat(((dbPos.bva.pkt||0)*dbPos.bva.pktWert).toFixed(4));
+  }
+  if (state.kasse === 'svs') {
+    if (!dbPos.svs) return 0;
+    return dbPos.svs.fix != null ? dbPos.svs.fix : parseFloat(((dbPos.svs.pkt||0)*dbPos.svs.pktWert).toFixed(4));
+  }
+  return ks(dbPos);
+}
+function rueckK(dbPos) {
+  if (state.kasse === 'bvaeb') {
+    if (!dbPos.bva) return 0;
+    const b = state.settings.bvaeb || {ruck:90, selbst:10};
+    return parseFloat((ksK(dbPos) * (b.ruck/100) * (1 - b.selbst/100)).toFixed(4));
+  }
+  if (state.kasse === 'svs') {
+    if (!dbPos.svs) return 0;
+    const sv = state.settings.svs || {ruck:80};
+    return parseFloat((ksK(dbPos) * (sv.ruck/100)).toFixed(4));
+  }
+  return rueck(dbPos);
+}
+function eigenK(dbPos, fak) { return Math.max(0, parseFloat((hon(dbPos,fak)-rueckK(dbPos)).toFixed(4))); }
+function setKasse(k) { state.kasse = k; renderSidebar(); renderDetail(); renderKatalog(); }
 function fmt(v)     { return v.toFixed(2)+' €'; }
 function esc(s)     { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function uid()      { return Math.random().toString(36).slice(2,9); }
@@ -824,8 +883,10 @@ async function load() {
     const d = snap.data();
     state.vorlagen = d.vorlagen || [];
     const defUvFak = {1:4.90,2:3.85,3:2.70,4:2.00,5:1.64};
-    state.settings = Object.assign({pkt:0.80,fak:2.5,ruck:80,name:'',adr:'',tel:'',uvFak:defUvFak}, d.settings || {});
+    state.settings = Object.assign({pkt:0.80,fak:2.5,ruck:80,name:'',adr:'',tel:'',uvFak:defUvFak,bvaeb:{ruck:90,selbst:10},svs:{ruck:80}}, d.settings || {});
     if (!state.settings.uvFak) state.settings.uvFak = defUvFak;
+    state.settings.bvaeb = Object.assign({ruck:90,selbst:10}, state.settings.bvaeb||{});
+    state.settings.svs = Object.assign({ruck:80}, state.settings.svs||{});
   } else {
     initDefaults();
     await setDoc(doc(db, 'users', currentUser.uid), { vorlagen: state.vorlagen, settings: state.settings });
@@ -898,6 +959,11 @@ function applySettings() {
     const el = document.getElementById('s-uvk'+k);
     if (el) el.value = uvF[k] ?? [4.90,3.85,2.70,2.00,1.64][k-1];
   });
+  const b = s.bvaeb || {ruck:90, selbst:10};
+  document.getElementById('s-bvaeb-ruck').value = b.ruck;
+  document.getElementById('s-bvaeb-selbst').value = b.selbst;
+  const sv = s.svs || {ruck:80};
+  document.getElementById('s-svs-ruck').value = sv.ruck;
 }
 
 function detectConflicts(codes) {
@@ -938,7 +1004,7 @@ function sumV(v) {
     if (p.type==='free') { const b=(p.betrag||0)*q; hT+=b; eT+=b; return; }
     const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return;
     const fak = effFak(p);
-    ksT+=ks(dbPos)*q; rT+=rueck(dbPos)*q; hT+=hon(dbPos,fak)*q; eT+=eigen(dbPos,fak)*q;
+    ksT+=ksK(dbPos)*q; rT+=rueckK(dbPos)*q; hT+=hon(dbPos,fak)*q; eT+=eigenK(dbPos,fak)*q;
   });
   return {ks:ksT, r:rT, h:hT, e:eT};
 }
@@ -965,9 +1031,14 @@ function renderDetail() {
   document.getElementById('v-title').textContent = v.name;
   document.getElementById('v-color').value = v.color||'#185FA5';
   const t = sumV(v);
+  const kL = state.kasse==='bvaeb'?'BVAEB-Kassensatz':state.kasse==='svs'?'SVS-Kassensatz':'Kassensatz';
+  const rL = state.kasse==='bvaeb'?'BVAEB-Rückerstattung':state.kasse==='svs'?'SVS-Rückerstattung':'Rückerstattung';
+  document.getElementById('v-kasse').value = state.kasse||'oegk';
+  document.getElementById('ks-col-head').textContent = kL;
+  document.getElementById('ruck-col-head').textContent = rL;
   document.getElementById('metrics-bar').innerHTML = `
-    <div class="metric"><div class="metric-label">Kassensatz</div><div class="metric-val" style="color:var(--blue)">${fmt(t.ks)}</div></div>
-    <div class="metric"><div class="metric-label">Rückerstattung Patient</div><div class="metric-val" style="color:var(--green)">${fmt(t.r)}</div></div>
+    <div class="metric"><div class="metric-label">${kL}</div><div class="metric-val" style="color:var(--blue)">${fmt(t.ks)}</div></div>
+    <div class="metric"><div class="metric-label">${rL}</div><div class="metric-val" style="color:var(--green)">${fmt(t.r)}</div></div>
     <div class="metric"><div class="metric-label">Mein Honorar</div><div class="metric-val" style="color:var(--amber)">${fmt(t.h)}</div></div>
     <div class="metric"><div class="metric-label">Eigenanteil Patient</div><div class="metric-val" style="color:var(--red)">${fmt(t.e)}</div></div>`;
   // Conflict detection
@@ -1002,6 +1073,12 @@ function renderDetail() {
     }
     const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return '';
     const fak = effFak(p);
+    const kAvail = state.kasse==='oegk' || (state.kasse==='bvaeb'&&!!dbPos.bva) || (state.kasse==='svs'&&!!dbPos.svs);
+    const kasseCode = state.kasse==='bvaeb'&&dbPos.bva
+      ? `<div class="pos-code-wrap"><span class="pos-code">${esc(dbPos.bva.code)}</span><span class="pos-code-sub">ÖGK: ${esc(dbPos.code)}</span></div>`
+      : state.kasse==='svs'&&dbPos.svs
+        ? `<div class="pos-code-wrap"><span class="pos-code">${esc(dbPos.svs.code)}</span><span class="pos-code-sub">ÖGK: ${esc(dbPos.code)}</span></div>`
+        : `<span class="pos-code">${esc(dbPos.code)}</span>`;
     const wb = dbPos.warn ? `<span class="pill-warn"><i class="ti ti-alert-triangle"></i> SG</span>` : '';
     const noteText = NOTES[dbPos.code];
     const ni = noteText ? `<i class="ti ti-info-circle note-icon" title="${esc(noteText)}"></i>` : '';
@@ -1025,14 +1102,14 @@ function renderDetail() {
       ${p.uvKat ? uvSel : privInput}
     </div>`;
     return `<div class="pos-row">
-      <span class="pos-code">${esc(dbPos.code)}</span>${pktCell}
+      ${kasseCode}${pktCell}
       <span class="pos-name">${esc(dbPos.name)}${wb}${ni}</span>
       <input class="qty-input" type="number" min="1" max="99" value="${q}" onchange="window.updateQty('${v.id}',${i},this.value)">
       ${fakCell}
-      <span class="pos-num" style="color:var(--blue)">${fmt(ks(dbPos)*q)}</span>
-      <span class="pos-num" style="color:var(--green)">${fmt(rueck(dbPos)*q)}</span>
+      <span class="pos-num" style="color:var(--blue)">${kAvail?fmt(ksK(dbPos)*q):'—'}</span>
+      <span class="pos-num" style="color:var(--green)">${kAvail?fmt(rueckK(dbPos)*q):'—'}</span>
       <span class="pos-num" style="color:var(--amber)">${fmt(hon(dbPos,fak)*q)}</span>
-      <span class="pos-num" style="color:var(--red)">${fmt(eigen(dbPos,fak)*q)}</span>
+      <span class="pos-num" style="color:var(--red)">${kAvail?fmt(eigenK(dbPos,fak)*q):fmt(hon(dbPos,fak)*q)}</span>
       <button class="del-btn" onclick="window.removePos('${v.id}',${i})" title="Entfernen"><i class="ti ti-x"></i></button>
     </div>`;
   }).join('');
@@ -1054,14 +1131,15 @@ function renderKatalog() {
     const noteText = NOTES[d.code];
     const ni = noteText ? `<i class="ti ti-info-circle note-icon" title="${esc(noteText)}"></i>` : '';
     const canAdd = !!state.activeId;
+    const kA = state.kasse==='oegk' || (state.kasse==='bvaeb'&&!!d.bva) || (state.kasse==='svs'&&!!d.svs);
     html += `<div class="ct-row">
       <span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(d.code)}</span>
       <span style="font-size:13px">${esc(d.name)} ${wb}${ni}</span>
       <span style="text-align:right;font-size:12px;color:var(--text2)">${ps}</span>
-      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--blue)">${fmt(ks(d))}</span>
-      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--green)">${fmt(rueck(d))}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--blue)">${kA?fmt(ksK(d)):'—'}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--green)">${kA?fmt(rueckK(d)):'—'}</span>
       <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--amber)">${fmt(hon(d))}</span>
-      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--red)">${fmt(eigen(d))}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--red)">${kA?fmt(eigenK(d)):fmt(hon(d))}</span>
       <button class="add-btn" onclick="window.quickAdd('${d.code}')" ${canAdd?'':'disabled title="Zuerst Vorlage auswählen"'}>${canAdd?'+ Vorlage':'—'}</button>
     </div>`;
   });
@@ -1218,6 +1296,11 @@ function saveSettings() {
     const v = parseFloat(document.getElementById('s-uvk'+k)?.value);
     state.settings.uvFak[k] = isNaN(v) ? defs[k-1] : v;
   });
+  if (!state.settings.bvaeb) state.settings.bvaeb = {};
+  state.settings.bvaeb.ruck = parseFloat(document.getElementById('s-bvaeb-ruck').value)||90;
+  state.settings.bvaeb.selbst = parseFloat(document.getElementById('s-bvaeb-selbst').value)||10;
+  if (!state.settings.svs) state.settings.svs = {};
+  state.settings.svs.ruck = parseFloat(document.getElementById('s-svs-ruck').value)||80;
   save(); renderDetail(); renderKatalog();
 }
 function printNote() {
@@ -1227,7 +1310,7 @@ function printNote() {
   document.getElementById('print-header').innerHTML = `
     <div style="display:flex;justify-content:space-between;margin-bottom:12px">
       <div><strong>${esc(s.name||'Arzt / Ordination')}</strong><br>${esc(s.adr||'')}${s.adr?'<br>':''}${esc(s.tel||'')}</div>
-      <div style="text-align:right"><strong>Honorarnote</strong><br>Datum: ${today}<br>Vorlage: ${esc(v.name)}</div>
+      <div style="text-align:right"><strong>Honorarnote</strong><br>Datum: ${today}<br>Vorlage: ${esc(v.name)}<br>Kasse: ${state.kasse==='bvaeb'?'BVAEB':state.kasse==='svs'?'SVS':'ÖGK'}</div>
     </div>
     <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px">
       <thead><tr style="border-bottom:1px solid #000;font-weight:600">
@@ -1243,7 +1326,8 @@ function printNote() {
         }
         const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return '';
         const fak = (p.faktor != null && p.faktor > 0) ? p.faktor : undefined;
-        return `<tr style="border-bottom:0.5px solid #ddd"><td style="font-family:monospace">${esc(dbPos.code)}</td><td>${esc(dbPos.name)}</td><td style="text-align:right">${q}</td><td style="text-align:right">${fmt(ks(dbPos)*q)}</td><td style="text-align:right">${fmt(rueck(dbPos)*q)}</td><td style="text-align:right">${fmt(hon(dbPos,fak)*q)}</td><td style="text-align:right">${fmt(eigen(dbPos,fak)*q)}</td></tr>`;
+        const pKA = state.kasse==='oegk' || (state.kasse==='bvaeb'&&!!dbPos.bva) || (state.kasse==='svs'&&!!dbPos.svs);
+        return `<tr style="border-bottom:0.5px solid #ddd"><td style="font-family:monospace">${esc(dbPos.code)}</td><td>${esc(dbPos.name)}</td><td style="text-align:right">${q}</td><td style="text-align:right">${pKA?fmt(ksK(dbPos)*q):'—'}</td><td style="text-align:right">${pKA?fmt(rueckK(dbPos)*q):'—'}</td><td style="text-align:right">${fmt(hon(dbPos,fak)*q)}</td><td style="text-align:right">${pKA?fmt(eigenK(dbPos,fak)*q):fmt(hon(dbPos,fak)*q)}</td></tr>`;
       }).join('')}</tbody>
       <tfoot><tr style="border-top:2px solid #000;font-weight:600">
         <td colspan="3">Gesamt</td>
@@ -1251,7 +1335,7 @@ function printNote() {
         <td style="text-align:right">${fmt(t.h)}</td><td style="text-align:right">${fmt(t.e)}</td>
       </tr></tfoot>
     </table>
-    <div style="font-size:10px;color:#888">Punktewert: ${s.pkt.toFixed(2)} €/Pkt · Honorarfaktor: ${s.fak}× · Rückerstattungsquote: ${s.ruck}% · Honorartarif Vorarlberg, gültig ab 01.01.2025</div>`;
+    <div style="font-size:10px;color:#888">ÖGK-Punktewert: ${s.pkt.toFixed(2)} €/Pkt · Honorarfaktor: ${s.fak}× · ${state.kasse==='bvaeb'?`BVAEB: Ruck. ${(s.bvaeb||{ruck:90}).ruck}%, Selbstbehalt ${(s.bvaeb||{selbst:10}).selbst}%`:state.kasse==='svs'?`SVS: Ruck. ${(s.svs||{ruck:80}).ruck}%`:`ÖGK: Ruck. ${s.ruck}%`} · Honorartarif Vorarlberg 2025</div>`;
   window.print();
 }
 function switchTab(tab) {
@@ -1314,6 +1398,7 @@ window.renderModalList = renderModalList;
 window.saveSettings  = saveSettings;
 window.resetDefaults = resetDefaults;
 window.printNote     = printNote;
+window.setKasse      = setKasse;
 window.switchTab     = switchTab;
 window.signIn        = signIn;
 window.logOut        = logOut;
