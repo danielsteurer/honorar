@@ -1048,7 +1048,7 @@ function updateKatCatFilter(kk) {
         if (kk==='svs')   return !!d.svs;
         return !d.kasseOnly;
       })
-      .map(d => d.cat)
+      .map(d => kk==='bvaeb' ? (d.bva?.cat||d.cat) : kk==='svs' ? (d.svs?.cat||d.cat) : d.cat)
   );
   const opts = GRP_ORDER.filter(g => available.has(g))
     .map(g => `<option value="${g}">${catLabel(g, kk)}</option>`).join('');
@@ -1467,7 +1467,8 @@ function renderKatalog() {
     if (kk==='bvaeb' && !d.bva) return false;
     if (kk==='svs'   && !d.svs) return false;
     if (kk==='oegk'  && d.kasseOnly) return false;
-    if (cat && d.cat!==cat) return false;
+    const effCat = kk==='bvaeb' ? (d.bva?.cat||d.cat) : kk==='svs' ? (d.svs?.cat||d.cat) : d.cat;
+    if (cat && effCat!==cat) return false;
     if (q) {
       const nc = kk==='bvaeb'&&d.bva ? d.bva.code.toLowerCase() : kk==='svs'&&d.svs ? d.svs.code.toLowerCase() : '';
       if (!d.code.toLowerCase().includes(q) && !nc.includes(q) && !d.name.toLowerCase().includes(q)) return false;
@@ -1476,7 +1477,8 @@ function renderKatalog() {
   });
   let html=''; let lastCat='';
   fl.forEach(d => {
-    if (d.cat!==lastCat) { html+=`<div class="ct-grp">${esc(catLabel(d.cat, kk))}</div>`; lastCat=d.cat; }
+    const effCat = kk==='bvaeb' ? (d.bva?.cat||d.cat) : kk==='svs' ? (d.svs?.cat||d.cat) : d.cat;
+    if (effCat!==lastCat) { html+=`<div class="ct-grp">${esc(catLabel(effCat, kk))}</div>`; lastCat=effCat; }
     const nc = kk==='bvaeb'&&d.bva ? d.bva.code : kk==='svs'&&d.svs ? d.svs.code : d.code;
     const ogkSub = d.kasseOnly ? '' : `<span style="font-size:9px;color:var(--text3)">ÖGK: ${esc(d.code)}</span>`;
     const uvKatKey = d._uvKat ?? UV_DEFAULT_KAT[d.code];
@@ -1782,8 +1784,16 @@ window.logOut        = logOut;
 let peEditCode = null;
 
 function populatePeCat() {
-  const sel = document.getElementById('pe-cat');
-  sel.innerHTML = GRP_ORDER.map(g => `<option value="${g}">${GRP_LABEL[g]||g}</option>`).join('');
+  document.getElementById('pe-cat').innerHTML =
+    GRP_ORDER.map(g => `<option value="${g}">${GRP_LABEL[g]||g}</option>`).join('');
+  const bvaKeys = GRP_ORDER.filter(g => g in BVA_CAT_LABEL);
+  document.getElementById('pe-bva-cat').innerHTML =
+    '<option value="">— wie ÖGK-Kategorie —</option>' +
+    bvaKeys.map(g => `<option value="${g}">${BVA_CAT_LABEL[g]}</option>`).join('');
+  const svsKeys = GRP_ORDER.filter(g => g in SVS_CAT_LABEL);
+  document.getElementById('pe-svs-cat').innerHTML =
+    '<option value="">— wie ÖGK-Kategorie —</option>' +
+    svsKeys.map(g => `<option value="${g}">${SVS_CAT_LABEL[g]}</option>`).join('');
 }
 
 function openPosNew() {
@@ -1824,6 +1834,7 @@ function resetPosForm() {
   document.getElementById('pe-fix').value = '';
   document.getElementById('pe-bva-aktiv').checked = false;
   updatePeBvaFields(false);
+  document.getElementById('pe-bva-cat').value = '';
   document.getElementById('pe-bva-code').value = '';
   document.querySelector('[name="pe-bva-type"][value="pkt"]').checked = true;
   updatePeBvaType('pkt');
@@ -1832,6 +1843,7 @@ function resetPosForm() {
   document.getElementById('pe-bva-grp').value = '2';
   document.getElementById('pe-svs-aktiv').checked = false;
   updatePeSvsFields(false);
+  document.getElementById('pe-svs-cat').value = '';
   document.getElementById('pe-svs-code').value = '';
   document.querySelector('[name="pe-svs-type"][value="pkt"]').checked = true;
   updatePeSvsType('pkt');
@@ -1862,6 +1874,7 @@ function fillPosForm(pos) {
   }
   if (pos.bva) {
     document.getElementById('pe-bva-aktiv').checked = true;
+    document.getElementById('pe-bva-cat').value  = pos.bva.cat||'';
     document.getElementById('pe-bva-code').value = pos.bva.code||'';
     if (pos.bva.fix != null) {
       document.querySelector('[name="pe-bva-type"][value="fix"]').checked = true;
@@ -1881,6 +1894,7 @@ function fillPosForm(pos) {
   }
   if (pos.svs) {
     document.getElementById('pe-svs-aktiv').checked = true;
+    document.getElementById('pe-svs-cat').value  = pos.svs.cat||'';
     document.getElementById('pe-svs-code').value = pos.svs.code||'';
     if (pos.svs.fix != null) {
       document.querySelector('[name="pe-svs-type"][value="fix"]').checked = true;
@@ -1939,16 +1953,20 @@ function savePosEdit() {
     const bvaCode = document.getElementById('pe-bva-code').value.trim();
     const bvaType = document.querySelector('[name="pe-bva-type"]:checked').value;
     const bvaPwMap = {1:1.3567,2:1.2194,3:1.1104,4:1.2892};
+    const bvaCat = document.getElementById('pe-bva-cat').value;
     if (bvaType==='fix') bva = {code:bvaCode, fix:parseFloat(document.getElementById('pe-bva-fix').value)||0};
     else bva = {code:bvaCode, pkt:parseFloat(document.getElementById('pe-bva-pkt').value)||0, pktWert:bvaPwMap[document.getElementById('pe-bva-grp').value]||1.2194};
+    if (bvaCat) bva.cat = bvaCat;
   }
   let svs = null;
   if (document.getElementById('pe-svs-aktiv').checked) {
     const svsCode = document.getElementById('pe-svs-code').value.trim();
     const svsType = document.querySelector('[name="pe-svs-type"]:checked').value;
     const svsPwMap = {1:0.7989,2:0.5480,3:0.5438};
+    const svsCat = document.getElementById('pe-svs-cat').value;
     if (svsType==='fix') svs = {code:svsCode, fix:parseFloat(document.getElementById('pe-svs-fix').value)||0};
     else svs = {code:svsCode, pkt:parseFloat(document.getElementById('pe-svs-pkt').value)||0, pktWert:svsPwMap[document.getElementById('pe-svs-grp').value]||0.7989};
+    if (svsCat) svs.cat = svsCat;
   }
   const koVal = document.getElementById('pe-kasseonly').value;
   let kasseOnly = null;
@@ -2093,6 +2111,10 @@ document.getElementById('rename-input').addEventListener('keydown', e => {
         </label>
       </div>
       <div id="pe-bva-fields" style="display:none;margin-top:10px">
+        <div style="margin-bottom:8px">
+          <div class="pe-label">BVA-Kapitel (Kategorie)</div>
+          <select class="pe-grp-sel" id="pe-bva-cat"></select>
+        </div>
         <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;margin-bottom:8px">
           <div>
             <div class="pe-label">BVA-Code</div>
@@ -2132,6 +2154,10 @@ document.getElementById('rename-input').addEventListener('keydown', e => {
         </label>
       </div>
       <div id="pe-svs-fields" style="display:none;margin-top:10px">
+        <div style="margin-bottom:8px">
+          <div class="pe-label">SVS-Kapitel (Kategorie)</div>
+          <select class="pe-grp-sel" id="pe-svs-cat"></select>
+        </div>
         <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;margin-bottom:8px">
           <div>
             <div class="pe-label">SVS-Code</div>
