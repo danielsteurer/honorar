@@ -416,14 +416,15 @@ const DB = [
 // A/01/01 Ordination AM
 {code:'10',   name:'Erste Ordination',                                          cat:'Ordination AM',    pkt:20,  fix:null, bva:{code:'A1',pkt:20,pktWert:1.3567}, svs:{code:'A1',pkt:26,pktWert:0.7989}},
 {code:'11',   name:'Jede weitere Ordination',                                   cat:'Ordination AM',    pkt:10,  fix:null, bva:{code:'A2',pkt:11.5,pktWert:1.3567}, svs:{code:'A2',pkt:18,pktWert:0.7989}},
-{code:'12',   name:'ZUSCHLAG Sofortbehandlung Akutfall außerh. OZ',             cat:'Ordination AM',    pkt:4,   fix:null},
-{code:'13',   name:'ZUSCHLAG Ordination Wochenende/Feiertag (Dringlichkeit)',   cat:'Ordination AM',    pkt:10,  fix:null},
-{code:'14',   name:'ZUSCHLAG Nacht (20:00–7:00 Uhr)',                           cat:'Ordination AM',    pkt:10,  fix:null},
+{code:'12',   name:'ZUSCHLAG Sofortbehandlung Akutfall außerh. OZ',             cat:'Ordination AM',    pkt:4,   fix:null, svs:{code:'A3',pkt:18,pktWert:0.7989}},
+{code:'13',   name:'ZUSCHLAG Ordination Wochenende/Feiertag (Dringlichkeit)',   cat:'Ordination AM',    pkt:10,  fix:null, svs:{code:'A4',pkt:18,pktWert:0.7989}},
+{code:'14',   name:'ZUSCHLAG Nacht (20:00–7:00 Uhr)',                           cat:'Ordination AM',    pkt:10,  fix:null, svs:{code:'A5',pkt:27,pktWert:0.7989}},
 {code:'15',   name:'Rezept (ohne Ordination)',                                  cat:'Ordination AM',    pkt:4,   fix:null},
 {code:'16',   name:'Ordination Wochend(Feiertags)dienst (zusätzl. Pauschale)', cat:'Ordination AM',    pkt:4,   fix:37.20},
 {code:'18NZ', name:'Weitere Ordination via KH-Zuweisung',                      cat:'Ordination AM',    pkt:18,  fix:null, bva:{code:'A2',pkt:11.5,pktWert:1.3567}, svs:{code:'A2',pkt:18,pktWert:0.7989}},
 {code:'18EZ', name:'Erste Ordination via KH-Zuweisung',                        cat:'Ordination AM',    pkt:26,  fix:null, bva:{code:'A1',pkt:20,pktWert:1.3567}, svs:{code:'A1',pkt:26,pktWert:0.7989}},
 {code:'18',   name:'Erste Ordination via ärztl. Zuweisung (mit Befundbericht)',cat:'Ordination AM',    pkt:26,  fix:null, bva:{code:'A1',pkt:20,pktWert:1.3567}, svs:{code:'A1',pkt:26,pktWert:0.7989}},
+{code:'SC1',  name:'Senioren-Check (Patienten ab 70. Lebensjahr)',               cat:'Ordination AM',    pkt:null,fix:null, kasseOnly:['svs'], svs:{code:'SC1',pkt:32.8,pktWert:0.7989}},
 // A/01/02 Krankenbesuche AM
 {code:'20',   name:'Krankenbesuch (1. und jeder weitere)',                      cat:'Krankenbesuch AM', pkt:42,  fix:24.80},
 {code:'21',   name:'ZUSCHLAG dringender Krankenbesuch',                         cat:'Krankenbesuch AM', pkt:10,  fix:null},
@@ -433,11 +434,12 @@ const DB = [
 {code:'25',   name:'Krankenbesuch Wochend(Feiertags)dienst (zusätzl. Pauschale)',cat:'Krankenbesuch AM',pkt:4,  fix:86.81},
 // A/01/03 Zeitversäumnis
 {code:'30',   name:'Zeitversäumnis bei Tag (je angefangene 30 min)',            cat:'Zeitversäumnis',   pkt:20,  fix:null},
-{code:'31',   name:'Zeitversäumnis bei Nacht (je angefangene 30 min)',          cat:'Zeitversäumnis',   pkt:40,  fix:null},
+{code:'31',   name:'Zeitversäumnis bei Nacht (je angefangene 30 min)',          cat:'Zeitversäumnis',   pkt:40,  fix:null, svs:{code:'3b',pkt:40,pktWert:0.7989}},
 {code:'32LC', name:'Ärztl. Gespräch Long Covid (1× pro Patient)',               cat:'Zeitversäumnis',   pkt:14,  fix:null},
 {code:'32',   name:'Ärztl. Gespräch (je angefangene 15 min, ab 16. Min.)',      cat:'Zeitversäumnis',   pkt:14,  fix:null, bva:{code:'C1',pkt:8,pktWert:1.2194}, svs:{code:'3a',pkt:20,pktWert:0.7989}},
-{code:'33',   name:'Psychosomatisches Gespräch, je 20 min (ÖÄK-Diplom)',       cat:'Zeitversäumnis',   pkt:35,  fix:null, warn:true},
+{code:'33',   name:'Psychosomatisches Gespräch, je 20 min (ÖÄK-Diplom)',       cat:'Zeitversäumnis',   pkt:35,  fix:null, warn:true, svs:{code:'PS',fix:25.57}},
 {code:'34',   name:'Koordinierungszuschlag AM (1×/Quartal, max. 5% der Fälle)',cat:'Zeitversäumnis',   pkt:null,fix:24.80, bva:{code:'J1',pkt:null,fix:18.412}, svs:{code:'1j',pkt:23,pktWert:0.7989}},
+{code:'TA',   name:'Ausführliche diagnostisch-therapeutische Aussprache',        cat:'Zeitversäumnis',   pkt:null,fix:null, kasseOnly:['svs'], svs:{code:'TA',pkt:25,pktWert:0.7989}},
 // A/01/04 Konsilium
 {code:'40',   name:'Konsilium bei Tag – Berufener',                             cat:'Konsilium',        pkt:40,  fix:null, bva:{code:'D1',pkt:15,pktWert:1.2194}, svs:{code:'4a',pkt:30,pktWert:0.7989}},
 {code:'41',   name:'Konsilium bei Tag – Berufender',                            cat:'Konsilium',        pkt:30,  fix:null, bva:{code:'D1',pkt:15,pktWert:1.2194}, svs:{code:'4a',pkt:30,pktWert:0.7989}},
@@ -536,12 +538,12 @@ const DB = [
 {code:'227',  name:'Sondierung einer Fistel',                                   cat:'Sonstige Verrichten.',pkt:4, fix:null},
 {code:'228',  name:'Konservative Behandlung von Hernien, je Sitzung',           cat:'Sonstige Verrichten.',pkt:6, fix:null},
 {code:'229',  name:'Erhebung des Venenstatus (Trendelenburg, Dokumentation)',   cat:'Sonstige Verrichten.',pkt:10,fix:null},
-{code:'230',  name:'Ausführlicher ärztl. Befundbericht (kassenärztl. Bereich)', cat:'Sonstige Verrichten.',pkt:6, fix:null},
+{code:'230',  name:'Ausführlicher ärztl. Befundbericht (kassenärztl. Bereich)', cat:'Sonstige Verrichten.',pkt:6, fix:null, svs:{code:'3c',pkt:15,pktWert:0.7989}},
 {code:'231',  name:'Nicht direktionale Ultraschall-Dopplermessung distaler Arteriendrücke (beide Beine)',cat:'Sonstige Verrichten.',pkt:15,fix:null},
 {code:'235',  name:'Wechsel von Magenaustauschsonden (Gastrotube)',             cat:'Sonstige Verrichten.',pkt:14,fix:null},
 {code:'236',  name:'Wechsel von suprapubischen Blasenkathetern',                cat:'Sonstige Verrichten.',pkt:14,fix:null},
 {code:'237',  name:'Nadelakupunktur (ÄK-Diplom Akupunktur erforderlich)',       cat:'Sonstige Verrichten.',pkt:20,fix:null,warn:true},
-{code:'239',  name:'Heilmittelberatungsgespräch (max. 15% der Fälle)',          cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'239',  name:'Heilmittelberatungsgespräch (max. 15% der Fälle)',          cat:'Sonstige Verrichten.',pkt:10,fix:null, svs:{code:'HMG',fix:12.78}},
 // A/04/01 Wundversorgung
 {code:'290',  name:'Wunde mit Naht und Verband (eine Naht)',                    cat:'Wundversorgung',   pkt:20,  fix:null},
 {code:'291',  name:'Kleine Wunde mit Butterfly oder Gewebekleber',              cat:'Wundversorgung',   pkt:10,  fix:null},
@@ -554,6 +556,7 @@ const DB = [
 {code:'303',  name:'Entfernung eines Finger- oder Zehennagels',                 cat:'Operative Eingriffe',pkt:20,fix:null},
 {code:'304',  name:'Bluttransfusion mit Konserve',                              cat:'Operative Eingriffe',pkt:30,fix:null},
 {code:'305',  name:'Incision nach Krampfadernverödung und Thrombektomie',       cat:'Operative Eingriffe',pkt:5, fix:null},
+{code:'26i',  name:'Chirodiagnostik und Chirotherapie AM (max. 5×/Quartal)',    cat:'Operative Eingriffe',pkt:null,fix:null, kasseOnly:['svs'], svs:{code:'26i',pkt:40,pktWert:0.7989}},
 // A/04/03 Verbände
 {code:'310',  name:'Größerer Verband (Kopf, Schulter, Becken; Zinkleimbinde)',  cat:'Verbände',         pkt:14,  fix:null},
 {code:'311',  name:'Gipsverband Hand und Unterarm',                             cat:'Verbände',         pkt:30,  fix:null},
@@ -590,12 +593,12 @@ const DB = [
 // A/07/01 EKG
 {code:'400',  name:'Ruhe-EKG (Standard, Goldberger)',                           cat:'EKG',              pkt:10,  fix:null, warn:true},
 {code:'401',  name:'Ruhe-EKG + 3 Brustwandableitungen',                        cat:'EKG',              pkt:15,  fix:null, warn:true},
-{code:'402',  name:'Ruhe-EKG + 6 Brustwandableitungen',                        cat:'EKG',              pkt:20,  fix:null, warn:true},
+{code:'402',  name:'Ruhe-EKG + 6 Brustwandableitungen',                        cat:'EKG',              pkt:20,  fix:null, warn:true, svs:{code:'34a',pkt:69,pktWert:0.7989}},
 {code:'403',  name:'Ergometrie + Ruhe-EKG (Genehmigung erforderlich)',          cat:'EKG',              pkt:80,  fix:null, warn:true},
 {code:'404',  name:'ZUSCHLAG EKG am Krankenbett',                               cat:'EKG',              pkt:20,  fix:null, warn:true},
 {code:'405',  name:'Rheokardiographie, Apexcardiographie, Carotispulskurve',    cat:'EKG',              pkt:40,  fix:null},
 {code:'408',  name:'Orthostaseprüfung nach Schellong',                          cat:'EKG',              pkt:10,  fix:null},
-{code:'415',  name:'24h-Blutdruckmonitoring (Sondergenehmigung / Therapiekontrolle AM)',cat:'EKG',      pkt:50,  fix:null, warn:true},
+{code:'415',  name:'24h-Blutdruckmonitoring (Sondergenehmigung / Therapiekontrolle AM)',cat:'EKG',      pkt:50,  fix:null, warn:true, svs:{code:'34e',pkt:65,pktWert:0.7989}},
 // A/11 Physikalische Behandlung (AM)
 {code:'500',  name:'Manuelle Teilmassage (mind. 10 min)',                       cat:'Physikalisch',     pkt:8,   fix:null},
 {code:'501',  name:'Apparatmassage (mind. 10 min)',                             cat:'Physikalisch',     pkt:4,   fix:null},
@@ -788,6 +791,40 @@ const BVAEB_NOTES = {
   '13b': 'Intravenöse Dauertropfinfusion · Dokumentationspflicht',
 };
 
+// SVS-spezifische Limitierungen (nach SVS Gesamtvertrag, Stand 01.01.2026)
+const SVS_NOTES = {
+  'A1':  'Erste Ordination · 1× im Monat · Nicht neben B1 verrechenbar',
+  'A2':  'Weitere Ordination · Nicht mit A1 kombinierbar',
+  'A3':  'Zuschlag Ordination außerhalb der Sprechstunde · Nur bei ärztl. dringenden Fällen ohne festgesetzte Ordinationszeiten',
+  'A4':  'Zuschlag Ordination Sonn-/Feiertag · Nur bei ärztl. Dringlichkeit',
+  'A5':  'Zuschlag Ordination bei Nacht (20:00–07:00) · Von A3–A5 je Ordination nur der höchstwertige Zuschlag verrechenbar',
+  'SC1': 'Senioren-Check · 1× pro Kalenderjahr · Nur für Patienten ab vollendetem 70. Lebensjahr · Nicht gleichzeitig mit TA oder HMG',
+  'B1':  'Erster Krankenbesuch · 1× im Monat · Nicht neben A1 verrechenbar',
+  'B2':  'Weiterer Krankenbesuch',
+  '3a':  'Zeitversäumnis Krankenbesuch bei Tag · Je angefangene ½ Stunde',
+  '3b':  'Zeitversäumnis Krankenbesuch bei Nacht (20:00–07:00) · Je angefangene ½ Stunde',
+  '3c':  'Ausführlicher Befundbericht · Mindestinhalt: Anamnese, Status, Diagnose, Therapievorschlag · Nur bei Überweisung oder auf Verlangen des Hausarztes',
+  '1j':  'Koordinierung · 1× pro Fall und Abrechnungszeitraum · Max. 15 % der Fälle pro Jahr · Dokumentationspflicht',
+  '4a':  'Konsilium bei Tag · Berufener Arzt ist anzuführen',
+  '4b':  'Konsilium bei Nacht',
+  'TA':  'Ausführliche therapeutische Aussprache · 25 Pkt · 10–15 Min. · Max. 33 % der Fälle/Quartal (AM) · Nicht gleichzeitig mit PS, 1j oder HMG',
+  'HMG': 'Heilmittelberatungsgespräch · € 12,78 fix · Max. 12 % der Fälle/Abrechnungszeitraum · Nicht gleichzeitig mit TA',
+  'PS':  'Psychosomatisch orientiertes D+B-Gespräch · € 25,57 fix · ÖÄK-Diplom Psychosom. Medizin erforderlich · Max. 30 % der Fälle/Quartal',
+  '10a': 'Blutabnahme aus der Vene',
+  '11b': 'Intramuskuläre Injektion',
+  '11c': 'Intravenöse Injektion · Bei Serieninjektionsbehandlung ab 4. Injektion: nur 4 Pkt',
+  '11u': 'Periarticuläre Gelenksumspritzung (ein großes oder mehrere kleine Gelenke)',
+  '11v': 'Intraarticuläre Injektion (große Gelenke) · Je Gelenk max. 6 Injektionen/Abrechnungszeitraum',
+  '12a': 'Subcutane Infiltration · Max. 20 pro Behandlungsfall (darüber hinaus med. Begründung)',
+  '12b': 'Intramuskuläre Infiltration · Max. 20 pro Behandlungsfall',
+  '13b': 'Intravenöse Infusion · Max. 20 pro Behandlungsfall (darüber hinaus med. Begründung)',
+  '26i': 'Chirodiagnostik und Chirotherapie · Ausbildungsnachweis erforderlich · Max. 5 Sitzungen pro Patient und Quartal',
+  '34a': 'EKG in Ruhe (12 Ableitungen: I–III, AVR, AVL, AVF, V1–6) · Dokumentationspflicht',
+  '34e': '24-Stunden-Blutdruckmonitoring · Max. 15 % der Fälle pro Arzt und Monat · Befund 3 Jahre aufzubewahren',
+  'r5b': 'Röntgenaufnahme (13×18 cm) · Punktewert A.XIII: 0,5438 €/Pkt (ab 01.01.2026)',
+  'US12':'Sonographie ein Organ · Punktewert A.XI: 0,5480 €/Pkt (ab 01.01.2026)',
+};
+
 const CONFLICTS_WITH = {
   '15':  ['10','11','18','18NZ','18EZ'],
   '400': ['403'], '401': ['403'], '402': ['403'],
@@ -857,7 +894,7 @@ let state = {
 // ── CALCULATIONS ──
 function ks(pos)         { return pos.fix != null ? pos.fix : parseFloat(((pos.pkt||0)*state.settings.pkt).toFixed(4)); }
 function rueck(pos)      { return parseFloat((ks(pos)*state.settings.ruck/100).toFixed(4)); }
-function hon(pos, fak)   { return parseFloat((ks(pos)*(fak??state.settings.fak)).toFixed(4)); }
+function hon(pos, fak)   { let b=ks(pos); if(b===0&&pos.kasseOnly)b=ksK(pos,pos.kasseOnly[0]); return parseFloat((b*(fak??state.settings.fak)).toFixed(4)); }
 function eigen(pos, fak) { return Math.max(0, parseFloat((hon(pos,fak)-rueck(pos)).toFixed(4))); }
 function ksK(dbPos, kasse) {
   const k = kasse ?? state.kasse;
@@ -1023,6 +1060,12 @@ function detectConflicts(codes) {
   return conflicts;
 }
 function kasseCovBadges(d) {
+  if (d.kasseOnly) {
+    const k = d.kasseOnly[0];
+    const col = k==='svs'?'var(--green)':k==='bvaeb'?'var(--violet)':'var(--text2)';
+    const lbl = k==='svs'?'Nur SVS':k==='bvaeb'?'Nur BVA':k.toUpperCase();
+    return `<div style="display:flex;gap:3px;margin-top:1px"><span style="font-size:8px;font-weight:700;letter-spacing:.03em;color:${col}">${lbl}</span></div>`;
+  }
   const b = `<span style="font-size:8px;font-weight:700;letter-spacing:.03em;color:${d.bva?'var(--violet)':'var(--border2)'}">BVA</span>`;
   const s = `<span style="font-size:8px;font-weight:700;letter-spacing:.03em;color:${d.svs?'var(--green)':'var(--border2)'}">SVS</span>`;
   return `<div style="display:flex;gap:3px;margin-top:1px">${b}${s}</div>`;
@@ -1111,19 +1154,25 @@ function renderDetail() {
     }
     const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return '';
     const fak = effFak(p);
-    const kAvail = state.kasse==='oegk' || (state.kasse==='bvaeb'&&!!dbPos.bva) || (state.kasse==='svs'&&!!dbPos.svs);
+    const kAvail = (!dbPos.kasseOnly&&state.kasse==='oegk') || (state.kasse==='bvaeb'&&!!dbPos.bva) || (state.kasse==='svs'&&!!dbPos.svs);
     const codeTop = state.kasse==='bvaeb'&&dbPos.bva
       ? `<div class="pos-code-wrap"><span class="pos-code">${esc(dbPos.bva.code)}</span><span class="pos-code-sub">ÖGK: ${esc(dbPos.code)}</span></div>`
       : state.kasse==='svs'&&dbPos.svs
-        ? `<div class="pos-code-wrap"><span class="pos-code">${esc(dbPos.svs.code)}</span><span class="pos-code-sub">ÖGK: ${esc(dbPos.code)}</span></div>`
+        ? dbPos.kasseOnly
+          ? `<span class="pos-code">${esc(dbPos.svs.code)}</span>`
+          : `<div class="pos-code-wrap"><span class="pos-code">${esc(dbPos.svs.code)}</span><span class="pos-code-sub">ÖGK: ${esc(dbPos.code)}</span></div>`
         : `<span class="pos-code">${esc(dbPos.code)}</span>`;
     const kasseCode = `<div style="display:flex;flex-direction:column;gap:2px">${codeTop}${kasseCovBadges(dbPos)}</div>`;
     const wb = dbPos.warn ? `<span class="pill-warn"><i class="ti ti-alert-triangle"></i> SG</span>` : '';
-    const noteText = state.kasse==='bvaeb'&&dbPos.bva&&BVAEB_NOTES[dbPos.bva.code] ? BVAEB_NOTES[dbPos.bva.code] : NOTES[dbPos.code];
+    const noteText = state.kasse==='bvaeb'&&dbPos.bva&&BVAEB_NOTES[dbPos.bva.code] ? BVAEB_NOTES[dbPos.bva.code]
+      : state.kasse==='svs'&&dbPos.svs&&SVS_NOTES[dbPos.svs.code] ? SVS_NOTES[dbPos.svs.code]
+      : NOTES[dbPos.code];
     const ni = noteText ? `<i class="ti ti-info-circle note-icon" title="${esc(noteText)}"></i>` : '';
-    const pktCell = dbPos.fix != null
-      ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right;font-size:9px">€ ${dbPos.fix.toFixed(2)}</span>`
-      : `<span class="pos-num" style="color:var(--text3);text-align:right;font-size:9px">${dbPos.pkt} Pkt</span>`;
+    const pktCell = dbPos.kasseOnly
+      ? (dbPos.svs?.fix!=null ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right;font-size:9px">€ ${dbPos.svs.fix.toFixed(2)}</span>` : `<span class="pos-num" style="color:var(--text3);text-align:right;font-size:9px">${dbPos.svs?.pkt??'?'} Pkt</span>`)
+      : dbPos.fix != null
+        ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right;font-size:9px">€ ${dbPos.fix.toFixed(2)}</span>`
+        : `<span class="pos-num" style="color:var(--text3);text-align:right;font-size:9px">${dbPos.pkt} Pkt</span>`;
     const uvF = state.settings.uvFak || {1:4.90,2:3.85,3:2.70,4:2.00,5:1.64};
     const uvSel = `<select class="uvkat-sel${p.uvKat?' assigned':''}" onchange="window.updateUvKat('${v.id}',${i},this.value)" title="${p.uvKat ? UV_KAT[p.uvKat].label : ''}">
            <option value="0" ${!p.uvKat?'selected':''}>–</option>
@@ -1166,6 +1215,7 @@ function renderKatalog() {
   const fl = DB.filter(d => {
     if (kk==='bvaeb' && !d.bva) return false;
     if (kk==='svs'   && !d.svs) return false;
+    if (kk==='oegk'  && d.kasseOnly) return false;
     if (cat && d.cat!==cat) return false;
     if (q) {
       const nc = kk==='bvaeb'&&d.bva ? d.bva.code.toLowerCase() : kk==='svs'&&d.svs ? d.svs.code.toLowerCase() : '';
@@ -1177,13 +1227,16 @@ function renderKatalog() {
   fl.forEach(d => {
     if (d.cat!==lastCat) { html+=`<div class="ct-grp">${esc(GRP_LABEL[d.cat]||d.cat)}</div>`; lastCat=d.cat; }
     const nc = kk==='bvaeb'&&d.bva ? d.bva.code : kk==='svs'&&d.svs ? d.svs.code : d.code;
+    const ogkSub = d.kasseOnly ? '' : `<span style="font-size:9px;color:var(--text3)">ÖGK: ${esc(d.code)}</span>`;
     const codeDiv = kk!=='oegk'
-      ? `<div style="display:flex;flex-direction:column;gap:1px"><span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(nc)}</span><span style="font-size:9px;color:var(--text3)">ÖGK: ${esc(d.code)}</span>${kasseCovBadges(d)}${UV_DEFAULT_KAT[d.code]?`<span style="font-size:9px;font-weight:600;color:var(--amber)">${UV_KAT[UV_DEFAULT_KAT[d.code]].short}</span>`:''}</div>`
+      ? `<div style="display:flex;flex-direction:column;gap:1px"><span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(nc)}</span>${ogkSub}${kasseCovBadges(d)}${UV_DEFAULT_KAT[d.code]?`<span style="font-size:9px;font-weight:600;color:var(--amber)">${UV_KAT[UV_DEFAULT_KAT[d.code]].short}</span>`:''}</div>`
       : `<div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(d.code)}</span>${kasseCovBadges(d)}${UV_DEFAULT_KAT[d.code]?`<span style="font-size:9px;font-weight:600;color:var(--amber);letter-spacing:.02em">${UV_KAT[UV_DEFAULT_KAT[d.code]].short}</span>`:''}</div>`;
     const kd = kk==='bvaeb'?d.bva:kk==='svs'?d.svs:null;
     const ps = kd ? (kd.fix!=null ? fmt(kd.fix)+' fix' : `${kd.pkt||0} Pkt`) : (d.fix!=null ? fmt(d.fix)+' fix' : `${d.pkt||0} Pkt`);
     const wb = d.warn ? `<span class="pill-warn">⚠ SG</span>` : '';
-    const noteText = kk==='bvaeb'&&d.bva&&BVAEB_NOTES[d.bva.code] ? BVAEB_NOTES[d.bva.code] : NOTES[d.code];
+    const noteText = kk==='bvaeb'&&d.bva&&BVAEB_NOTES[d.bva.code] ? BVAEB_NOTES[d.bva.code]
+      : kk==='svs'&&d.svs&&SVS_NOTES[d.svs.code] ? SVS_NOTES[d.svs.code]
+      : NOTES[d.code];
     const ni = noteText ? `<i class="ti ti-info-circle note-icon" title="${esc(noteText)}"></i>` : '';
     const canAdd = !!state.activeId;
     html += `<div class="ct-row">
