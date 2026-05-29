@@ -1000,6 +1000,24 @@ function populateCatSelects() {
   });
 }
 
+function updateKatCatFilter(kk) {
+  const el = document.getElementById('kat-cat');
+  const prev = el.value;
+  const available = new Set(
+    getDB()
+      .filter(d => {
+        if (kk==='bvaeb') return !!d.bva;
+        if (kk==='svs')   return !!d.svs;
+        return !d.kasseOnly;
+      })
+      .map(d => d.cat)
+  );
+  const opts = GRP_ORDER.filter(g => available.has(g))
+    .map(g => `<option value="${g}">${GRP_LABEL[g]||g}</option>`).join('');
+  el.innerHTML = '<option value="">Alle Gruppen</option>' + opts;
+  el.value = available.has(prev) ? prev : '';
+}
+
 // ── STATE ──
 let state = {
   vorlagen: [],
@@ -1076,7 +1094,7 @@ function rueckK(dbPos, kasse) {
 }
 function eigenK(dbPos, fak, kasse) { return Math.max(0, parseFloat((hon(dbPos,fak)-rueckK(dbPos, kasse)).toFixed(4))); }
 function setKasse(k) { state.kasse = k; renderSidebar(); renderDetail(); renderKatalog(); }
-function setKatKasse(k) { state.katKasse = k; renderKatalog(); }
+function setKatKasse(k) { state.katKasse = k; updateKatCatFilter(k); renderKatalog(); }
 function fmt(v)     { return v.toFixed(2)+' €'; }
 function esc(s)     { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function uid()      { return Math.random().toString(36).slice(2,9); }
@@ -1664,7 +1682,7 @@ function switchTab(tab) {
     if (t==='settings' && t===tab) el.style.flexDirection='row';
   });
   document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.tab===tab));
-  if (tab==='katalog') renderKatalog();
+  if (tab==='katalog') { updateKatCatFilter(state.katKasse||'oegk'); renderKatalog(); }
 }
 
 // ── AUTH ──
