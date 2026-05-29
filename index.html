@@ -770,6 +770,44 @@ const GRP_LABEL = {
   'Röntgen Honorar':'A/13/04 · Röntgen Honorar (Teilradiologen)',
   'Sonographie':'A/14/01 · Sonographie (mit Qualifikation)',
 };
+const BVA_CAT_LABEL = {
+  'Ordination AM':        'Ordination (Kap. A)',
+  'Krankenbesuch AM':     'Krankenbesuch (Kap. B)',
+  'Zeitversäumnis':       'Zeitversäumnis (Kap. C) · Sonstige (TA / PS / HMG)',
+  'Konsilium':            'Konsilium (Kap. D)',
+  'Blutabnahme':          'Blutabnahme',
+  'Injektionen':          'Injektionen',
+  'Infiltrationen':       'Infiltrationen',
+  'Infusionen':           'Infusionen',
+  'Sonstige Verrichten.': 'Sonstige Leistungen',
+  'Wundversorgung':       'Wundversorgung',
+  'Operative Eingriffe':  'Operative Eingriffe',
+  'Verbände':             'Verbände',
+  'Knochenbrüche':        'Schiene / Gipsverband',
+  'EKG':                  'EKG / Rhythmologie',
+  'Labor':                'Labor (Kap. XIV)',
+  'Röntgen Aufnahmen':    'Röntgen (Kap. XIII)',
+  'Sonographie':          'Sonographie (Kap. XI)',
+};
+const SVS_CAT_LABEL = {
+  'Ordination AM':        'Ordination (A.I)',
+  'Zeitversäumnis':       'Zeitversäumnis (A.III) · Sonstige (TA / PS / HMG)',
+  'Konsilium':            'Konsilium (A.IV)',
+  'Blutabnahme':          'Blutabnahme (A.V)',
+  'Injektionen':          'Injektionen (A.VI)',
+  'Infiltrationen':       'Infiltrationen (A.VII)',
+  'Infusionen':           'Infusionen (A.VIII)',
+  'Sonstige Verrichten.': 'Sonstige Leistungen',
+  'Operative Eingriffe':  'Operative Eingriffe (A.IX)',
+  'EKG':                  'EKG (A.VIII)',
+  'Röntgen Aufnahmen':    'Röntgen (A.XIII)',
+  'Sonographie':          'Sonographie (A.XI)',
+};
+function catLabel(cat, kk) {
+  if (kk==='bvaeb') return BVA_CAT_LABEL[cat] || GRP_LABEL[cat] || cat;
+  if (kk==='svs')   return SVS_CAT_LABEL[cat] || GRP_LABEL[cat] || cat;
+  return GRP_LABEL[cat] || cat;
+}
 const COLORS = ['#185FA5','#1D9E75','#BA7517','#A32D2D','#534AB7','#5F5E5A'];
 
 // ── LIMITIERUNGEN & HINWEISE (aus Honorartarif Vorarlberg 2025) ──
@@ -1013,7 +1051,7 @@ function updateKatCatFilter(kk) {
       .map(d => d.cat)
   );
   const opts = GRP_ORDER.filter(g => available.has(g))
-    .map(g => `<option value="${g}">${GRP_LABEL[g]||g}</option>`).join('');
+    .map(g => `<option value="${g}">${catLabel(g, kk)}</option>`).join('');
   el.innerHTML = '<option value="">Alle Gruppen</option>' + opts;
   el.value = available.has(prev) ? prev : '';
 }
@@ -1438,7 +1476,7 @@ function renderKatalog() {
   });
   let html=''; let lastCat='';
   fl.forEach(d => {
-    if (d.cat!==lastCat) { html+=`<div class="ct-grp">${esc(GRP_LABEL[d.cat]||d.cat)}</div>`; lastCat=d.cat; }
+    if (d.cat!==lastCat) { html+=`<div class="ct-grp">${esc(catLabel(d.cat, kk))}</div>`; lastCat=d.cat; }
     const nc = kk==='bvaeb'&&d.bva ? d.bva.code : kk==='svs'&&d.svs ? d.svs.code : d.code;
     const ogkSub = d.kasseOnly ? '' : `<span style="font-size:9px;color:var(--text3)">ÖGK: ${esc(d.code)}</span>`;
     const uvKatKey = d._uvKat ?? UV_DEFAULT_KAT[d.code];
