@@ -294,6 +294,27 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
           </div>
         </div>
         <div class="field-hint">Erstattung = Kassensatz × Ruck% × (1 – Selbst%) · Standard: 90 % × 90 % = 81 %</div>
+        <div style="margin-top:10px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Punktewerte (€/Pkt)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Grundleistungen AM</div>
+              <input class="field-in" type="number" id="s-bvaeb-pkt1" step="0.0001" min="0.1" max="5" value="1.3567" oninput="window.saveSettings()">
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Allgemeine Leistungen</div>
+              <input class="field-in" type="number" id="s-bvaeb-pkt2" step="0.0001" min="0.1" max="5" value="1.2194" oninput="window.saveSettings()">
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Röntgen</div>
+              <input class="field-in" type="number" id="s-bvaeb-pkt3" step="0.0001" min="0.1" max="5" value="1.1104" oninput="window.saveSettings()">
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Labor</div>
+              <input class="field-in" type="number" id="s-bvaeb-pkt4" step="0.0001" min="0.1" max="5" value="1.2892" oninput="window.saveSettings()">
+            </div>
+          </div>
+        </div>
       </div>
       <hr class="divider">
       <div class="field-group">
@@ -302,7 +323,24 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
           <div style="font-size:12px;color:var(--text2);margin-bottom:5px">Rückerstattungsquote (%)</div>
           <input class="field-in" type="number" id="s-svs-ruck" step="1" min="50" max="100" value="80" oninput="window.saveSettings()">
         </div>
-        <div class="field-hint">Erstattung = Kassensatz des Vertragspartners × Ruck% · kein Selbstbehalt</div>
+        <div style="margin-top:10px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Punktewerte (€/Pkt)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Allgemeine Leistungen</div>
+              <input class="field-in" type="number" id="s-svs-pkt1" step="0.0001" min="0.1" max="5" value="0.7989" oninput="window.saveSettings()">
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Sonographie</div>
+              <input class="field-in" type="number" id="s-svs-pkt2" step="0.0001" min="0.1" max="5" value="0.5480" oninput="window.saveSettings()">
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Röntgen</div>
+              <input class="field-in" type="number" id="s-svs-pkt3" step="0.0001" min="0.1" max="5" value="0.5438" oninput="window.saveSettings()">
+            </div>
+          </div>
+        </div>
+        <div class="field-hint" style="margin-top:6px">Erstattung = Kassensatz des Vertragspartners × Ruck% · kein Selbstbehalt</div>
       </div>
       <hr class="divider">
       <div class="field-group">
@@ -956,8 +994,8 @@ let state = {
   katKasse: 'oegk',
   settings: { pkt: 0.80, fak: 2.5, ruck: 80, name: '', adr: '', tel: '',
               uvFak: {1:4.90, 2:3.85, 3:2.70, 4:2.00, 5:1.64},
-              bvaeb: {ruck:90, selbst:10},
-              svs: {ruck:80} }
+              bvaeb: {ruck:90, selbst:10, pkt1:1.3567, pkt2:1.2194, pkt3:1.1104, pkt4:1.2892},
+              svs: {ruck:80, pkt1:0.7989, pkt2:0.5480, pkt3:0.5438} }
 };
 
 // ── CALCULATIONS ──
@@ -965,15 +1003,32 @@ function ks(pos)         { return pos.fix != null ? pos.fix : parseFloat(((pos.p
 function rueck(pos)      { return parseFloat((ks(pos)*state.settings.ruck/100).toFixed(4)); }
 function hon(pos, fak)   { let b=ks(pos); if(b===0&&pos.kasseOnly){const k=pos.kasseOnly.includes(state.kasse)?state.kasse:pos.kasseOnly[0];b=ksK(pos,k);} return parseFloat((b*(fak??state.settings.fak)).toFixed(4)); }
 function eigen(pos, fak) { return Math.max(0, parseFloat((hon(pos,fak)-rueck(pos)).toFixed(4))); }
+function bvaPktWert(d) {
+  const c = state.settings.bvaeb || {};
+  const w = d.bva.pktWert;
+  if (w === 1.3567) return c.pkt1 ?? 1.3567;
+  if (w === 1.2194) return c.pkt2 ?? 1.2194;
+  if (w === 1.1104) return c.pkt3 ?? 1.1104;
+  if (w === 1.2892) return c.pkt4 ?? 1.2892;
+  return w;
+}
+function svsPktWert(d) {
+  const c = state.settings.svs || {};
+  const w = d.svs.pktWert;
+  if (w === 0.7989) return c.pkt1 ?? 0.7989;
+  if (w === 0.5480) return c.pkt2 ?? 0.5480;
+  if (w === 0.5438) return c.pkt3 ?? 0.5438;
+  return w;
+}
 function ksK(dbPos, kasse) {
   const k = kasse ?? state.kasse;
   if (k === 'bvaeb') {
     if (!dbPos.bva) return 0;
-    return dbPos.bva.fix != null ? dbPos.bva.fix : parseFloat(((dbPos.bva.pkt||0)*dbPos.bva.pktWert).toFixed(4));
+    return dbPos.bva.fix != null ? dbPos.bva.fix : parseFloat(((dbPos.bva.pkt||0)*bvaPktWert(dbPos)).toFixed(4));
   }
   if (k === 'svs') {
     if (!dbPos.svs) return 0;
-    return dbPos.svs.fix != null ? dbPos.svs.fix : parseFloat(((dbPos.svs.pkt||0)*dbPos.svs.pktWert).toFixed(4));
+    return dbPos.svs.fix != null ? dbPos.svs.fix : parseFloat(((dbPos.svs.pkt||0)*svsPktWert(dbPos)).toFixed(4));
   }
   return ks(dbPos);
 }
@@ -1098,11 +1153,18 @@ function applySettings() {
     const el = document.getElementById('s-uvk'+k);
     if (el) el.value = uvF[k] ?? [4.90,3.85,2.70,2.00,1.64][k-1];
   });
-  const b = s.bvaeb || {ruck:90, selbst:10};
-  document.getElementById('s-bvaeb-ruck').value = b.ruck;
+  const b = s.bvaeb || {ruck:90, selbst:10, pkt1:1.3567, pkt2:1.2194, pkt3:1.1104, pkt4:1.2892};
+  document.getElementById('s-bvaeb-ruck').value   = b.ruck;
   document.getElementById('s-bvaeb-selbst').value = b.selbst;
-  const sv = s.svs || {ruck:80};
-  document.getElementById('s-svs-ruck').value = sv.ruck;
+  document.getElementById('s-bvaeb-pkt1').value   = b.pkt1 ?? 1.3567;
+  document.getElementById('s-bvaeb-pkt2').value   = b.pkt2 ?? 1.2194;
+  document.getElementById('s-bvaeb-pkt3').value   = b.pkt3 ?? 1.1104;
+  document.getElementById('s-bvaeb-pkt4').value   = b.pkt4 ?? 1.2892;
+  const sv = s.svs || {ruck:80, pkt1:0.7989, pkt2:0.5480, pkt3:0.5438};
+  document.getElementById('s-svs-ruck').value  = sv.ruck;
+  document.getElementById('s-svs-pkt1').value  = sv.pkt1 ?? 0.7989;
+  document.getElementById('s-svs-pkt2').value  = sv.pkt2 ?? 0.5480;
+  document.getElementById('s-svs-pkt3').value  = sv.pkt3 ?? 0.5438;
 }
 
 function detectConflicts(codes) {
@@ -1286,12 +1348,12 @@ function compCell(d, k) {
   } else if (k === 'bvaeb') {
     if (!d.bva) return `<span style="color:var(--text3);font-size:11px;text-align:right">—</span>`;
     code = d.bva.code;
-    mid = d.bva.fix!=null ? `€ ${d.bva.fix.toFixed(2)} fix` : `${d.bva.pkt||0} × ${pw(d.bva.pktWert)}`;
+    mid = d.bva.fix!=null ? `€ ${d.bva.fix.toFixed(2)} fix` : `${d.bva.pkt||0} × ${pw(bvaPktWert(d))}`;
     ksAmt = fmt(ksK(d,'bvaeb'));
   } else {
     if (!d.svs) return `<span style="color:var(--text3);font-size:11px;text-align:right">—</span>`;
     code = d.svs.code;
-    mid = d.svs.fix!=null ? `€ ${d.svs.fix.toFixed(2)} fix` : `${d.svs.pkt||0} × ${pw(d.svs.pktWert)}`;
+    mid = d.svs.fix!=null ? `€ ${d.svs.fix.toFixed(2)} fix` : `${d.svs.pkt||0} × ${pw(svsPktWert(d))}`;
     ksAmt = fmt(ksK(d,'svs'));
   }
   const col = k==='bvaeb'?'var(--violet)':k==='svs'?'var(--green)':'var(--blue)';
@@ -1509,10 +1571,17 @@ function saveSettings() {
     state.settings.uvFak[k] = isNaN(v) ? defs[k-1] : v;
   });
   if (!state.settings.bvaeb) state.settings.bvaeb = {};
-  state.settings.bvaeb.ruck = parseFloat(document.getElementById('s-bvaeb-ruck').value)||90;
+  state.settings.bvaeb.ruck   = parseFloat(document.getElementById('s-bvaeb-ruck').value)||90;
   state.settings.bvaeb.selbst = parseFloat(document.getElementById('s-bvaeb-selbst').value)||10;
+  state.settings.bvaeb.pkt1   = parseFloat(document.getElementById('s-bvaeb-pkt1').value)||1.3567;
+  state.settings.bvaeb.pkt2   = parseFloat(document.getElementById('s-bvaeb-pkt2').value)||1.2194;
+  state.settings.bvaeb.pkt3   = parseFloat(document.getElementById('s-bvaeb-pkt3').value)||1.1104;
+  state.settings.bvaeb.pkt4   = parseFloat(document.getElementById('s-bvaeb-pkt4').value)||1.2892;
   if (!state.settings.svs) state.settings.svs = {};
-  state.settings.svs.ruck = parseFloat(document.getElementById('s-svs-ruck').value)||80;
+  state.settings.svs.ruck  = parseFloat(document.getElementById('s-svs-ruck').value)||80;
+  state.settings.svs.pkt1  = parseFloat(document.getElementById('s-svs-pkt1').value)||0.7989;
+  state.settings.svs.pkt2  = parseFloat(document.getElementById('s-svs-pkt2').value)||0.5480;
+  state.settings.svs.pkt3  = parseFloat(document.getElementById('s-svs-pkt3').value)||0.5438;
   save(); renderDetail(); renderKatalog();
 }
 function printNote() {
