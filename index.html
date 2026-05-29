@@ -1097,7 +1097,7 @@ function renderDetail() {
     const privInput = `<input class="${p.faktor?'fak-input custom':'fak-input'}" type="number" min="0.1" max="20" step="0.01" value="${p.faktor||''}" placeholder="${state.settings.fak}" title="Honorarfaktor (leer = global ${state.settings.fak}×)" onchange="window.updateFaktor('${v.id}',${i},this.value)" style="width:100%">`;
     const fakCell = `<div class="fak-cell">
       <button class="uv-toggle${p.uvKat?' active':''}" onclick="window.toggleUvMode('${v.id}',${i},'${dbPos.code}')" title="${p.uvKat?'Zurück zu Privatfaktor':'UV-Kategorie aktivieren'}">
-        ${p.uvKat ? `UV ${UV_KAT[p.uvKat].short}` : 'UV'}
+        ${p.uvKat ? `UV ${UV_KAT[p.uvKat].short}` : UV_DEFAULT_KAT[dbPos.code] ? `UV·${UV_KAT[UV_DEFAULT_KAT[dbPos.code]].short}` : 'UV'}
       </button>
       ${p.uvKat ? uvSel : privInput}
     </div>`;
@@ -1133,7 +1133,10 @@ function renderKatalog() {
     const canAdd = !!state.activeId;
     const kA = state.kasse==='oegk' || (state.kasse==='bvaeb'&&!!d.bva) || (state.kasse==='svs'&&!!d.svs);
     html += `<div class="ct-row">
-      <span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(d.code)}</span>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(d.code)}</span>
+        ${UV_DEFAULT_KAT[d.code] ? `<span style="font-size:9px;font-weight:600;color:var(--amber);letter-spacing:.02em">${UV_KAT[UV_DEFAULT_KAT[d.code]].short}</span>` : ''}
+      </div>
       <span style="font-size:13px">${esc(d.name)} ${wb}${ni}</span>
       <span style="text-align:right;font-size:12px;color:var(--text2)">${ps}</span>
       <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--blue)">${kA?fmt(ksK(d)):'—'}</span>
