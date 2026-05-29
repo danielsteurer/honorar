@@ -130,6 +130,10 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
 .save-indicator{font-size:11px;color:var(--text3);padding:0 8px;opacity:0;transition:opacity .3s}
 .save-indicator.visible{opacity:1}
 .kasse-sel{padding:4px 9px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg2);color:var(--text);cursor:pointer;font-weight:600}
+.kat-kasse-tabs{display:flex;gap:2px;background:var(--bg3);border-radius:var(--radius);padding:3px;flex-shrink:0}
+.kat-kasse-tab{padding:4px 13px;font-size:12px;font-weight:500;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--text2);transition:background .12s,color .12s}
+.kat-kasse-tab.active{background:var(--bg);color:var(--text);box-shadow:0 0 0 0.5px var(--border2)}
+.kat-kasse-tab:hover:not(.active){background:var(--bg2);color:var(--text)}
 @media print{
   .topbar,.sidebar,.main-head,.metrics,.action-bar,.del-btn,.add-btn,.btn,.catalog-toolbar,.modal-bg{display:none!important}
   .poslist-wrap{overflow:visible!important}
@@ -235,6 +239,11 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
 
   <div class="content" id="view-katalog" style="display:none;flex-direction:column">
     <div class="catalog-toolbar">
+      <div class="kat-kasse-tabs">
+        <button class="kat-kasse-tab active" data-kk="oegk" onclick="window.setKatKasse('oegk')">ÖGK</button>
+        <button class="kat-kasse-tab" data-kk="bvaeb" onclick="window.setKatKasse('bvaeb')">BVAEB</button>
+        <button class="kat-kasse-tab" data-kk="svs" onclick="window.setKatKasse('svs')">SVS</button>
+      </div>
       <input class="search-in" id="kat-search" placeholder="Code oder Bezeichnung suchen…" oninput="window.renderKatalog()">
       <select class="cat-sel" id="kat-cat" onchange="window.renderKatalog()">
         <option value="">Alle Gruppen</option>
@@ -244,8 +253,8 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
       <div class="ct-head">
         <span>Pos.</span><span>Bezeichnung</span>
         <span style="text-align:right">Pkt / €</span>
-        <span style="text-align:right;color:var(--blue)">Kassensatz</span>
-        <span style="text-align:right;color:var(--green)">Rückerstattung</span>
+        <span id="kat-ks-head" style="text-align:right;color:var(--blue)">Kassensatz</span>
+        <span id="kat-ruck-head" style="text-align:right;color:var(--green)">Rückerstattung</span>
         <span style="text-align:right;color:var(--amber)">Honorar</span>
         <span style="text-align:right;color:var(--red)">Eigenanteil</span><span></span>
       </div>
@@ -759,6 +768,26 @@ const NOTES = {
   '947': 'Nur bei klinischem Hinweis auf Thrombose oder venöse Insuffizienz',
 };
 
+// BVAEB-spezifische Limitierungen (nach BVA-Tarif)
+const BVAEB_NOTES = {
+  'A1':  'Ärztliche Erstuntersuchung (inkl. Anamnese, Untersuchung, Beratung) · 1× pro Quartal',
+  'A2':  'Folgeuntersuchung · In derselben Sitzung nicht mit A1 kombinierbar',
+  'B1':  'Krankenbesuch 1. Patient je Besuchsrunde',
+  'B2':  'Krankenbesuch – jeder weitere Patient je Besuchsrunde',
+  'C1':  'Gesprächsleistung (mind. 16 Min.) · Max. 3× pro Quartal pro Patient',
+  'D1':  'Konsilium (Berufener oder Berufender) · Dokumentationspflicht',
+  'J1':  'Koordinierungszuschlag · 1× pro Fall und Quartal · Max. 5 % der Fälle',
+  '10a': 'Blutabnahme aus der Vene · Bei Serienblutabnahmen ggf. nicht mit Ordination kombinierbar',
+  '11b': 'Intramuskuläre Injektion · Bei Serieninjektionen (>3): nicht mit Ordination kombinierbar',
+  '11c': 'Intravenöse Injektion · Bei Serieninjektionen (>3): nicht mit Ordination kombinierbar',
+  '11e': 'Eigenblutinjektion (Venenpunktion + i.m.) · Bei Serieninjektionen (>3): nicht mit Ordination kombinierbar',
+  '11u': 'Periarticuläre Injektion',
+  '11v': 'Intraarticuläre Injektion · Dokumentationspflicht',
+  '12a': 'Subcutane Infiltration',
+  '12b': 'Intramuskuläre Infiltration',
+  '13b': 'Intravenöse Dauertropfinfusion · Dokumentationspflicht',
+};
+
 const CONFLICTS_WITH = {
   '15':  ['10','11','18','18NZ','18EZ'],
   '400': ['403'], '401': ['403'], '402': ['403'],
@@ -818,6 +847,7 @@ let state = {
   vorlagen: [],
   activeId: null,
   kasse: 'oegk',
+  katKasse: 'oegk',
   settings: { pkt: 0.80, fak: 2.5, ruck: 80, name: '', adr: '', tel: '',
               uvFak: {1:4.90, 2:3.85, 3:2.70, 4:2.00, 5:1.64},
               bvaeb: {ruck:90, selbst:10},
@@ -829,32 +859,35 @@ function ks(pos)         { return pos.fix != null ? pos.fix : parseFloat(((pos.p
 function rueck(pos)      { return parseFloat((ks(pos)*state.settings.ruck/100).toFixed(4)); }
 function hon(pos, fak)   { return parseFloat((ks(pos)*(fak??state.settings.fak)).toFixed(4)); }
 function eigen(pos, fak) { return Math.max(0, parseFloat((hon(pos,fak)-rueck(pos)).toFixed(4))); }
-function ksK(dbPos) {
-  if (state.kasse === 'bvaeb') {
+function ksK(dbPos, kasse) {
+  const k = kasse ?? state.kasse;
+  if (k === 'bvaeb') {
     if (!dbPos.bva) return 0;
     return dbPos.bva.fix != null ? dbPos.bva.fix : parseFloat(((dbPos.bva.pkt||0)*dbPos.bva.pktWert).toFixed(4));
   }
-  if (state.kasse === 'svs') {
+  if (k === 'svs') {
     if (!dbPos.svs) return 0;
     return dbPos.svs.fix != null ? dbPos.svs.fix : parseFloat(((dbPos.svs.pkt||0)*dbPos.svs.pktWert).toFixed(4));
   }
   return ks(dbPos);
 }
-function rueckK(dbPos) {
-  if (state.kasse === 'bvaeb') {
+function rueckK(dbPos, kasse) {
+  const k = kasse ?? state.kasse;
+  if (k === 'bvaeb') {
     if (!dbPos.bva) return 0;
     const b = state.settings.bvaeb || {ruck:90, selbst:10};
-    return parseFloat((ksK(dbPos) * (b.ruck/100) * (1 - b.selbst/100)).toFixed(4));
+    return parseFloat((ksK(dbPos, k) * (b.ruck/100) * (1 - b.selbst/100)).toFixed(4));
   }
-  if (state.kasse === 'svs') {
+  if (k === 'svs') {
     if (!dbPos.svs) return 0;
     const sv = state.settings.svs || {ruck:80};
-    return parseFloat((ksK(dbPos) * (sv.ruck/100)).toFixed(4));
+    return parseFloat((ksK(dbPos, k) * (sv.ruck/100)).toFixed(4));
   }
   return rueck(dbPos);
 }
-function eigenK(dbPos, fak) { return Math.max(0, parseFloat((hon(dbPos,fak)-rueckK(dbPos)).toFixed(4))); }
+function eigenK(dbPos, fak, kasse) { return Math.max(0, parseFloat((hon(dbPos,fak)-rueckK(dbPos, kasse)).toFixed(4))); }
 function setKasse(k) { state.kasse = k; renderSidebar(); renderDetail(); renderKatalog(); }
+function setKatKasse(k) { state.katKasse = k; renderKatalog(); }
 function fmt(v)     { return v.toFixed(2)+' €'; }
 function esc(s)     { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function uid()      { return Math.random().toString(36).slice(2,9); }
@@ -989,6 +1022,11 @@ function detectConflicts(codes) {
   });
   return conflicts;
 }
+function kasseCovBadges(d) {
+  const b = `<span style="font-size:8px;font-weight:700;letter-spacing:.03em;color:${d.bva?'var(--violet)':'var(--border2)'}">BVA</span>`;
+  const s = `<span style="font-size:8px;font-weight:700;letter-spacing:.03em;color:${d.svs?'var(--green)':'var(--border2)'}">SVS</span>`;
+  return `<div style="display:flex;gap:3px;margin-top:1px">${b}${s}</div>`;
+}
 function renderAll() { renderSidebar(); renderDetail(); renderKatalog(); }
 
 function effFak(p) {
@@ -1074,13 +1112,14 @@ function renderDetail() {
     const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return '';
     const fak = effFak(p);
     const kAvail = state.kasse==='oegk' || (state.kasse==='bvaeb'&&!!dbPos.bva) || (state.kasse==='svs'&&!!dbPos.svs);
-    const kasseCode = state.kasse==='bvaeb'&&dbPos.bva
+    const codeTop = state.kasse==='bvaeb'&&dbPos.bva
       ? `<div class="pos-code-wrap"><span class="pos-code">${esc(dbPos.bva.code)}</span><span class="pos-code-sub">ÖGK: ${esc(dbPos.code)}</span></div>`
       : state.kasse==='svs'&&dbPos.svs
         ? `<div class="pos-code-wrap"><span class="pos-code">${esc(dbPos.svs.code)}</span><span class="pos-code-sub">ÖGK: ${esc(dbPos.code)}</span></div>`
         : `<span class="pos-code">${esc(dbPos.code)}</span>`;
+    const kasseCode = `<div style="display:flex;flex-direction:column;gap:2px">${codeTop}${kasseCovBadges(dbPos)}</div>`;
     const wb = dbPos.warn ? `<span class="pill-warn"><i class="ti ti-alert-triangle"></i> SG</span>` : '';
-    const noteText = NOTES[dbPos.code];
+    const noteText = state.kasse==='bvaeb'&&dbPos.bva&&BVAEB_NOTES[dbPos.bva.code] ? BVAEB_NOTES[dbPos.bva.code] : NOTES[dbPos.code];
     const ni = noteText ? `<i class="ti ti-info-circle note-icon" title="${esc(noteText)}"></i>` : '';
     const pktCell = dbPos.fix != null
       ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right;font-size:9px">€ ${dbPos.fix.toFixed(2)}</span>`
@@ -1116,33 +1155,45 @@ function renderDetail() {
 }
 
 function renderKatalog() {
+  const kk = state.katKasse || 'oegk';
   const q = document.getElementById('kat-search').value.toLowerCase();
   const cat = document.getElementById('kat-cat').value;
+  const ksH = kk==='bvaeb'?'BVAEB-Kassensatz':kk==='svs'?'SVS-Kassensatz':'Kassensatz';
+  const rH  = kk==='bvaeb'?'BVAEB-Erstattung':kk==='svs'?'SVS-Erstattung':'Rückerstattung';
+  document.getElementById('kat-ks-head').textContent = ksH;
+  document.getElementById('kat-ruck-head').textContent = rH;
+  document.querySelectorAll('.kat-kasse-tab').forEach(el => el.classList.toggle('active', el.dataset.kk===kk));
   const fl = DB.filter(d => {
+    if (kk==='bvaeb' && !d.bva) return false;
+    if (kk==='svs'   && !d.svs) return false;
     if (cat && d.cat!==cat) return false;
-    if (q && !d.code.toLowerCase().includes(q) && !d.name.toLowerCase().includes(q)) return false;
+    if (q) {
+      const nc = kk==='bvaeb'&&d.bva ? d.bva.code.toLowerCase() : kk==='svs'&&d.svs ? d.svs.code.toLowerCase() : '';
+      if (!d.code.toLowerCase().includes(q) && !nc.includes(q) && !d.name.toLowerCase().includes(q)) return false;
+    }
     return true;
   });
   let html=''; let lastCat='';
   fl.forEach(d => {
     if (d.cat!==lastCat) { html+=`<div class="ct-grp">${esc(GRP_LABEL[d.cat]||d.cat)}</div>`; lastCat=d.cat; }
-    const ps = d.fix!=null ? fmt(d.fix)+' fix' : ((d.pkt||0)+' Pkt');
+    const nc = kk==='bvaeb'&&d.bva ? d.bva.code : kk==='svs'&&d.svs ? d.svs.code : d.code;
+    const codeDiv = kk!=='oegk'
+      ? `<div style="display:flex;flex-direction:column;gap:1px"><span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(nc)}</span><span style="font-size:9px;color:var(--text3)">ÖGK: ${esc(d.code)}</span>${kasseCovBadges(d)}${UV_DEFAULT_KAT[d.code]?`<span style="font-size:9px;font-weight:600;color:var(--amber)">${UV_KAT[UV_DEFAULT_KAT[d.code]].short}</span>`:''}</div>`
+      : `<div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(d.code)}</span>${kasseCovBadges(d)}${UV_DEFAULT_KAT[d.code]?`<span style="font-size:9px;font-weight:600;color:var(--amber);letter-spacing:.02em">${UV_KAT[UV_DEFAULT_KAT[d.code]].short}</span>`:''}</div>`;
+    const kd = kk==='bvaeb'?d.bva:kk==='svs'?d.svs:null;
+    const ps = kd ? (kd.fix!=null ? fmt(kd.fix)+' fix' : `${kd.pkt||0} Pkt`) : (d.fix!=null ? fmt(d.fix)+' fix' : `${d.pkt||0} Pkt`);
     const wb = d.warn ? `<span class="pill-warn">⚠ SG</span>` : '';
-    const noteText = NOTES[d.code];
+    const noteText = kk==='bvaeb'&&d.bva&&BVAEB_NOTES[d.bva.code] ? BVAEB_NOTES[d.bva.code] : NOTES[d.code];
     const ni = noteText ? `<i class="ti ti-info-circle note-icon" title="${esc(noteText)}"></i>` : '';
     const canAdd = !!state.activeId;
-    const kA = state.kasse==='oegk' || (state.kasse==='bvaeb'&&!!d.bva) || (state.kasse==='svs'&&!!d.svs);
     html += `<div class="ct-row">
-      <div style="display:flex;flex-direction:column;gap:2px">
-        <span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(d.code)}</span>
-        ${UV_DEFAULT_KAT[d.code] ? `<span style="font-size:9px;font-weight:600;color:var(--amber);letter-spacing:.02em">${UV_KAT[UV_DEFAULT_KAT[d.code]].short}</span>` : ''}
-      </div>
+      ${codeDiv}
       <span style="font-size:13px">${esc(d.name)} ${wb}${ni}</span>
       <span style="text-align:right;font-size:12px;color:var(--text2)">${ps}</span>
-      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--blue)">${kA?fmt(ksK(d)):'—'}</span>
-      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--green)">${kA?fmt(rueckK(d)):'—'}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--blue)">${fmt(ksK(d,kk))}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--green)">${fmt(rueckK(d,kk))}</span>
       <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--amber)">${fmt(hon(d))}</span>
-      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--red)">${kA?fmt(eigenK(d)):fmt(hon(d))}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--red)">${fmt(eigenK(d,undefined,kk))}</span>
       <button class="add-btn" onclick="window.quickAdd('${d.code}')" ${canAdd?'':'disabled title="Zuerst Vorlage auswählen"'}>${canAdd?'+ Vorlage':'—'}</button>
     </div>`;
   });
@@ -1402,6 +1453,7 @@ window.saveSettings  = saveSettings;
 window.resetDefaults = resetDefaults;
 window.printNote     = printNote;
 window.setKasse      = setKasse;
+window.setKatKasse   = setKatKasse;
 window.switchTab     = switchTab;
 window.signIn        = signIn;
 window.logOut        = logOut;
