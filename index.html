@@ -1206,25 +1206,26 @@ function renderDetail() {
 }
 
 function compCell(d, k) {
-  let code, pkt, ksAmt;
+  const pw = v => v.toFixed(4).replace(/(\.\d{2}?)0*$/, '$1').replace('.', ',');
+  let code, mid, ksAmt;
   if (k === 'oegk') {
     if (d.kasseOnly) return `<span style="color:var(--text3);font-size:11px;text-align:right">—</span>`;
     code = d.code;
-    pkt = d.fix!=null ? `€ ${d.fix.toFixed(2)}` : `${d.pkt||0} Pkt`;
+    mid = d.fix!=null ? `€ ${d.fix.toFixed(2)} fix` : `${d.pkt||0} × ${pw(state.settings.pkt)}`;
     ksAmt = fmt(ksK(d,'oegk'));
   } else if (k === 'bvaeb') {
     if (!d.bva) return `<span style="color:var(--text3);font-size:11px;text-align:right">—</span>`;
     code = d.bva.code;
-    pkt = d.bva.fix!=null ? `€ ${d.bva.fix.toFixed(2)}` : `${d.bva.pkt||0} Pkt`;
+    mid = d.bva.fix!=null ? `€ ${d.bva.fix.toFixed(2)} fix` : `${d.bva.pkt||0} × ${pw(d.bva.pktWert)}`;
     ksAmt = fmt(ksK(d,'bvaeb'));
   } else {
     if (!d.svs) return `<span style="color:var(--text3);font-size:11px;text-align:right">—</span>`;
     code = d.svs.code;
-    pkt = d.svs.fix!=null ? `€ ${d.svs.fix.toFixed(2)}` : `${d.svs.pkt||0} Pkt`;
+    mid = d.svs.fix!=null ? `€ ${d.svs.fix.toFixed(2)} fix` : `${d.svs.pkt||0} × ${pw(d.svs.pktWert)}`;
     ksAmt = fmt(ksK(d,'svs'));
   }
   const col = k==='bvaeb'?'var(--violet)':k==='svs'?'var(--green)':'var(--blue)';
-  return `<div style="display:flex;flex-direction:column;gap:1px;text-align:right"><span style="font-size:9px;color:var(--text3);font-family:monospace">${esc(code)}</span><span style="font-size:9px;color:var(--text2)">${pkt}</span><span style="font-family:monospace;font-size:11px;font-weight:600;color:${col}">${ksAmt}</span></div>`;
+  return `<div style="display:flex;flex-direction:column;gap:1px;text-align:right"><span style="font-size:9px;color:var(--text3);font-family:monospace">${esc(code)}</span><span style="font-size:9px;color:var(--text2)">${mid}</span><span style="font-family:monospace;font-size:11px;font-weight:600;color:${col}">${ksAmt}</span></div>`;
 }
 
 function renderKatalog() {
