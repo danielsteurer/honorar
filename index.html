@@ -418,9 +418,9 @@ const DB = [
 // A/01/01 Ordination AM
 {code:'10',   name:'Erste Ordination',                                          cat:'Ordination AM',    pkt:20,  fix:null, bva:{code:'A1',pkt:20,pktWert:1.3567}, svs:{code:'A1',pkt:26,pktWert:0.7989}},
 {code:'11',   name:'Jede weitere Ordination',                                   cat:'Ordination AM',    pkt:10,  fix:null, bva:{code:'A2',pkt:11.5,pktWert:1.3567}, svs:{code:'A2',pkt:18,pktWert:0.7989}},
-{code:'12',   name:'ZUSCHLAG Sofortbehandlung Akutfall außerh. OZ',             cat:'Ordination AM',    pkt:4,   fix:null, svs:{code:'A3',pkt:18,pktWert:0.7989}},
-{code:'13',   name:'ZUSCHLAG Ordination Wochenende/Feiertag (Dringlichkeit)',   cat:'Ordination AM',    pkt:10,  fix:null, svs:{code:'A4',pkt:18,pktWert:0.7989}},
-{code:'14',   name:'ZUSCHLAG Nacht (20:00–7:00 Uhr)',                           cat:'Ordination AM',    pkt:10,  fix:null, svs:{code:'A5',pkt:27,pktWert:0.7989}},
+{code:'12',   name:'ZUSCHLAG Sofortbehandlung Akutfall außerh. OZ',             cat:'Ordination AM',    pkt:4,   fix:null, bva:{code:'A3',pkt:4,pktWert:1.3567}, svs:{code:'A3',pkt:18,pktWert:0.7989}},
+{code:'13',   name:'ZUSCHLAG Ordination Wochenende/Feiertag (Dringlichkeit)',   cat:'Ordination AM',    pkt:10,  fix:null, bva:{code:'A4',pkt:8,pktWert:1.3567}, svs:{code:'A4',pkt:18,pktWert:0.7989}},
+{code:'14',   name:'ZUSCHLAG Nacht (20:00–7:00 Uhr)',                           cat:'Ordination AM',    pkt:10,  fix:null, bva:{code:'A5',pkt:8,pktWert:1.3567}, svs:{code:'A5',pkt:27,pktWert:0.7989}},
 {code:'15',   name:'Rezept (ohne Ordination)',                                  cat:'Ordination AM',    pkt:4,   fix:null},
 {code:'16',   name:'Ordination Wochend(Feiertags)dienst (zusätzl. Pauschale)', cat:'Ordination AM',    pkt:4,   fix:37.20},
 {code:'18NZ', name:'Weitere Ordination via KH-Zuweisung',                      cat:'Ordination AM',    pkt:18,  fix:null, bva:{code:'A2',pkt:11.5,pktWert:1.3567}, svs:{code:'A2',pkt:18,pktWert:0.7989}},
@@ -428,30 +428,30 @@ const DB = [
 {code:'18',   name:'Erste Ordination via ärztl. Zuweisung (mit Befundbericht)',cat:'Ordination AM',    pkt:26,  fix:null, bva:{code:'A1',pkt:20,pktWert:1.3567}, svs:{code:'A1',pkt:26,pktWert:0.7989}},
 {code:'SC1',  name:'Senioren-Check (Patienten ab 70. Lebensjahr)',               cat:'Ordination AM',    pkt:null,fix:null, kasseOnly:['svs'], svs:{code:'SC1',pkt:32.8,pktWert:0.7989}},
 // A/01/02 Krankenbesuche AM
-{code:'20',   name:'Krankenbesuch (1. und jeder weitere)',                      cat:'Krankenbesuch AM', pkt:42,  fix:24.80},
-{code:'21',   name:'ZUSCHLAG dringender Krankenbesuch',                         cat:'Krankenbesuch AM', pkt:10,  fix:null},
-{code:'22',   name:'ZUSCHLAG Krankenbesuch Wochenende/Feiertag (Dringlichkeit)',cat:'Krankenbesuch AM', pkt:14,  fix:null},
-{code:'23',   name:'ZUSCHLAG Krankenbesuch bei Nacht (20:00–7:00 Uhr)',         cat:'Krankenbesuch AM', pkt:14,  fix:64.45},
+{code:'20',   name:'Krankenbesuch (1. und jeder weitere)',                      cat:'Krankenbesuch AM', pkt:42,  fix:24.80, bva:{code:'B1',pkt:46,pktWert:1.3567}},
+{code:'21',   name:'ZUSCHLAG dringender Krankenbesuch',                         cat:'Krankenbesuch AM', pkt:10,  fix:null, bva:{code:'B3',pkt:15,pktWert:1.3567}},
+{code:'22',   name:'ZUSCHLAG Krankenbesuch Wochenende/Feiertag (Dringlichkeit)',cat:'Krankenbesuch AM', pkt:14,  fix:null, bva:{code:'B4',pkt:15,pktWert:1.3567}},
+{code:'23',   name:'ZUSCHLAG Krankenbesuch bei Nacht (20:00–7:00 Uhr)',         cat:'Krankenbesuch AM', pkt:14,  fix:64.45, bva:{code:'B5',pkt:30,pktWert:1.3567}},
 {code:'24',   name:'Mitbesuch (Heim, Familie, Wohnblock; nicht gehfähig)',      cat:'Krankenbesuch AM', pkt:20,  fix:8.16},
 {code:'25',   name:'Krankenbesuch Wochend(Feiertags)dienst (zusätzl. Pauschale)',cat:'Krankenbesuch AM',pkt:4,  fix:86.81},
 // A/01/03 Zeitversäumnis
-{code:'30',   name:'Zeitversäumnis bei Tag (je angefangene 30 min)',            cat:'Zeitversäumnis',   pkt:20,  fix:null},
-{code:'31',   name:'Zeitversäumnis bei Nacht (je angefangene 30 min)',          cat:'Zeitversäumnis',   pkt:40,  fix:null, svs:{code:'3b',pkt:40,pktWert:0.7989}},
+{code:'30',   name:'Zeitversäumnis bei Tag (je angefangene 30 min)',            cat:'Zeitversäumnis',   pkt:20,  fix:null, bva:{code:'C1',pkt:8,pktWert:1.2194}},
+{code:'31',   name:'Zeitversäumnis bei Nacht (je angefangene 30 min)',          cat:'Zeitversäumnis',   pkt:40,  fix:null, bva:{code:'C2',pkt:12,pktWert:1.2194}, svs:{code:'3b',pkt:40,pktWert:0.7989}},
 {code:'32LC', name:'Ärztl. Gespräch Long Covid (1× pro Patient)',               cat:'Zeitversäumnis',   pkt:14,  fix:null},
 {code:'32',   name:'Ärztl. Gespräch (je angefangene 15 min, ab 16. Min.)',      cat:'Zeitversäumnis',   pkt:14,  fix:null, bva:{code:'C1',pkt:8,pktWert:1.2194}, svs:{code:'3a',pkt:20,pktWert:0.7989}},
-{code:'33',   name:'Psychosomatisches Gespräch, je 20 min (ÖÄK-Diplom)',       cat:'Zeitversäumnis',   pkt:35,  fix:null, warn:true, svs:{code:'PS',fix:25.57}},
+{code:'33',   name:'Psychosomatisches Gespräch, je 20 min (ÖÄK-Diplom)',       cat:'Zeitversäumnis',   pkt:35,  fix:null, warn:true, bva:{code:'PS',fix:25.62}, svs:{code:'PS',fix:25.57}},
 {code:'34',   name:'Koordinierungszuschlag AM (1×/Quartal, max. 5% der Fälle)',cat:'Zeitversäumnis',   pkt:null,fix:24.80, bva:{code:'J1',pkt:null,fix:18.412}, svs:{code:'1j',pkt:23,pktWert:0.7989}},
-{code:'TA',   name:'Ausführliche diagnostisch-therapeutische Aussprache',        cat:'Zeitversäumnis',   pkt:null,fix:null, kasseOnly:['svs'], svs:{code:'TA',pkt:25,pktWert:0.7989}},
+{code:'TA',   name:'Ausführliche diagnostisch-therapeutische Aussprache',        cat:'Zeitversäumnis',   pkt:null,fix:null, kasseOnly:['bvaeb','svs'], bva:{code:'TA',fix:20.013}, svs:{code:'TA',pkt:25,pktWert:0.7989}},
 // A/01/04 Konsilium
 {code:'40',   name:'Konsilium bei Tag – Berufener',                             cat:'Konsilium',        pkt:40,  fix:null, bva:{code:'D1',pkt:15,pktWert:1.2194}, svs:{code:'4a',pkt:30,pktWert:0.7989}},
 {code:'41',   name:'Konsilium bei Tag – Berufender',                            cat:'Konsilium',        pkt:30,  fix:null, bva:{code:'D1',pkt:15,pktWert:1.2194}, svs:{code:'4a',pkt:30,pktWert:0.7989}},
-{code:'42',   name:'Konsilium bei Nacht – Berufener',                           cat:'Konsilium',        pkt:80,  fix:null},
-{code:'43',   name:'Konsilium bei Nacht – Berufender',                          cat:'Konsilium',        pkt:60,  fix:null},
+{code:'42',   name:'Konsilium bei Nacht – Berufener',                           cat:'Konsilium',        pkt:80,  fix:null, bva:{code:'D2',pkt:20,pktWert:1.2194}},
+{code:'43',   name:'Konsilium bei Nacht – Berufender',                          cat:'Konsilium',        pkt:60,  fix:null, bva:{code:'D2',pkt:20,pktWert:1.2194}},
 {code:'44',   name:'Schmerzboard (je 60 min, max. 3× pro Sitzung)',             cat:'Konsilium',        pkt:null,fix:129.96},
 // A/02/01 Blutabnahme
 {code:'100',  name:'Blutabnahme aus der Vene',                                  cat:'Blutabnahme',      pkt:4,   fix:null, bva:{code:'10a',pkt:4,pktWert:1.2194}, svs:{code:'10a',pkt:8,pktWert:0.7989}},
-{code:'101',  name:'Blutabnahme aus der Vene – Kinder bis 10 J.',              cat:'Blutabnahme',      pkt:8,   fix:null},
-{code:'102',  name:'Aderlass (mindestens 150 ml)',                              cat:'Blutabnahme',      pkt:10,  fix:null},
+{code:'101',  name:'Blutabnahme aus der Vene – Kinder bis 10 J.',              cat:'Blutabnahme',      pkt:8,   fix:null, bva:{code:'10b',pkt:8,pktWert:1.2194}},
+{code:'102',  name:'Aderlass (mindestens 150 ml)',                              cat:'Blutabnahme',      pkt:10,  fix:null, bva:{code:'10c',pkt:8,pktWert:1.2194}},
 {code:'103',  name:'Mikroblutentnahme – Kinder bis 6 J. (Zuschlag)',           cat:'Blutabnahme',      pkt:4,   fix:null},
 // A/02/02 Injektionen
 {code:'110',  name:'Subcutane/intracutane Injektion (mit Ordination abgegolten)',cat:'Injektionen',    pkt:0,   fix:null},
@@ -545,29 +545,29 @@ const DB = [
 {code:'235',  name:'Wechsel von Magenaustauschsonden (Gastrotube)',             cat:'Sonstige Verrichten.',pkt:14,fix:null},
 {code:'236',  name:'Wechsel von suprapubischen Blasenkathetern',                cat:'Sonstige Verrichten.',pkt:14,fix:null},
 {code:'237',  name:'Nadelakupunktur (ÄK-Diplom Akupunktur erforderlich)',       cat:'Sonstige Verrichten.',pkt:20,fix:null,warn:true},
-{code:'239',  name:'Heilmittelberatungsgespräch (max. 15% der Fälle)',          cat:'Sonstige Verrichten.',pkt:10,fix:null, svs:{code:'HMG',fix:12.78}},
+{code:'239',  name:'Heilmittelberatungsgespräch (max. 15% der Fälle)',          cat:'Sonstige Verrichten.',pkt:10,fix:null, bva:{code:'HMG',fix:14.84}, svs:{code:'HMG',fix:12.78}},
 // A/04/01 Wundversorgung
-{code:'290',  name:'Wunde mit Naht und Verband (eine Naht)',                    cat:'Wundversorgung',   pkt:20,  fix:null},
-{code:'291',  name:'Kleine Wunde mit Butterfly oder Gewebekleber',              cat:'Wundversorgung',   pkt:10,  fix:null},
-{code:'292',  name:'Abtragung mehrerer großer Blasen (eine Sitzung)',           cat:'Wundversorgung',   pkt:10,  fix:null},
+{code:'290',  name:'Wunde mit Naht und Verband (eine Naht)',                    cat:'Wundversorgung',   pkt:20,  fix:null, bva:{code:'25d',pkt:38,pktWert:1.2194}},
+{code:'291',  name:'Kleine Wunde mit Butterfly oder Gewebekleber',              cat:'Wundversorgung',   pkt:10,  fix:null, bva:{code:'25a',pkt:8,pktWert:1.2194}},
+{code:'292',  name:'Abtragung mehrerer großer Blasen (eine Sitzung)',           cat:'Wundversorgung',   pkt:10,  fix:null, bva:{code:'25c',pkt:10,pktWert:1.2194}},
 {code:'293',  name:'Nahtentfernung bei größeren Wundnähten (≥ 12 Nähte)',      cat:'Wundversorgung',   pkt:10,  fix:null},
 // A/04/02 Kleine operative Eingriffe
-{code:'300',  name:'Incision Abszess, Furunkel, Panaritium, Atherom',          cat:'Operative Eingriffe',pkt:10,fix:null},
-{code:'301',  name:'Exkochleation/Ätzung/Kaustik einer Warze oder Geschwulst', cat:'Operative Eingriffe',pkt:10,fix:null},
-{code:'302',  name:'Exkochleation/Ätzung/Kaustik mehrerer Warzen (eine Sitzung)',cat:'Operative Eingriffe',pkt:20,fix:null},
-{code:'303',  name:'Entfernung eines Finger- oder Zehennagels',                 cat:'Operative Eingriffe',pkt:20,fix:null},
+{code:'300',  name:'Incision Abszess, Furunkel, Panaritium, Atherom',          cat:'Operative Eingriffe',pkt:10,fix:null, bva:{code:'26a',pkt:10,pktWert:1.2194}},
+{code:'301',  name:'Exkochleation/Ätzung/Kaustik einer Warze oder Geschwulst', cat:'Operative Eingriffe',pkt:10,fix:null, bva:{code:'26d',pkt:5,pktWert:1.2194}},
+{code:'302',  name:'Exkochleation/Ätzung/Kaustik mehrerer Warzen (eine Sitzung)',cat:'Operative Eingriffe',pkt:20,fix:null, bva:{code:'26e',pkt:10,pktWert:1.2194}},
+{code:'303',  name:'Entfernung eines Finger- oder Zehennagels',                 cat:'Operative Eingriffe',pkt:20,fix:null, bva:{code:'26g',pkt:10,pktWert:1.2194}},
 {code:'304',  name:'Bluttransfusion mit Konserve',                              cat:'Operative Eingriffe',pkt:30,fix:null},
 {code:'305',  name:'Incision nach Krampfadernverödung und Thrombektomie',       cat:'Operative Eingriffe',pkt:5, fix:null},
 {code:'26i',  name:'Chirodiagnostik und Chirotherapie AM (max. 5×/Quartal)',    cat:'Operative Eingriffe',pkt:null,fix:null, kasseOnly:['svs'], svs:{code:'26i',pkt:40,pktWert:0.7989}},
 // A/04/03 Verbände
-{code:'310',  name:'Größerer Verband (Kopf, Schulter, Becken; Zinkleimbinde)',  cat:'Verbände',         pkt:14,  fix:null},
-{code:'311',  name:'Gipsverband Hand und Unterarm',                             cat:'Verbände',         pkt:30,  fix:null},
-{code:'312',  name:'Gipsverband Hand, Unter- und Oberarm',                      cat:'Verbände',         pkt:50,  fix:null},
-{code:'313',  name:'Gipsverband obere Extremität und Schultergürtel',           cat:'Verbände',         pkt:120, fix:null},
-{code:'314',  name:'Gipsverband Fuß, Unterschenkel oder Hülse',                 cat:'Verbände',         pkt:50,  fix:null},
-{code:'315',  name:'Gipsverband Fuß, Unter- und Oberschenkel',                  cat:'Verbände',         pkt:80,  fix:null},
-{code:'316',  name:'Gipsverband untere Extremität und Becken',                  cat:'Verbände',         pkt:150, fix:null},
-{code:'317',  name:'Abnahme eines großen Gipsverbandes',                        cat:'Verbände',         pkt:10,  fix:null},
+{code:'310',  name:'Größerer Verband (Kopf, Schulter, Becken; Zinkleimbinde)',  cat:'Verbände',         pkt:14,  fix:null, bva:{code:'27a',pkt:12,pktWert:1.2194}},
+{code:'311',  name:'Gipsverband Hand und Unterarm',                             cat:'Verbände',         pkt:30,  fix:null, bva:{code:'27d',pkt:23,pktWert:1.2194}},
+{code:'312',  name:'Gipsverband Hand, Unter- und Oberarm',                      cat:'Verbände',         pkt:50,  fix:null, bva:{code:'27e',pkt:38,pktWert:1.2194}},
+{code:'313',  name:'Gipsverband obere Extremität und Schultergürtel',           cat:'Verbände',         pkt:120, fix:null, bva:{code:'27f',pkt:83,pktWert:1.2194}},
+{code:'314',  name:'Gipsverband Fuß, Unterschenkel oder Hülse',                 cat:'Verbände',         pkt:50,  fix:null, bva:{code:'27d',pkt:23,pktWert:1.2194}},
+{code:'315',  name:'Gipsverband Fuß, Unter- und Oberschenkel',                  cat:'Verbände',         pkt:80,  fix:null, bva:{code:'27e',pkt:38,pktWert:1.2194}},
+{code:'316',  name:'Gipsverband untere Extremität und Becken',                  cat:'Verbände',         pkt:150, fix:null, bva:{code:'27f',pkt:83,pktWert:1.2194}},
+{code:'317',  name:'Abnahme eines großen Gipsverbandes',                        cat:'Verbände',         pkt:10,  fix:null, bva:{code:'27h',pkt:10,pktWert:1.2194}},
 {code:'318',  name:'Anbringung Gehbügel / Reparatur Gipsverband',               cat:'Verbände',         pkt:10,  fix:null},
 {code:'319',  name:'Abänderung fester Verband (Fensterung, Aufkeilung)',        cat:'Verbände',         pkt:10,  fix:null},
 {code:'320',  name:'Abduktionsschienenverband mit Stärke- oder Gipsfixation',   cat:'Verbände',         pkt:40,  fix:null},
@@ -581,8 +581,8 @@ const DB = [
 {code:'334',  name:'Manuelle Therapie Gelenke (nach GMM, max. 3×/Fall)',        cat:'Orthopädie',       pkt:12,  fix:null},
 {code:'335',  name:'Anleitung gymn. Übungen durch den Arzt',                    cat:'Orthopädie',       pkt:10,  fix:null},
 // A/04/05 Knochenbrüche
-{code:'340',  name:'Provisorische Versorgung kleiner Knochen (Finger, Zehen, Rippen)',cat:'Knochenbrüche',pkt:10,fix:null},
-{code:'341',  name:'Provisorische Versorgung alle übrigen Knochen',             cat:'Knochenbrüche',    pkt:30,  fix:null},
+{code:'340',  name:'Provisorische Versorgung kleiner Knochen (Finger, Zehen, Rippen)',cat:'Knochenbrüche',pkt:10,fix:null, bva:{code:'29a',pkt:6,pktWert:1.2194}},
+{code:'341',  name:'Provisorische Versorgung alle übrigen Knochen',             cat:'Knochenbrüche',    pkt:30,  fix:null, bva:{code:'29b',pkt:10,pktWert:1.2194}},
 // A/06/02 HNO – Therapeutische Verrichtungen (AM-relevant)
 {code:'376',  name:'Ohrmikroskopie',                                            cat:'HNO',              pkt:10,  fix:null},
 {code:'377',  name:'Stimmgabelprüfung',                                         cat:'HNO',              pkt:8,   fix:null},
@@ -595,12 +595,12 @@ const DB = [
 // A/07/01 EKG
 {code:'400',  name:'Ruhe-EKG (Standard, Goldberger)',                           cat:'EKG',              pkt:10,  fix:null, warn:true},
 {code:'401',  name:'Ruhe-EKG + 3 Brustwandableitungen',                        cat:'EKG',              pkt:15,  fix:null, warn:true},
-{code:'402',  name:'Ruhe-EKG + 6 Brustwandableitungen',                        cat:'EKG',              pkt:20,  fix:null, warn:true, svs:{code:'34a',pkt:69,pktWert:0.7989}},
+{code:'402',  name:'Ruhe-EKG + 6 Brustwandableitungen',                        cat:'EKG',              pkt:20,  fix:null, warn:true, bva:{code:'34a',fix:53.6075}, svs:{code:'34a',pkt:69,pktWert:0.7989}},
 {code:'403',  name:'Ergometrie + Ruhe-EKG (Genehmigung erforderlich)',          cat:'EKG',              pkt:80,  fix:null, warn:true},
-{code:'404',  name:'ZUSCHLAG EKG am Krankenbett',                               cat:'EKG',              pkt:20,  fix:null, warn:true},
+{code:'404',  name:'ZUSCHLAG EKG am Krankenbett',                               cat:'EKG',              pkt:20,  fix:null, warn:true, bva:{code:'34f',pkt:10,pktWert:1.2194}},
 {code:'405',  name:'Rheokardiographie, Apexcardiographie, Carotispulskurve',    cat:'EKG',              pkt:40,  fix:null},
 {code:'408',  name:'Orthostaseprüfung nach Schellong',                          cat:'EKG',              pkt:10,  fix:null},
-{code:'415',  name:'24h-Blutdruckmonitoring (Sondergenehmigung / Therapiekontrolle AM)',cat:'EKG',      pkt:50,  fix:null, warn:true, svs:{code:'34e',pkt:65,pktWert:0.7989}},
+{code:'415',  name:'24h-Blutdruckmonitoring (Sondergenehmigung / Therapiekontrolle AM)',cat:'EKG',      pkt:50,  fix:null, warn:true, bva:{code:'34x',fix:52.5361}, svs:{code:'34e',pkt:65,pktWert:0.7989}},
 // A/11 Physikalische Behandlung (AM)
 {code:'500',  name:'Manuelle Teilmassage (mind. 10 min)',                       cat:'Physikalisch',     pkt:8,   fix:null},
 {code:'501',  name:'Apparatmassage (mind. 10 min)',                             cat:'Physikalisch',     pkt:4,   fix:null},
@@ -619,7 +619,7 @@ const DB = [
 {code:'530',  name:'Dampfinhalation',                                           cat:'Physikalisch',     pkt:4,   fix:null},
 {code:'531',  name:'Aerosolinhalation',                                         cat:'Physikalisch',     pkt:6,   fix:null},
 // A/12 Labor (AM-relevant)
-{code:'600',  name:'Blutbefund komplett (Erythro, Leuko, Hb, Diffzählung, Hkt)',cat:'Labor',           pkt:30,  fix:null},
+{code:'600',  name:'Blutbefund komplett (Erythro, Leuko, Hb, Diffzählung, Hkt)',cat:'Labor',           pkt:30,  fix:null, bva:{code:'1.01',pkt:3.4,pktWert:1.2892}},
 {code:'601',  name:'Rotes Blutbild (Erythro, Hkt, Hb, Färbeindex)',            cat:'Labor',            pkt:12,  fix:null},
 {code:'602',  name:'Weißes Blutbild (Leuko- und Differentialzählung)',          cat:'Labor',            pkt:16,  fix:null},
 {code:'603',  name:'Erythrocyten',                                              cat:'Labor',            pkt:6,   fix:null},
@@ -629,41 +629,41 @@ const DB = [
 {code:'609',  name:'Hämatokrit',                                                cat:'Labor',            pkt:6,   fix:null},
 {code:'620',  name:'Blutsenkung / Mikrosenkung mit Blutabnahme',                cat:'Labor',            pkt:8,   fix:null},
 {code:'630',  name:'Thrombocyten',                                              cat:'Labor',            pkt:12,  fix:null},
-{code:'633',  name:'Prothrombinzeit (Quick)',                                    cat:'Labor',            pkt:10,  fix:null},
+{code:'633',  name:'Prothrombinzeit (Quick)',                                    cat:'Labor',            pkt:10,  fix:null, bva:{code:'2.04',pkt:4.0,pktWert:1.2892}},
 {code:'634',  name:'Partielle Thromboplastinzeit (PTT), Thrombinzeit',          cat:'Labor',            pkt:12,  fix:null},
-{code:'635',  name:'Antikoagulantienkontrolle (AM + Innere Medizin)',           cat:'Labor',            pkt:6,   fix:null},
+{code:'635',  name:'Antikoagulantienkontrolle (AM + Innere Medizin)',           cat:'Labor',            pkt:6,   fix:null, bva:{code:'2.05',pkt:4.0,pktWert:1.2892}},
 {code:'636',  name:'D-Dimer',                                                   cat:'Labor',            pkt:8,   fix:null},
 {code:'640',  name:'Bestimmung von Harnstoff',                                  cat:'Labor',            pkt:14,  fix:null},
-{code:'642',  name:'Blutzucker, Streifentest',                                  cat:'Labor',            pkt:4,   fix:null},
-{code:'643',  name:'Blutzucker mittels Reflotest',                              cat:'Labor',            pkt:10,  fix:null},
+{code:'642',  name:'Blutzucker, Streifentest',                                  cat:'Labor',            pkt:4,   fix:null, bva:{code:'3.01',pkt:0.93,pktWert:1.2892}},
+{code:'643',  name:'Blutzucker mittels Reflotest',                              cat:'Labor',            pkt:10,  fix:null, bva:{code:'3.01',pkt:0.93,pktWert:1.2892}},
 {code:'645',  name:'Latex-Rheumafaktortest',                                    cat:'Labor',            pkt:14,  fix:null},
-{code:'646',  name:'C-reaktives Protein',                                       cat:'Labor',            pkt:18,  fix:null},
+{code:'646',  name:'C-reaktives Protein',                                       cat:'Labor',            pkt:18,  fix:null, bva:{code:'11.25',pkt:2.5,pktWert:1.2892}},
 {code:'647',  name:'Bilirubin',                                                 cat:'Labor',            pkt:12,  fix:null},
-{code:'648',  name:'Blutzuckerkurve oder Tagesprofil, komplett',                cat:'Labor',            pkt:40,  fix:null},
-{code:'649',  name:'Troponin-T Test',                                           cat:'Labor',            pkt:7,   fix:null},
+{code:'648',  name:'Blutzuckerkurve oder Tagesprofil, komplett',                cat:'Labor',            pkt:40,  fix:null, bva:{code:'15.01',pkt:5.0,pktWert:1.2892}},
+{code:'649',  name:'Troponin-T Test',                                           cat:'Labor',            pkt:7,   fix:null, bva:{code:'4.20',pkt:7.2,pktWert:1.2892}},
 {code:'660',  name:'Phosphatase (alkalisch, saure); Transaminasen (GOT, GPT)',  cat:'Labor',            pkt:11,  fix:null},
-{code:'680',  name:'Harnuntersuchung mit Streifen (einzel oder mehrfach)',      cat:'Labor',            pkt:2,   fix:null},
+{code:'680',  name:'Harnuntersuchung mit Streifen (einzel oder mehrfach)',      cat:'Labor',            pkt:2,   fix:null, bva:{code:'5.01',pkt:0.93,pktWert:1.2892}},
 {code:'681',  name:'Spez. Gewicht (Harn)',                                      cat:'Labor',            pkt:2,   fix:null},
-{code:'682',  name:'Sediment',                                                  cat:'Labor',            pkt:8,   fix:null},
+{code:'682',  name:'Sediment',                                                  cat:'Labor',            pkt:8,   fix:null, bva:{code:'5.03',pkt:0.93,pktWert:1.2892}},
 {code:'683',  name:'Harnkultur nach Objektträgermethode (Urikult)',             cat:'Labor',            pkt:6,   fix:null},
-{code:'710',  name:'Stuhl auf Blut',                                            cat:'Labor',            pkt:4,   fix:null},
+{code:'710',  name:'Stuhl auf Blut',                                            cat:'Labor',            pkt:4,   fix:null, bva:{code:'7.02',pkt:2.0,pktWert:1.2892}},
 {code:'720',  name:'Bestimmung der Vitalkapazität',                             cat:'Labor',            pkt:10,  fix:null},
 {code:'721',  name:'Bestimmung der VC, Tieffenautest und Atemgrenzwert',        cat:'Labor',            pkt:16,  fix:null},
 {code:'726',  name:'Blutgasanalyse (Limit: 25% der Fälle)',                    cat:'Labor',            pkt:35,  fix:null},
 {code:'770',  name:'Serologischer Schwangerschaftstest (nur kurat. Notwendigkeit)',cat:'Labor',         pkt:32,  fix:null},
 // A/13/02 Röntgen Aufnahmen
-{code:'810',  name:'Röntgen 9×12',                                              cat:'Röntgen Aufnahmen',pkt:null,fix:6.74,  warn:true},
+{code:'810',  name:'Röntgen 9×12',                                              cat:'Röntgen Aufnahmen',pkt:null,fix:6.74,  warn:true, bva:{code:'r5a',fix:7.7243}},
 {code:'811',  name:'Röntgen 10×10',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:8.72,  warn:true},
-{code:'812',  name:'Röntgen 13×18',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:7.95,  warn:true, svs:{code:'r5b',pkt:22,pktWert:0.5438}},
-{code:'813',  name:'Röntgen 18×24',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.09, warn:true},
-{code:'814',  name:'Röntgen 15×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.85, warn:true},
-{code:'815',  name:'Röntgen 24×30',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:11.78, warn:true},
-{code:'816',  name:'Röntgen 30×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:16.06, warn:true},
-{code:'817',  name:'Röntgen 35×35',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:17.62, warn:true},
-{code:'818',  name:'Röntgen 20×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:14.18, warn:true},
+{code:'812',  name:'Röntgen 13×18',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:7.95,  warn:true, bva:{code:'r5b',fix:9.9796}, svs:{code:'r5b',pkt:22,pktWert:0.5438}},
+{code:'813',  name:'Röntgen 18×24',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.09, warn:true, bva:{code:'r5c',fix:12.5848}},
+{code:'814',  name:'Röntgen 15×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.85, warn:true, bva:{code:'r5d',fix:15.5165}},
+{code:'815',  name:'Röntgen 24×30',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:11.78, warn:true, bva:{code:'r5e',fix:16.8695}},
+{code:'816',  name:'Röntgen 30×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:16.06, warn:true, bva:{code:'r5f',fix:19.4294}},
+{code:'817',  name:'Röntgen 35×35',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:17.62, warn:true, bva:{code:'r5g',fix:21.0194}},
+{code:'818',  name:'Röntgen 20×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:14.18, warn:true, bva:{code:'r5i',fix:17.2416}},
 {code:'819',  name:'Röntgen 35×43',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:20.96, warn:true},
 {code:'820',  name:'Röntgen 30×90',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:49.54, warn:true},
-{code:'821',  name:'Zahnfilm (je Aufnahme)',                                    cat:'Röntgen Aufnahmen',pkt:null,fix:3.55,  warn:true},
+{code:'821',  name:'Zahnfilm (je Aufnahme)',                                    cat:'Röntgen Aufnahmen',pkt:null,fix:3.55,  warn:true, bva:{code:'r5h',fix:5.1984}},
 // A/13/04 Röntgen Honorar Teilradiologen
 {code:'835',  name:'Erste Handhabung pro Quartal (Teilradiologe)',              cat:'Röntgen Honorar',  pkt:8,   fix:null, warn:true},
 {code:'836',  name:'Jede weitere Handhabung (Teilradiologe)',                   cat:'Röntgen Honorar',  pkt:2,   fix:null, warn:true},
@@ -672,7 +672,7 @@ const DB = [
 {code:'860',  name:'Nieren, Retroperitoneum, ggf. Harnwege, Blase, Prostata',  cat:'Sonographie',      pkt:60,  fix:null, warn:true},
 {code:'870',  name:'Weibl. Becken (Uterus, Adnexe, ggf. Blase)',               cat:'Sonographie',      pkt:50,  fix:null, warn:true},
 {code:'880',  name:'Männl. Becken (Blase, Prostata, ggf. Darmabschnitte)',     cat:'Sonographie',      pkt:38,  fix:null, warn:true},
-{code:'890',  name:'Ein Organ (z.B. GB+Gallenwege, beide Nieren, Uterus)',      cat:'Sonographie',      pkt:35,  fix:null, warn:true, svs:{code:'US12',pkt:60,pktWert:0.5480}},
+{code:'890',  name:'Ein Organ (z.B. GB+Gallenwege, beide Nieren, Uterus)',      cat:'Sonographie',      pkt:35,  fix:null, warn:true, bva:{code:'US12',fix:34.15}, svs:{code:'US12',pkt:60,pktWert:0.5480}},
 {code:'892',  name:'Endovaginale Sonographie',                                  cat:'Sonographie',      pkt:42,  fix:null, warn:true},
 {code:'893',  name:'Transrektale Prostatasonographie',                          cat:'Sonographie',      pkt:42,  fix:null, warn:true},
 {code:'894',  name:'Sonographie Mamma (bei unklarem Mammographiebefund)',       cat:'Sonographie',      pkt:25,  fix:null, warn:true},
@@ -775,22 +775,89 @@ const NOTES = {
 
 // BVAEB-spezifische Limitierungen (nach BVA-Tarif)
 const BVAEB_NOTES = {
+  // Ordination
   'A1':  'Ärztliche Erstuntersuchung (inkl. Anamnese, Untersuchung, Beratung) · 1× pro Quartal',
   'A2':  'Folgeuntersuchung · In derselben Sitzung nicht mit A1 kombinierbar',
-  'B1':  'Krankenbesuch 1. Patient je Besuchsrunde',
-  'B2':  'Krankenbesuch – jeder weitere Patient je Besuchsrunde',
-  'C1':  'Gesprächsleistung (mind. 16 Min.) · Max. 3× pro Quartal pro Patient',
+  'A3':  'Zuschlag Ordination außerhalb der Normalzeit (Mo–Fr 18–20 Uhr, Sa 12–18 Uhr)',
+  'A4':  'Zuschlag Ordination an Sonn- und Feiertagen',
+  'A5':  'Zuschlag Ordination bei Nacht (Mo–Sa 20–8 Uhr; So/Feiertag 0–24 Uhr) · Von A3–A5 je Ordination nur der höchstwertige Zuschlag verrechenbar',
+  // Krankenbesuch
+  'B1':  'Erster Krankenbesuch je Besuchsrunde · Inkl. Anamnese, Untersuchung, Beratung',
+  'B2':  'Weiterer Krankenbesuch – jeder weitere Patient je Besuchsrunde',
+  'B3':  'Zuschlag Krankenbesuch außerhalb der Normalzeit',
+  'B4':  'Zuschlag Krankenbesuch an Sonn- und Feiertagen',
+  'B5':  'Zuschlag Krankenbesuch bei Nacht · Von B3–B5 je Besuch nur der höchstwertige Zuschlag verrechenbar',
+  // Zeitversäumnis
+  'C1':  'Zeitversäumnis bei Krankenbesuchen bei Tag · Je angefangene ½ Stunde Wartezeit',
+  'C2':  'Zeitversäumnis bei Krankenbesuchen bei Nacht · Je angefangene ½ Stunde Wartezeit',
+  'TA':  'Ausführliche therapeutische Aussprache · € 20,01 fix · Mind. 10 Min. · Max. 33 % der Fälle/Quartal (AM) · Nicht mit PS oder HMG kombinierbar',
+  'HMG': 'Heilmittelberatungsgespräch · € 14,84 fix · Max. 12 % der Fälle/Quartal · Nicht gleichzeitig mit TA',
+  'PS':  'Psychosomatisch orientiertes D+B-Gespräch · € 25,62 fix · ÖÄK-Diplom Psychosom. Medizin erforderlich · Nicht mit TA kombinierbar',
+  // Konsilium
   'D1':  'Konsilium (Berufener oder Berufender) · Dokumentationspflicht',
+  'D2':  'Konsilium schriftlich (Anforderung oder Befundbericht) · Dokumentationspflicht',
+  // Koordinierung
   'J1':  'Koordinierungszuschlag · 1× pro Fall und Quartal · Max. 5 % der Fälle',
+  // Blutabnahme
   '10a': 'Blutabnahme aus der Vene · Bei Serienblutabnahmen ggf. nicht mit Ordination kombinierbar',
+  '10b': 'Kapilläre Blutabnahme (Fingerbeere/Ohrläppchen)',
+  '10c': 'Blutabnahme ohne eigene Punktion (z.B. aus liegendem Katheter)',
+  // Injektionen
   '11b': 'Intramuskuläre Injektion · Bei Serieninjektionen (>3): nicht mit Ordination kombinierbar',
   '11c': 'Intravenöse Injektion · Bei Serieninjektionen (>3): nicht mit Ordination kombinierbar',
   '11e': 'Eigenblutinjektion (Venenpunktion + i.m.) · Bei Serieninjektionen (>3): nicht mit Ordination kombinierbar',
   '11u': 'Periarticuläre Injektion',
   '11v': 'Intraarticuläre Injektion · Dokumentationspflicht',
+  // Infiltrationen
   '12a': 'Subcutane Infiltration',
   '12b': 'Intramuskuläre Infiltration',
+  // Infusionen
   '13b': 'Intravenöse Dauertropfinfusion · Dokumentationspflicht',
+  // Wundversorgung
+  '25a': 'Kleine Wundversorgung (Reinigung, Desinfektion, einfacher Wundverschluss)',
+  '25c': 'Mittlere Wundversorgung (aufwändigere Versorgung oder mehrere Wunden)',
+  '25d': 'Große Wundversorgung (ausgedehnte oder mehrschichtige Wundversorgung)',
+  // Operative Eingriffe
+  '26a': 'Kleiner operativer Eingriff (z.B. Abszessinzision, Exzision kleiner Läsionen)',
+  '26d': 'Mittelgroßer operativer Eingriff',
+  '26e': 'Ergänzungsleistung zu operativem Eingriff',
+  '26g': 'Weitere Ergänzungsleistung zu operativem Eingriff',
+  // Verbände
+  '27a': 'Einfacher Verband (Wundabdeckung, Pflasterverband)',
+  '27d': 'Mittlerer Verband (z.B. Kompressionsverband, Mehrschichtverband)',
+  '27e': 'Großer Verband (ausgedehnter Kompressionsverband)',
+  '27f': 'Sehr großer Verband (z.B. zirkulärer Extremitätenverband)',
+  '27h': 'Kleiner Spezialverband (z.B. Fingerkuppenverband, Ohr)',
+  // Knochenbrüche / Orthopädie
+  '29a': 'Ruhigstellung / Schiene (Gipsschiene oder Kunststoffschiene)',
+  '29b': 'Zirkulärer Gipsverband · Inkl. Material',
+  // EKG
+  '34a': 'EKG in Ruhe (12 Ableitungen) · Dokumentationspflicht · € 53,61 fix',
+  '34f': 'EKG-Zuschlag (Belastungs-EKG oder Langzeit-EKG)',
+  '34x': 'Langzeit-EKG (24-Std.-Aufzeichnung inkl. Auswertung) · € 52,54 fix · Dokumentationspflicht',
+  // Sonographie
+  'US12':'Sonographie (ein Organ, bis 2 Quadranten) · € 34,15 fix · Dokumentationspflicht',
+  // Röntgen
+  'r5a': 'Röntgenaufnahme Format 1 (kleinstes Format) · Fix-Betrag inkl. Aufnahme und Honorar',
+  'r5b': 'Röntgenaufnahme Format 2 (13×18 cm)',
+  'r5c': 'Röntgenaufnahme Format 3 (18×24 cm)',
+  'r5d': 'Röntgenaufnahme Format 4 (24×30 cm)',
+  'r5e': 'Röntgenaufnahme Format 5 (30×40 cm)',
+  'r5f': 'Röntgenaufnahme Format 6 (35×43 cm)',
+  'r5g': 'Röntgenaufnahme Format 7 (43×43 cm)',
+  'r5h': 'Röntgen Kleinstformat / Spezial (z.B. Zahnfilm-äquivalent)',
+  'r5i': 'Röntgenaufnahme Spezialformat / Thorax-Übersicht',
+  // Labor
+  '1.01':  'Harnstreifen-Untersuchung (Urin-Teststreifen, mind. 8 Parameter)',
+  '2.04':  'Thromboplastinzeit (Quick/INR) · Gerinnungsdiagnostik',
+  '2.05':  'Thromboplastinzeit (Thrombotest) · Alternative Gerinnungsdiagnostik',
+  '3.01':  'Hämoglobin (photometrisch) oder Hämatokrit',
+  '4.20':  'Glukose im Blut (enzymatisch)',
+  '5.01':  'Eiweiß im Harn (qualitativ)',
+  '5.03':  'Glukose im Harn (qualitativ)',
+  '7.02':  'Okkultes Blut im Stuhl (Hämoccult)',
+  '11.25': 'C-reaktives Protein (CRP, quantitativ)',
+  '15.01': 'TSH (basales Thyreoidea-stimulierendes Hormon)',
 };
 
 // SVS-spezifische Limitierungen (nach SVS Gesamtvertrag, Stand 01.01.2026)
@@ -896,7 +963,7 @@ let state = {
 // ── CALCULATIONS ──
 function ks(pos)         { return pos.fix != null ? pos.fix : parseFloat(((pos.pkt||0)*state.settings.pkt).toFixed(4)); }
 function rueck(pos)      { return parseFloat((ks(pos)*state.settings.ruck/100).toFixed(4)); }
-function hon(pos, fak)   { let b=ks(pos); if(b===0&&pos.kasseOnly)b=ksK(pos,pos.kasseOnly[0]); return parseFloat((b*(fak??state.settings.fak)).toFixed(4)); }
+function hon(pos, fak)   { let b=ks(pos); if(b===0&&pos.kasseOnly){const k=pos.kasseOnly.includes(state.kasse)?state.kasse:pos.kasseOnly[0];b=ksK(pos,k);} return parseFloat((b*(fak??state.settings.fak)).toFixed(4)); }
 function eigen(pos, fak) { return Math.max(0, parseFloat((hon(pos,fak)-rueck(pos)).toFixed(4))); }
 function ksK(dbPos, kasse) {
   const k = kasse ?? state.kasse;
@@ -1063,6 +1130,9 @@ function detectConflicts(codes) {
 }
 function kasseCovBadges(d) {
   if (d.kasseOnly) {
+    if (d.kasseOnly.length > 1 && !d.kasseOnly.includes('oegk')) {
+      return `<div style="display:flex;gap:3px;margin-top:1px"><span style="font-size:8px;font-weight:700;letter-spacing:.03em;color:var(--text3)">kein ÖGK</span></div>`;
+    }
     const k = d.kasseOnly[0];
     const col = k==='svs'?'var(--green)':k==='bvaeb'?'var(--violet)':'var(--text2)';
     const lbl = k==='svs'?'Nur SVS':k==='bvaeb'?'Nur BVA':k.toUpperCase();
