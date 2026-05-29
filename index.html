@@ -96,11 +96,24 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
 .search-in{flex:1;min-width:140px;padding:6px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text)}
 .cat-sel{padding:6px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:13px}
 .cat-wrap{flex:1;overflow-y:auto}
-.ct-head{display:grid;grid-template-columns:68px 1fr 66px 66px 70px 78px 80px 74px 74px 88px;gap:5px;padding:6px 14px;font-size:11px;color:var(--text3);font-weight:500;position:sticky;top:0;background:var(--bg);border-bottom:0.5px solid var(--border);z-index:1}
-.ct-row{display:grid;grid-template-columns:68px 1fr 66px 66px 70px 78px 80px 74px 74px 88px;gap:5px;align-items:center;padding:6px 14px;border-bottom:0.5px solid var(--border)}
+.ct-head{display:grid;grid-template-columns:68px 1fr 66px 66px 70px 78px 80px 74px 74px 112px;gap:5px;padding:6px 14px;font-size:11px;color:var(--text3);font-weight:500;position:sticky;top:0;background:var(--bg);border-bottom:0.5px solid var(--border);z-index:1}
+.ct-row{display:grid;grid-template-columns:68px 1fr 66px 66px 70px 78px 80px 74px 74px 112px;gap:5px;align-items:center;padding:6px 14px;border-bottom:0.5px solid var(--border)}
 .ct-row:hover{background:var(--bg2)}
 .ct-grp{padding:5px 14px 3px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;background:var(--bg2);border-bottom:0.5px solid var(--border);position:sticky;top:32px;z-index:1}
 .add-btn{padding:3px 9px;font-size:12px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg);color:var(--text)}
+.edit-pos-btn{padding:3px 7px;font-size:12px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg);color:var(--text3)}
+.edit-pos-btn:hover{color:var(--amber);border-color:var(--amber)}
+.ct-custom-badge{font-size:8px;font-weight:700;color:var(--amber);letter-spacing:.04em;vertical-align:middle;margin-left:3px}
+.pe-section{border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.pe-section-head{font-size:12px;font-weight:600;margin-bottom:8px}
+.pe-row{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.pe-label{font-size:11px;color:var(--text3);margin-bottom:3px}
+.pe-radio{display:flex;gap:10px;margin-bottom:6px}
+.pe-radio label{font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer}
+.pe-grp-sel{font-size:11px;padding:3px 6px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);width:100%}
+.btn-danger{background:var(--red-bg,#2a1515);color:var(--red);border:0.5px solid var(--red);border-radius:var(--radius);padding:5px 12px;font-size:13px;cursor:pointer}
+.btn-danger:hover{opacity:.85}
+.pe-modal .modal{width:560px;max-height:90vh}
 .add-btn:hover{background:var(--bg2)}
 .settings-wrap{padding:22px;max-width:450px;overflow-y:auto}
 .field-group{margin-bottom:16px}
@@ -248,6 +261,7 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
       <select class="cat-sel" id="kat-cat" onchange="window.renderKatalog()">
         <option value="">Alle Gruppen</option>
       </select>
+      <button class="btn" onclick="window.openPosNew()" style="font-size:12px;padding:4px 10px;white-space:nowrap">+ Neue Position</button>
     </div>
     <div class="cat-wrap">
       <div class="ct-head">
@@ -989,6 +1003,7 @@ function populateCatSelects() {
 // ── STATE ──
 let state = {
   vorlagen: [],
+  dbCustom: [],
   activeId: null,
   kasse: 'oegk',
   katKasse: 'oegk',
@@ -997,6 +1012,19 @@ let state = {
               bvaeb: {ruck:90, selbst:10, pkt1:1.3567, pkt2:1.2194, pkt3:1.1104, pkt4:1.2892},
               svs: {ruck:80, pkt1:0.7989, pkt2:0.5480, pkt3:0.5438} }
 };
+
+function getDB() {
+  const custom = state.dbCustom || [];
+  if (!custom.length) return DB;
+  const overCodes = new Set(custom.filter(c => DB.some(d => d.code===c.code)).map(c => c.code));
+  const additions = custom.filter(c => !DB.some(d => d.code===c.code));
+  const merged = DB.map(d => overCodes.has(d.code) ? custom.find(c => c.code===d.code) : d);
+  additions.forEach(a => {
+    const lastIdx = merged.reduce((best,d,i) => d.cat===a.cat ? i : best, -1);
+    if (lastIdx>=0) merged.splice(lastIdx+1, 0, a); else merged.push(a);
+  });
+  return merged;
+}
 
 // ── CALCULATIONS ──
 function ks(pos)         { return pos.fix != null ? pos.fix : parseFloat(((pos.pkt||0)*state.settings.pkt).toFixed(4)); }
@@ -1061,7 +1089,8 @@ function save() {
     try {
       await setDoc(doc(db, 'users', currentUser.uid), {
         vorlagen: state.vorlagen,
-        settings: state.settings
+        settings: state.settings,
+        dbCustom: state.dbCustom || []
       });
       const ind = document.getElementById('save-indicator');
       ind.classList.add('visible');
@@ -1076,6 +1105,7 @@ async function load() {
   if (snap.exists()) {
     const d = snap.data();
     state.vorlagen = d.vorlagen || [];
+    state.dbCustom = d.dbCustom || [];
     const defUvFak = {1:4.90,2:3.85,3:2.70,4:2.00,5:1.64};
     state.settings = Object.assign({pkt:0.80,fak:2.5,ruck:80,name:'',adr:'',tel:'',uvFak:defUvFak,bvaeb:{ruck:90,selbst:10},svs:{ruck:80}}, d.settings || {});
     if (!state.settings.uvFak) state.settings.uvFak = defUvFak;
@@ -1174,7 +1204,7 @@ function detectConflicts(codes) {
       if (!codes.includes(nw)) return;
       const key = [code,nw].sort().join('+');
       if (seen.has(key)) return; seen.add(key);
-      const a = DB.find(d => d.code===code), b = DB.find(d => d.code===nw);
+      const a = getDB().find(d => d.code===code), b = getDB().find(d => d.code===nw);
       conflicts.push(`Pos. ${code} und Pos. ${nw} dürfen nicht kombiniert werden (${a?a.name:code} ↔ ${b?b.name:nw})`);
     });
   });
@@ -1217,7 +1247,7 @@ function sumV(v) {
   (v.positions||[]).forEach(p => {
     const q = p.qty||1;
     if (p.type==='free') { const b=(p.betrag||0)*q; hT+=b; eT+=b; return; }
-    const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return;
+    const dbPos = getDB().find(d => d.code===p.code); if (!dbPos) return;
     const fak = effFak(p);
     ksT+=ksK(dbPos)*q; rT+=rueckK(dbPos)*q; hT+=hon(dbPos,fak)*q; eT+=eigenK(dbPos,fak)*q;
   });
@@ -1377,7 +1407,7 @@ function renderKatalog() {
   comp1El.textContent = compLabels[c1]; comp1El.style.color = compColors[c1];
   comp2El.textContent = compLabels[c2]; comp2El.style.color = compColors[c2];
   document.querySelectorAll('.kat-kasse-tab').forEach(el => el.classList.toggle('active', el.dataset.kk===kk));
-  const fl = DB.filter(d => {
+  const fl = getDB().filter(d => {
     if (kk==='bvaeb' && !d.bva) return false;
     if (kk==='svs'   && !d.svs) return false;
     if (kk==='oegk'  && d.kasseOnly) return false;
@@ -1393,11 +1423,15 @@ function renderKatalog() {
     if (d.cat!==lastCat) { html+=`<div class="ct-grp">${esc(GRP_LABEL[d.cat]||d.cat)}</div>`; lastCat=d.cat; }
     const nc = kk==='bvaeb'&&d.bva ? d.bva.code : kk==='svs'&&d.svs ? d.svs.code : d.code;
     const ogkSub = d.kasseOnly ? '' : `<span style="font-size:9px;color:var(--text3)">ÖGK: ${esc(d.code)}</span>`;
+    const uvKatKey = d._uvKat ?? UV_DEFAULT_KAT[d.code];
+    const uvBadge = uvKatKey ? `<span style="font-size:9px;font-weight:600;color:var(--amber);letter-spacing:.02em">${UV_KAT[uvKatKey].short}</span>` : '';
     const codeDiv = kk!=='oegk'
-      ? `<div style="display:flex;flex-direction:column;gap:1px"><span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(nc)}</span>${ogkSub}${kasseCovBadges(d)}${UV_DEFAULT_KAT[d.code]?`<span style="font-size:9px;font-weight:600;color:var(--amber)">${UV_KAT[UV_DEFAULT_KAT[d.code]].short}</span>`:''}</div>`
-      : `<div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(d.code)}</span>${kasseCovBadges(d)}${UV_DEFAULT_KAT[d.code]?`<span style="font-size:9px;font-weight:600;color:var(--amber);letter-spacing:.02em">${UV_KAT[UV_DEFAULT_KAT[d.code]].short}</span>`:''}</div>`;
+      ? `<div style="display:flex;flex-direction:column;gap:1px"><span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(nc)}</span>${ogkSub}${kasseCovBadges(d)}${uvBadge}</div>`
+      : `<div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(d.code)}</span>${kasseCovBadges(d)}${uvBadge}</div>`;
     const kd = kk==='bvaeb'?d.bva:kk==='svs'?d.svs:null;
     const ps = kd ? (kd.fix!=null ? fmt(kd.fix)+' fix' : `${kd.pkt||0} Pkt`) : (d.fix!=null ? fmt(d.fix)+' fix' : `${d.pkt||0} Pkt`);
+    const isCustom = (state.dbCustom||[]).some(c => c.code===d.code);
+    const customBadge = isCustom ? `<span class="ct-custom-badge">✎</span>` : '';
     const wb = d.warn ? `<span class="pill-warn">⚠ SG</span>` : '';
     const noteText = kk==='bvaeb'&&d.bva&&BVAEB_NOTES[d.bva.code] ? BVAEB_NOTES[d.bva.code]
       : kk==='svs'&&d.svs&&SVS_NOTES[d.svs.code] ? SVS_NOTES[d.svs.code]
@@ -1406,7 +1440,7 @@ function renderKatalog() {
     const canAdd = !!state.activeId;
     html += `<div class="ct-row">
       ${codeDiv}
-      <span style="font-size:13px">${esc(d.name)} ${wb}${ni}</span>
+      <span style="font-size:13px">${esc(d.name)}${customBadge} ${wb}${ni}</span>
       ${compCell(d, c1)}
       ${compCell(d, c2)}
       <span style="text-align:right;font-size:12px;color:var(--text2)">${ps}</span>
@@ -1414,7 +1448,10 @@ function renderKatalog() {
       <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--green)">${fmt(rueckK(d,kk))}</span>
       <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--amber)">${fmt(hon(d))}</span>
       <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--red)">${fmt(eigenK(d,undefined,kk))}</span>
-      <button class="add-btn" onclick="window.quickAdd('${d.code}')" ${canAdd?'':'disabled title="Zuerst Vorlage auswählen"'}>${canAdd?'+ Vorlage':'—'}</button>
+      <div style="display:flex;gap:4px;align-items:center;justify-content:flex-end">
+        <button class="edit-pos-btn" onclick="window.openPosEdit('${d.code}')" title="Position bearbeiten">✎</button>
+        <button class="add-btn" onclick="window.quickAdd('${d.code}')" ${canAdd?'':'disabled title="Zuerst Vorlage auswählen"'}>${canAdd?'+ Vorlage':'—'}</button>
+      </div>
     </div>`;
   });
   document.getElementById('kat-rows').innerHTML = html || '<div style="padding:20px;text-align:center;color:var(--text3)">Keine Positionen gefunden</div>';
@@ -1425,7 +1462,7 @@ function renderModalList() {
   const cat = document.getElementById('modal-cat').value;
   const v = state.vorlagen.find(x => x.id===state.activeId);
   const used = (v?v.positions:[]).map(p => p.code);
-  const fl = DB.filter(d => {
+  const fl = getDB().filter(d => {
     if (cat && d.cat!==cat) return false;
     if (q && !d.code.toLowerCase().includes(q) && !d.name.toLowerCase().includes(q)) return false;
     return true;
@@ -1685,6 +1722,221 @@ window.switchTab     = switchTab;
 window.signIn        = signIn;
 window.logOut        = logOut;
 
+// ── POSITIONS-EDITOR ──
+let peEditCode = null;
+
+function populatePeCat() {
+  const sel = document.getElementById('pe-cat');
+  sel.innerHTML = GRP_ORDER.map(g => `<option value="${g}">${GRP_LABEL[g]||g}</option>`).join('');
+}
+
+function openPosNew() {
+  peEditCode = null;
+  populatePeCat();
+  document.getElementById('pos-edit-title').childNodes[0].textContent = 'Neue Position anlegen';
+  document.getElementById('pe-delete-btn').style.display = 'none';
+  resetPosForm();
+  document.getElementById('pos-edit-modal').classList.add('open');
+}
+
+function openPosEdit(code) {
+  const pos = getDB().find(d => d.code===code);
+  if (!pos) return;
+  peEditCode = code;
+  populatePeCat();
+  document.getElementById('pos-edit-title').childNodes[0].textContent = `Position bearbeiten: ${code}`;
+  const isCustom = (state.dbCustom||[]).some(c => c.code===code);
+  const isBuiltin = DB.some(d => d.code===code);
+  const delBtn = document.getElementById('pe-delete-btn');
+  delBtn.style.display = isCustom ? '' : 'none';
+  delBtn.textContent = (isCustom && isBuiltin) ? 'Änderungen zurücksetzen' : 'Position löschen';
+  fillPosForm(pos);
+  document.getElementById('pos-edit-modal').classList.add('open');
+}
+
+function closePosEdit() {
+  document.getElementById('pos-edit-modal').classList.remove('open');
+}
+
+function resetPosForm() {
+  document.getElementById('pe-code').value = '';
+  document.getElementById('pe-name').value = '';
+  document.getElementById('pe-cat').value = GRP_ORDER[0];
+  document.querySelector('[name="pe-oegk-type"][value="pkt"]').checked = true;
+  updatePeOegkType('pkt');
+  document.getElementById('pe-pkt').value = '';
+  document.getElementById('pe-fix').value = '';
+  document.getElementById('pe-bva-aktiv').checked = false;
+  updatePeBvaFields(false);
+  document.getElementById('pe-bva-code').value = '';
+  document.querySelector('[name="pe-bva-type"][value="pkt"]').checked = true;
+  updatePeBvaType('pkt');
+  document.getElementById('pe-bva-pkt').value = '';
+  document.getElementById('pe-bva-fix').value = '';
+  document.getElementById('pe-bva-grp').value = '2';
+  document.getElementById('pe-svs-aktiv').checked = false;
+  updatePeSvsFields(false);
+  document.getElementById('pe-svs-code').value = '';
+  document.querySelector('[name="pe-svs-type"][value="pkt"]').checked = true;
+  updatePeSvsType('pkt');
+  document.getElementById('pe-svs-pkt').value = '';
+  document.getElementById('pe-svs-fix').value = '';
+  document.getElementById('pe-svs-grp').value = '1';
+  document.getElementById('pe-warn').checked = false;
+  document.getElementById('pe-uvkat').value = '';
+  document.getElementById('pe-kasseonly').value = '';
+}
+
+function fillPosForm(pos) {
+  document.getElementById('pe-code').value = pos.code;
+  document.getElementById('pe-name').value = pos.name;
+  document.getElementById('pe-cat').value = pos.cat;
+  const ko = pos.kasseOnly || [];
+  if (ko.length && !ko.includes('oegk')) {
+    document.querySelector('[name="pe-oegk-type"][value="none"]').checked = true;
+    updatePeOegkType('none');
+  } else if (pos.fix != null) {
+    document.querySelector('[name="pe-oegk-type"][value="fix"]').checked = true;
+    document.getElementById('pe-fix').value = pos.fix;
+    updatePeOegkType('fix');
+  } else {
+    document.querySelector('[name="pe-oegk-type"][value="pkt"]').checked = true;
+    document.getElementById('pe-pkt').value = pos.pkt ?? '';
+    updatePeOegkType('pkt');
+  }
+  if (pos.bva) {
+    document.getElementById('pe-bva-aktiv').checked = true;
+    document.getElementById('pe-bva-code').value = pos.bva.code||'';
+    if (pos.bva.fix != null) {
+      document.querySelector('[name="pe-bva-type"][value="fix"]').checked = true;
+      document.getElementById('pe-bva-fix').value = pos.bva.fix;
+      updatePeBvaType('fix');
+    } else {
+      document.querySelector('[name="pe-bva-type"][value="pkt"]').checked = true;
+      document.getElementById('pe-bva-pkt').value = pos.bva.pkt ?? '';
+      const pw = pos.bva.pktWert;
+      document.getElementById('pe-bva-grp').value = pw===1.3567?'1':pw===1.2194?'2':pw===1.1104?'3':pw===1.2892?'4':'2';
+      updatePeBvaType('pkt');
+    }
+    updatePeBvaFields(true);
+  } else {
+    document.getElementById('pe-bva-aktiv').checked = false;
+    updatePeBvaFields(false);
+  }
+  if (pos.svs) {
+    document.getElementById('pe-svs-aktiv').checked = true;
+    document.getElementById('pe-svs-code').value = pos.svs.code||'';
+    if (pos.svs.fix != null) {
+      document.querySelector('[name="pe-svs-type"][value="fix"]').checked = true;
+      document.getElementById('pe-svs-fix').value = pos.svs.fix;
+      updatePeSvsType('fix');
+    } else {
+      document.querySelector('[name="pe-svs-type"][value="pkt"]').checked = true;
+      document.getElementById('pe-svs-pkt').value = pos.svs.pkt ?? '';
+      const pw = pos.svs.pktWert;
+      document.getElementById('pe-svs-grp').value = pw===0.7989?'1':pw===0.5480?'2':pw===0.5438?'3':'1';
+      updatePeSvsType('pkt');
+    }
+    updatePeSvsFields(true);
+  } else {
+    document.getElementById('pe-svs-aktiv').checked = false;
+    updatePeSvsFields(false);
+  }
+  document.getElementById('pe-warn').checked = !!pos.warn;
+  const uvk = pos._uvKat ?? UV_DEFAULT_KAT[pos.code];
+  document.getElementById('pe-uvkat').value = uvk ? String(uvk) : '';
+  if (ko.length>1 && !ko.includes('oegk')) document.getElementById('pe-kasseonly').value = 'noegk';
+  else if (ko.length===1 && ko[0]==='svs') document.getElementById('pe-kasseonly').value = 'svs';
+  else if (ko.length===1 && ko[0]==='bvaeb') document.getElementById('pe-kasseonly').value = 'bvaeb';
+  else document.getElementById('pe-kasseonly').value = '';
+}
+
+function updatePeOegkType(v) {
+  document.getElementById('pe-oegk-pkt-row').style.display = v==='pkt' ? 'flex' : 'none';
+  document.getElementById('pe-oegk-fix-row').style.display = v==='fix' ? 'flex' : 'none';
+}
+function updatePeBvaFields(show) { document.getElementById('pe-bva-fields').style.display = show ? '' : 'none'; }
+function updatePeSvsFields(show) { document.getElementById('pe-svs-fields').style.display = show ? '' : 'none'; }
+function updatePeBvaType(v) {
+  document.getElementById('pe-bva-pkt-row').style.display = v==='pkt' ? 'flex' : 'none';
+  document.getElementById('pe-bva-fix-row').style.display = v==='fix' ? 'flex' : 'none';
+}
+function updatePeSvsType(v) {
+  document.getElementById('pe-svs-pkt-row').style.display = v==='pkt' ? 'flex' : 'none';
+  document.getElementById('pe-svs-fix-row').style.display = v==='fix' ? 'flex' : 'none';
+}
+
+function savePosEdit() {
+  const code = document.getElementById('pe-code').value.trim();
+  const name = document.getElementById('pe-name').value.trim();
+  const cat  = document.getElementById('pe-cat').value;
+  if (!code || !name || !cat) { alert('Code, Bezeichnung und Kategorie sind Pflichtfelder.'); return; }
+  if (!peEditCode && (state.dbCustom||[]).some(c => c.code===code) && !DB.some(d => d.code===code)) {
+    alert('Ein benutzerdefinierter Eintrag mit diesem Code existiert bereits.'); return;
+  }
+  const oegkType = document.querySelector('[name="pe-oegk-type"]:checked').value;
+  let pkt = null, fix = null;
+  if (oegkType==='pkt') pkt = parseFloat(document.getElementById('pe-pkt').value)||0;
+  else if (oegkType==='fix') fix = parseFloat(document.getElementById('pe-fix').value)||0;
+  let bva = null;
+  if (document.getElementById('pe-bva-aktiv').checked) {
+    const bvaCode = document.getElementById('pe-bva-code').value.trim();
+    const bvaType = document.querySelector('[name="pe-bva-type"]:checked').value;
+    const bvaPwMap = {1:1.3567,2:1.2194,3:1.1104,4:1.2892};
+    if (bvaType==='fix') bva = {code:bvaCode, fix:parseFloat(document.getElementById('pe-bva-fix').value)||0};
+    else bva = {code:bvaCode, pkt:parseFloat(document.getElementById('pe-bva-pkt').value)||0, pktWert:bvaPwMap[document.getElementById('pe-bva-grp').value]||1.2194};
+  }
+  let svs = null;
+  if (document.getElementById('pe-svs-aktiv').checked) {
+    const svsCode = document.getElementById('pe-svs-code').value.trim();
+    const svsType = document.querySelector('[name="pe-svs-type"]:checked').value;
+    const svsPwMap = {1:0.7989,2:0.5480,3:0.5438};
+    if (svsType==='fix') svs = {code:svsCode, fix:parseFloat(document.getElementById('pe-svs-fix').value)||0};
+    else svs = {code:svsCode, pkt:parseFloat(document.getElementById('pe-svs-pkt').value)||0, pktWert:svsPwMap[document.getElementById('pe-svs-grp').value]||0.7989};
+  }
+  const koVal = document.getElementById('pe-kasseonly').value;
+  let kasseOnly = null;
+  if (oegkType==='none'||koVal==='noegk') kasseOnly = ['bvaeb','svs'];
+  else if (koVal==='svs') kasseOnly = ['svs'];
+  else if (koVal==='bvaeb') kasseOnly = ['bvaeb'];
+  const pos = {code, name, cat, pkt, fix};
+  if (kasseOnly) pos.kasseOnly = kasseOnly;
+  if (bva) pos.bva = bva;
+  if (svs) pos.svs = svs;
+  if (document.getElementById('pe-warn').checked) pos.warn = true;
+  const uvkVal = document.getElementById('pe-uvkat').value;
+  if (uvkVal) pos._uvKat = parseInt(uvkVal);
+  if (!state.dbCustom) state.dbCustom = [];
+  const existing = state.dbCustom.findIndex(c => c.code===(peEditCode||code));
+  if (existing>=0) state.dbCustom[existing] = pos;
+  else state.dbCustom.push(pos);
+  save();
+  closePosEdit();
+  renderAll();
+}
+
+function deletePosCustom() {
+  if (!peEditCode) return;
+  const isBuiltin = DB.some(d => d.code===peEditCode);
+  const msg = isBuiltin ? `Änderungen an Position ${peEditCode} zurücksetzen?` : `Position ${peEditCode} endgültig löschen?`;
+  if (!confirm(msg)) return;
+  state.dbCustom = (state.dbCustom||[]).filter(c => c.code!==peEditCode);
+  save();
+  closePosEdit();
+  renderAll();
+}
+
+window.openPosNew    = openPosNew;
+window.openPosEdit   = openPosEdit;
+window.closePosEdit  = closePosEdit;
+window.savePosEdit   = savePosEdit;
+window.deletePosCustom = deletePosCustom;
+window.updatePeOegkType = updatePeOegkType;
+window.updatePeBvaFields = updatePeBvaFields;
+window.updatePeSvsFields = updatePeSvsFields;
+window.updatePeBvaType = updatePeBvaType;
+window.updatePeSvsType = updatePeSvsType;
+
 // ── EVENT LISTENERS ──
 document.getElementById('signin-btn').addEventListener('click', signIn);
 document.getElementById('logout-btn').addEventListener('click', logOut);
@@ -1731,5 +1983,170 @@ document.getElementById('rename-input').addEventListener('keydown', e => {
   });
 })();
 </script>
+
+<!-- ── Positions-Editor Modal ── -->
+<div class="modal-bg pe-modal" id="pos-edit-modal" onclick="if(event.target===this)window.closePosEdit()">
+  <div class="modal" style="width:560px;max-height:90vh;overflow-y:auto">
+    <h3 id="pos-edit-title" style="display:flex;justify-content:space-between;align-items:center">
+      Position bearbeiten
+      <button class="btn" onclick="window.closePosEdit()" style="font-size:18px;line-height:1;padding:2px 7px">×</button>
+    </h3>
+
+    <!-- Code + Name -->
+    <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;margin-bottom:10px">
+      <div>
+        <div class="pe-label">Code <span style="color:var(--red)">*</span></div>
+        <input class="field-in" id="pe-code" type="text" placeholder="z.B. 10" style="font-family:monospace">
+      </div>
+      <div>
+        <div class="pe-label">Bezeichnung <span style="color:var(--red)">*</span></div>
+        <input class="field-in" id="pe-name" type="text" placeholder="Positionsname">
+      </div>
+    </div>
+
+    <!-- Kategorie -->
+    <div style="margin-bottom:10px">
+      <div class="pe-label">Kategorie <span style="color:var(--red)">*</span></div>
+      <select class="field-in pe-grp-sel" id="pe-cat" style="font-size:13px"></select>
+    </div>
+
+    <!-- ÖGK -->
+    <div class="pe-section">
+      <div class="pe-section-head" style="color:var(--blue)">ÖGK</div>
+      <div class="pe-radio">
+        <label><input type="radio" name="pe-oegk-type" value="pkt" onchange="window.updatePeOegkType('pkt')"> Punkte × Punktewert</label>
+        <label><input type="radio" name="pe-oegk-type" value="fix" onchange="window.updatePeOegkType('fix')"> Fixbetrag €</label>
+        <label><input type="radio" name="pe-oegk-type" value="none" onchange="window.updatePeOegkType('none')"> Kein ÖGK</label>
+      </div>
+      <div id="pe-oegk-pkt-row" style="display:flex;align-items:center;gap:6px">
+        <input class="field-in" id="pe-pkt" type="number" placeholder="Punkte" step="0.01" min="0" style="width:100px">
+        <span class="pe-label" style="margin:0">Pkt</span>
+      </div>
+      <div id="pe-oegk-fix-row" style="display:none;align-items:center;gap:6px">
+        <input class="field-in" id="pe-fix" type="number" placeholder="0.00" step="0.01" min="0" style="width:100px">
+        <span class="pe-label" style="margin:0">€ fix</span>
+      </div>
+    </div>
+
+    <!-- BVAEB -->
+    <div class="pe-section">
+      <div class="pe-section-head" style="color:var(--violet);display:flex;align-items:center;gap:8px;margin-bottom:0">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:600;font-size:12px">
+          <input type="checkbox" id="pe-bva-aktiv" onchange="window.updatePeBvaFields(this.checked)">
+          BVAEB
+        </label>
+      </div>
+      <div id="pe-bva-fields" style="display:none;margin-top:10px">
+        <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <div class="pe-label">BVA-Code</div>
+            <input class="field-in" id="pe-bva-code" type="text" placeholder="z.B. A1" style="font-family:monospace">
+          </div>
+          <div>
+            <div class="pe-label">Punktewert-Gruppe</div>
+            <select class="pe-grp-sel" id="pe-bva-grp">
+              <option value="1">Grundleistungen AM (1,3567)</option>
+              <option value="2" selected>Allgemeine Leistungen (1,2194)</option>
+              <option value="3">Röntgen (1,1104)</option>
+              <option value="4">Labor (1,2892)</option>
+            </select>
+          </div>
+        </div>
+        <div class="pe-radio">
+          <label><input type="radio" name="pe-bva-type" value="pkt" onchange="window.updatePeBvaType('pkt')"> Punkte</label>
+          <label><input type="radio" name="pe-bva-type" value="fix" onchange="window.updatePeBvaType('fix')"> Fixbetrag €</label>
+        </div>
+        <div id="pe-bva-pkt-row" style="display:flex;align-items:center;gap:6px">
+          <input class="field-in" id="pe-bva-pkt" type="number" placeholder="Punkte" step="0.01" min="0" style="width:100px">
+          <span class="pe-label" style="margin:0">Pkt (× eingestellter Gruppenwert)</span>
+        </div>
+        <div id="pe-bva-fix-row" style="display:none;align-items:center;gap:6px">
+          <input class="field-in" id="pe-bva-fix" type="number" placeholder="0.00" step="0.01" min="0" style="width:100px">
+          <span class="pe-label" style="margin:0">€ fix</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SVS -->
+    <div class="pe-section">
+      <div class="pe-section-head" style="color:var(--green);display:flex;align-items:center;gap:8px;margin-bottom:0">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:600;font-size:12px">
+          <input type="checkbox" id="pe-svs-aktiv" onchange="window.updatePeSvsFields(this.checked)">
+          SVS
+        </label>
+      </div>
+      <div id="pe-svs-fields" style="display:none;margin-top:10px">
+        <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <div class="pe-label">SVS-Code</div>
+            <input class="field-in" id="pe-svs-code" type="text" placeholder="z.B. A1" style="font-family:monospace">
+          </div>
+          <div>
+            <div class="pe-label">Punktewert-Gruppe</div>
+            <select class="pe-grp-sel" id="pe-svs-grp">
+              <option value="1" selected>Allgemeine Leistungen (0,7989)</option>
+              <option value="2">Sonographie (0,5480)</option>
+              <option value="3">Röntgen (0,5438)</option>
+            </select>
+          </div>
+        </div>
+        <div class="pe-radio">
+          <label><input type="radio" name="pe-svs-type" value="pkt" onchange="window.updatePeSvsType('pkt')"> Punkte</label>
+          <label><input type="radio" name="pe-svs-type" value="fix" onchange="window.updatePeSvsType('fix')"> Fixbetrag €</label>
+        </div>
+        <div id="pe-svs-pkt-row" style="display:flex;align-items:center;gap:6px">
+          <input class="field-in" id="pe-svs-pkt" type="number" placeholder="Punkte" step="0.01" min="0" style="width:100px">
+          <span class="pe-label" style="margin:0">Pkt (× eingestellter Gruppenwert)</span>
+        </div>
+        <div id="pe-svs-fix-row" style="display:none;align-items:center;gap:6px">
+          <input class="field-in" id="pe-svs-fix" type="number" placeholder="0.00" step="0.01" min="0" style="width:100px">
+          <span class="pe-label" style="margin:0">€ fix</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zusatzoptionen -->
+    <div class="pe-section">
+      <div class="pe-section-head">Zusatzoptionen</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <div class="pe-label">UV-Unfallversicherungs-Kategorie</div>
+          <select class="pe-grp-sel" id="pe-uvkat">
+            <option value="">— keine —</option>
+            <option value="1">K1 – Grundleistung / Gespräch</option>
+            <option value="2">K2 – Techn. (großer Zeitaufwand)</option>
+            <option value="3">K3 – Techn. (geringer Zeitaufwand)</option>
+            <option value="4">K4 – Röntgenunkosten</option>
+            <option value="5">K5 – Laborleistungen</option>
+          </select>
+        </div>
+        <div>
+          <div class="pe-label">Kasseneinschränkung</div>
+          <select class="pe-grp-sel" id="pe-kasseonly">
+            <option value="">Alle Kassen (ÖGK + BVA + SVS)</option>
+            <option value="noegk">Kein ÖGK (nur BVA + SVS)</option>
+            <option value="bvaeb">Nur BVAEB</option>
+            <option value="svs">Nur SVS</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+          <input type="checkbox" id="pe-warn">
+          Warnfähnchen ⚠ anzeigen (Sondergenehmigung / Diplom erforderlich)
+        </label>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-actions" style="justify-content:space-between">
+      <button class="btn-danger" id="pe-delete-btn" onclick="window.deletePosCustom()" style="display:none">Position löschen</button>
+      <div style="display:flex;gap:8px;margin-left:auto">
+        <button class="btn" onclick="window.closePosEdit()">Abbrechen</button>
+        <button class="btn" onclick="window.savePosEdit()" style="background:var(--blue);color:#fff;border-color:var(--blue)">Speichern</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
