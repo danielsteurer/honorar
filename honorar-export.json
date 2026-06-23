@@ -1,0 +1,791 @@
+{
+  "vorlagen": [
+    {
+      "name": "Erstuntersuchung",
+      "id": "sxngdui",
+      "positions": [
+        {
+          "faktor": 2.5,
+          "code": "10",
+          "uvKat": null,
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "32",
+          "faktor": 2.5
+        },
+        {
+          "faktor": 2.5,
+          "code": "230",
+          "qty": 1
+        },
+        {
+          "type": "free",
+          "qty": 1,
+          "betrag": 38.27,
+          "name": "Mein Honorar"
+        },
+        {
+          "qty": 1,
+          "code": "239",
+          "uvKat": null
+        }
+      ],
+      "color": "#185FA5"
+    },
+    {
+      "id": "jsy3crf",
+      "name": "Erstuntersuchung + Sono",
+      "color": "#185FA5",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "10"
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "code": "890",
+          "qty": 1
+        },
+        {
+          "code": "230",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "type": "free",
+          "betrag": 16.76,
+          "name": "Mein Honorar"
+        }
+      ]
+    },
+    {
+      "color": "#185FA5",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "10"
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "qty": 2,
+          "code": "812"
+        },
+        {
+          "qty": 1,
+          "code": "835"
+        },
+        {
+          "qty": 1,
+          "code": "836"
+        },
+        {
+          "code": "230",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "type": "free",
+          "betrag": 28.09,
+          "name": "Mein Honorar"
+        }
+      ],
+      "id": "sbut5sj",
+      "name": "Erstuntersuchung + Röntgen"
+    },
+    {
+      "name": "Erstuntersuchung + Sono + Röntgen",
+      "id": "95xrh5z",
+      "positions": [
+        {
+          "code": "10",
+          "qty": 1
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "code": "890",
+          "qty": 1
+        },
+        {
+          "code": "812",
+          "qty": 2
+        },
+        {
+          "qty": 1,
+          "code": "835"
+        },
+        {
+          "code": "836",
+          "qty": 1
+        },
+        {
+          "code": "230",
+          "qty": 1
+        }
+      ],
+      "color": "#185FA5"
+    },
+    {
+      "name": "Kontrolle",
+      "id": "5ue3hzj",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "11"
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "230"
+        },
+        {
+          "type": "free",
+          "qty": 1,
+          "betrag": 28.7,
+          "name": "Mein Honorar"
+        }
+      ],
+      "color": "#1D9E75"
+    },
+    {
+      "id": "l5cst8n",
+      "name": "Kontrolle + Sono",
+      "color": "#1D9E75",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "11"
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "qty": 1,
+          "code": "890"
+        },
+        {
+          "code": "230",
+          "qty": 1
+        },
+        {
+          "name": "Mein Honorar",
+          "betrag": 17.19,
+          "qty": 1,
+          "type": "free"
+        }
+      ]
+    },
+    {
+      "id": "kqe77f5",
+      "name": "Kontrolle + Röntgen",
+      "color": "#1D9E75",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "11"
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "qty": 2,
+          "code": "812"
+        },
+        {
+          "code": "835",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "836"
+        },
+        {
+          "qty": 1,
+          "code": "230"
+        },
+        {
+          "name": "Mein Honorar",
+          "qty": 1,
+          "type": "free",
+          "betrag": 28.52
+        }
+      ]
+    },
+    {
+      "id": "un89und",
+      "name": "Kontrolle + Sono + Röntgen",
+      "color": "#1D9E75",
+      "positions": [
+        {
+          "code": "11",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "qty": 1,
+          "code": "890"
+        },
+        {
+          "code": "812",
+          "qty": 2
+        },
+        {
+          "code": "835",
+          "qty": 1
+        },
+        {
+          "code": "836",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "230"
+        }
+      ]
+    },
+    {
+      "id": "fu0fmvp",
+      "name": "Stoßwellentherapie",
+      "color": "#BA7517",
+      "positions": [
+        {
+          "code": "11",
+          "qty": 1
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "name": "Stoßwellentherapie (ESWT)",
+          "qty": 1,
+          "type": "free",
+          "betrag": 30.96
+        }
+      ]
+    },
+    {
+      "name": "Eigenblutinfiltration",
+      "id": "ggeirgo",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "11"
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "code": "100",
+          "qty": 1
+        },
+        {
+          "code": "230",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "890"
+        },
+        {
+          "qty": 1,
+          "code": "125"
+        },
+        {
+          "name": "PRP",
+          "betrag": 368.15,
+          "type": "free",
+          "qty": 1
+        }
+      ],
+      "color": "#534AB7"
+    },
+    {
+      "id": "qj537og",
+      "name": "US-gesteuerte Infiltration",
+      "color": "#0D7490",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "11"
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "code": "890",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "125"
+        },
+        {
+          "code": "230",
+          "qty": 1
+        },
+        {
+          "betrag": 20,
+          "qty": 1,
+          "type": "free",
+          "name": "Material"
+        }
+      ]
+    },
+    {
+      "color": "#6B4226",
+      "positions": [
+        {
+          "code": "100",
+          "qty": 1
+        },
+        {
+          "code": "230",
+          "qty": 1
+        },
+        {
+          "code": "10",
+          "qty": 1
+        }
+      ],
+      "id": "dkghsa1",
+      "name": "Blutabnahme"
+    },
+    {
+      "name": "Erstuntersuchung [UV]",
+      "id": "zms9rhx",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "10",
+          "faktor": 4
+        },
+        {
+          "faktor": 4,
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "faktor": 4,
+          "qty": 1,
+          "code": "230"
+        }
+      ],
+      "color": "#A32D2D"
+    },
+    {
+      "name": "Erstuntersuchung + Sono [UV]",
+      "id": "f2hisyg",
+      "positions": [
+        {
+          "code": "10",
+          "qty": 1,
+          "faktor": 4
+        },
+        {
+          "faktor": 4,
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "code": "890",
+          "qty": 1,
+          "faktor": 4
+        },
+        {
+          "faktor": 4,
+          "qty": 1,
+          "code": "230"
+        }
+      ],
+      "color": "#A32D2D"
+    },
+    {
+      "color": "#A32D2D",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "10",
+          "faktor": 4
+        },
+        {
+          "faktor": 4,
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "qty": 2,
+          "code": "812",
+          "faktor": 4
+        },
+        {
+          "faktor": 4,
+          "code": "835",
+          "qty": 1
+        },
+        {
+          "faktor": 4,
+          "qty": 1,
+          "code": "836"
+        },
+        {
+          "faktor": 4,
+          "qty": 1,
+          "code": "230"
+        }
+      ],
+      "id": "rz6cz0f",
+      "name": "Erstuntersuchung + Röntgen [UV]"
+    },
+    {
+      "positions": [
+        {
+          "faktor": 4.9,
+          "code": "10",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "32",
+          "faktor": 4.9
+        },
+        {
+          "faktor": 2.7,
+          "code": "890",
+          "qty": 1
+        },
+        {
+          "faktor": 2,
+          "code": "835",
+          "qty": 1
+        },
+        {
+          "faktor": 2,
+          "code": "836",
+          "qty": 1
+        },
+        {
+          "faktor": 4.9,
+          "qty": 1,
+          "code": "230"
+        },
+        {
+          "code": "813",
+          "qty": 1,
+          "faktor": 0.1
+        },
+        {
+          "qty": 1,
+          "code": "815"
+        },
+        {
+          "code": "819",
+          "qty": 1
+        }
+      ],
+      "color": "#A32D2D",
+      "name": "Erstuntersuchung + Sono + Röntgen [UV]",
+      "id": "e1jzd5f"
+    },
+    {
+      "id": "a5f1g9o",
+      "name": "Kontrolle [UV]",
+      "color": "#7C3AED",
+      "positions": [
+        {
+          "faktor": 4.9,
+          "code": "11",
+          "qty": 1
+        },
+        {
+          "code": "32",
+          "qty": 1,
+          "faktor": 3
+        },
+        {
+          "faktor": 3,
+          "code": "230",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "ubghstb",
+      "name": "Kontrolle + Sono [UV]",
+      "color": "#7C3AED",
+      "positions": [
+        {
+          "faktor": 3,
+          "code": "11",
+          "qty": 1
+        },
+        {
+          "faktor": 3,
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "faktor": 3,
+          "code": "890",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "230",
+          "faktor": 3
+        }
+      ]
+    },
+    {
+      "name": "Kontrolle + Röntgen [UV]",
+      "id": "b4gjevb",
+      "positions": [
+        {
+          "faktor": 3,
+          "code": "11",
+          "qty": 1
+        },
+        {
+          "faktor": 3,
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "qty": 2,
+          "code": "812",
+          "faktor": 3
+        },
+        {
+          "qty": 1,
+          "code": "835",
+          "faktor": 3
+        },
+        {
+          "faktor": 3,
+          "qty": 1,
+          "code": "836"
+        },
+        {
+          "qty": 1,
+          "code": "230",
+          "faktor": 3
+        }
+      ],
+      "color": "#7C3AED"
+    },
+    {
+      "name": "Kontrolle + Sono + Röntgen [UV]",
+      "id": "o5wnbry",
+      "positions": [
+        {
+          "faktor": 3,
+          "qty": 1,
+          "code": "11"
+        },
+        {
+          "code": "32",
+          "qty": 1,
+          "faktor": 3
+        },
+        {
+          "code": "890",
+          "qty": 1,
+          "faktor": 3
+        },
+        {
+          "faktor": 3,
+          "code": "812",
+          "qty": 2
+        },
+        {
+          "faktor": 3,
+          "qty": 1,
+          "code": "835"
+        },
+        {
+          "qty": 1,
+          "code": "836",
+          "faktor": 3
+        },
+        {
+          "faktor": 3,
+          "code": "230",
+          "qty": 1
+        }
+      ],
+      "color": "#7C3AED"
+    },
+    {
+      "name": "Stoßwellentherapie [UV]",
+      "id": "z3zgs36",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "11",
+          "faktor": 3
+        },
+        {
+          "code": "32",
+          "qty": 1,
+          "faktor": 3
+        },
+        {
+          "name": "Stoßwellentherapie (ESWT)",
+          "type": "free",
+          "qty": 1,
+          "betrag": 0
+        }
+      ],
+      "color": "#92400E"
+    },
+    {
+      "color": "#1E40AF",
+      "positions": [
+        {
+          "faktor": 3,
+          "code": "11",
+          "qty": 1
+        },
+        {
+          "faktor": 3,
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "faktor": 3,
+          "code": "100",
+          "qty": 1
+        },
+        {
+          "faktor": 3,
+          "code": "114",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "230",
+          "faktor": 3
+        }
+      ],
+      "id": "316fu05",
+      "name": "Eigenblutinfiltration [UV]"
+    },
+    {
+      "positions": [
+        {
+          "qty": 1,
+          "code": "11",
+          "faktor": 3
+        },
+        {
+          "faktor": 3,
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "890",
+          "faktor": 3
+        },
+        {
+          "faktor": 3,
+          "qty": 1,
+          "code": "125"
+        },
+        {
+          "faktor": 3,
+          "qty": 1,
+          "code": "230"
+        }
+      ],
+      "color": "#065F46",
+      "name": "US-gesteuerte Infiltration [UV]",
+      "id": "ekdl0g2"
+    },
+    {
+      "color": "#374151",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "100",
+          "faktor": 3
+        },
+        {
+          "code": "230",
+          "qty": 1,
+          "faktor": 3
+        }
+      ],
+      "id": "1c2y014",
+      "name": "Blutabnahme [UV]"
+    },
+    {
+      "id": "ryiv5f4",
+      "name": "Neue Vorlage",
+      "color": "#185FA5",
+      "positions": []
+    }
+  ],
+  "settings": {
+    "pkt": 0.8173,
+    "fak": 2.5,
+    "ruck": 80,
+    "name": "",
+    "adr": "",
+    "tel": "",
+    "uvFak": {
+      "1": 4.9,
+      "2": 3.85,
+      "3": 2.7,
+      "4": 2,
+      "5": 1.64
+    },
+    "bvaeb": {
+      "ruck": 90,
+      "selbst": 10
+    },
+    "svs": {
+      "ruck": 80
+    }
+  },
+  "dbCustom": [
+    {
+      "bva": {
+        "code": "US12",
+        "fix": 34.15
+      },
+      "code": "890",
+      "pkt": 35,
+      "warn": true,
+      "cat": "Sonographie",
+      "name": "Ein Organ (z.B. GB+Gallenwege, beide Nieren, Uterus)",
+      "fix": null,
+      "_uvKat": 3,
+      "svs": {
+        "pkt": 60,
+        "code": "US12",
+        "pktWert": 0.548
+      }
+    }
+  ]
+}
