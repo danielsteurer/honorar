@@ -21,15 +21,15 @@
           "qty": 1
         },
         {
-          "type": "free",
-          "qty": 1,
-          "betrag": 38.27,
-          "name": "Mein Honorar"
-        },
-        {
           "qty": 1,
           "code": "239",
           "uvKat": null
+        },
+        {
+          "type": "free",
+          "name": "Mein Honorar",
+          "betrag": 12.84,
+          "qty": 1
         }
       ],
       "color": "#185FA5"
@@ -378,17 +378,25 @@
         {
           "qty": 1,
           "code": "10",
-          "faktor": 4
+          "faktor": 4,
+          "uvKat": 1
         },
         {
           "faktor": 4,
           "qty": 1,
-          "code": "32"
+          "code": "32",
+          "uvKat": 1
         },
         {
           "faktor": 4,
           "qty": 1,
-          "code": "230"
+          "code": "230",
+          "uvKat": 1
+        },
+        {
+          "code": "239",
+          "qty": 1,
+          "uvKat": 1
         }
       ],
       "color": "#A32D2D"
@@ -400,22 +408,26 @@
         {
           "code": "10",
           "qty": 1,
-          "faktor": 4
+          "faktor": 4,
+          "uvKat": 1
         },
         {
           "faktor": 4,
           "code": "32",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 1
         },
         {
           "code": "890",
           "qty": 1,
-          "faktor": 4
+          "faktor": 4,
+          "uvKat": 3
         },
         {
           "faktor": 4,
           "qty": 1,
-          "code": "230"
+          "code": "230",
+          "uvKat": 1
         }
       ],
       "color": "#A32D2D"
@@ -426,32 +438,38 @@
         {
           "qty": 1,
           "code": "10",
-          "faktor": 4
+          "faktor": 4,
+          "uvKat": 1
         },
         {
           "faktor": 4,
           "code": "32",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 1
         },
         {
           "qty": 2,
           "code": "812",
-          "faktor": 4
+          "faktor": 4,
+          "uvKat": 4
         },
         {
           "faktor": 4,
           "code": "835",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 4
         },
         {
           "faktor": 4,
           "qty": 1,
-          "code": "836"
+          "code": "836",
+          "uvKat": 4
         },
         {
           "faktor": 4,
           "qty": 1,
-          "code": "230"
+          "code": "230",
+          "uvKat": 1
         }
       ],
       "id": "rz6cz0f",
@@ -462,45 +480,54 @@
         {
           "faktor": 4.9,
           "code": "10",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 1
         },
         {
           "qty": 1,
           "code": "32",
-          "faktor": 4.9
+          "faktor": 4.9,
+          "uvKat": 1
         },
         {
           "faktor": 2.7,
           "code": "890",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 3
         },
         {
           "faktor": 2,
           "code": "835",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 4
         },
         {
           "faktor": 2,
           "code": "836",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 4
         },
         {
           "faktor": 4.9,
           "qty": 1,
-          "code": "230"
+          "code": "230",
+          "uvKat": 1
         },
         {
           "code": "813",
           "qty": 1,
-          "faktor": 0.1
+          "faktor": 0.1,
+          "uvKat": 4
         },
         {
           "qty": 1,
-          "code": "815"
+          "code": "815",
+          "uvKat": 4
         },
         {
           "code": "819",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 4
         }
       ],
       "color": "#A32D2D",
@@ -515,17 +542,20 @@
         {
           "faktor": 4.9,
           "code": "11",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 1
         },
         {
           "code": "32",
           "qty": 1,
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 1
         },
         {
           "faktor": 3,
           "code": "230",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 1
         }
       ]
     },
@@ -537,22 +567,26 @@
         {
           "faktor": 3,
           "code": "11",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 1
         },
         {
           "faktor": 3,
           "qty": 1,
-          "code": "32"
+          "code": "32",
+          "uvKat": 1
         },
         {
           "faktor": 3,
           "code": "890",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 3
         },
         {
           "qty": 1,
           "code": "230",
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 1
         }
       ]
     },
@@ -563,32 +597,38 @@
         {
           "faktor": 3,
           "code": "11",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 1
         },
         {
           "faktor": 3,
           "qty": 1,
-          "code": "32"
+          "code": "32",
+          "uvKat": 1
         },
         {
           "qty": 2,
           "code": "812",
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 4
         },
         {
           "qty": 1,
           "code": "835",
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 4
         },
         {
           "faktor": 3,
           "qty": 1,
-          "code": "836"
+          "code": "836",
+          "uvKat": 4
         },
         {
           "qty": 1,
           "code": "230",
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 1
         }
       ],
       "color": "#7C3AED"
@@ -600,63 +640,47 @@
         {
           "faktor": 3,
           "qty": 1,
-          "code": "11"
+          "code": "11",
+          "uvKat": 1
         },
         {
           "code": "32",
           "qty": 1,
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 1
         },
         {
           "code": "890",
           "qty": 1,
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 3
         },
         {
           "faktor": 3,
           "code": "812",
-          "qty": 2
+          "qty": 2,
+          "uvKat": 4
         },
         {
           "faktor": 3,
           "qty": 1,
-          "code": "835"
+          "code": "835",
+          "uvKat": 4
         },
         {
           "qty": 1,
           "code": "836",
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 4
         },
         {
           "faktor": 3,
           "code": "230",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 1
         }
       ],
       "color": "#7C3AED"
-    },
-    {
-      "name": "Stoßwellentherapie [UV]",
-      "id": "z3zgs36",
-      "positions": [
-        {
-          "qty": 1,
-          "code": "11",
-          "faktor": 3
-        },
-        {
-          "code": "32",
-          "qty": 1,
-          "faktor": 3
-        },
-        {
-          "name": "Stoßwellentherapie (ESWT)",
-          "type": "free",
-          "qty": 1,
-          "betrag": 0
-        }
-      ],
-      "color": "#92400E"
     },
     {
       "color": "#1E40AF",
@@ -664,27 +688,38 @@
         {
           "faktor": 3,
           "code": "11",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 1
         },
         {
           "faktor": 3,
           "qty": 1,
-          "code": "32"
+          "code": "32",
+          "uvKat": 1
         },
         {
           "faktor": 3,
           "code": "100",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 3
         },
         {
           "faktor": 3,
           "code": "114",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 3
         },
         {
           "qty": 1,
           "code": "230",
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 1
+        },
+        {
+          "type": "free",
+          "name": "PRP",
+          "betrag": 398.96,
+          "qty": 1
         }
       ],
       "id": "316fu05",
@@ -695,27 +730,32 @@
         {
           "qty": 1,
           "code": "11",
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 1
         },
         {
           "faktor": 3,
           "code": "32",
-          "qty": 1
+          "qty": 1,
+          "uvKat": 1
         },
         {
           "qty": 1,
           "code": "890",
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 3
         },
         {
           "faktor": 3,
           "qty": 1,
-          "code": "125"
+          "code": "125",
+          "uvKat": 3
         },
         {
           "faktor": 3,
           "qty": 1,
-          "code": "230"
+          "code": "230",
+          "uvKat": 1
         }
       ],
       "color": "#065F46",
@@ -728,12 +768,14 @@
         {
           "qty": 1,
           "code": "100",
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 3
         },
         {
           "code": "230",
           "qty": 1,
-          "faktor": 3
+          "faktor": 3,
+          "uvKat": 1
         }
       ],
       "id": "1c2y014",
