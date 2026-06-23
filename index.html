@@ -396,6 +396,12 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
         <button class="btn" onclick="window.resetDefaults()" style="font-size:12px;color:var(--text2)">Vorlagen auf Standard zurücksetzen (24 Vorlagen)</button>
         <div class="field-hint">Löscht alle bestehenden Vorlagen und ersetzt sie durch die 24 Standard-Vorlagen (Normal + UV).</div>
       </div>
+      <hr class="divider">
+      <div class="field-group">
+        <div class="field-label">Daten exportieren</div>
+        <button class="btn" onclick="window.exportData()" style="font-size:12px;color:var(--text2)"><i class="ti ti-download"></i> Daten als JSON herunterladen</button>
+        <div class="field-hint">Exportiert alle Vorlagen und Einstellungen als JSON-Datei (z.B. für Backup oder Weitergabe).</div>
+      </div>
     </div>
   </div>
 
@@ -1779,6 +1785,17 @@ window.setKatKasse   = setKatKasse;
 window.switchTab     = switchTab;
 window.signIn        = signIn;
 window.logOut        = logOut;
+window.exportData    = function() {
+  const data = { vorlagen: state.vorlagen, settings: state.settings, dbCustom: state.dbCustom || [] };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'honorar-export.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+};
 
 // ── POSITIONS-EDITOR ──
 let peEditCode = null;
