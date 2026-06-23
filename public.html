@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honorar-Übersicht — werkeins</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f8f7f4;--bg3:#f0efe9;
+  --text:#1a1a1a;--text2:#6b6a65;--text3:#9b9a95;
+  --border:rgba(0,0,0,.10);--border2:rgba(0,0,0,.18);
+  --blue:#185FA5;--green:#1D9E75;--amber:#BA7517;--red:#A32D2D;--violet:#534AB7;
+  --radius:8px;--radius-lg:12px;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#1e1e1e;--bg2:#262626;--bg3:#2e2e2e;--text:#e8e7e2;--text2:#9b9a95;--text3:#6b6a65;--border:rgba(255,255,255,.10);--border2:rgba(255,255,255,.20);--blue:#5BAFF5;--green:#3DC99A;--amber:#EFC050;--red:#E87070;--violet:#9B91EF;}
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;color:var(--text);background:var(--bg)}
+input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
+
+/* ── Login ── */
+#login-screen{display:flex;align-items:center;justify-content:center;height:100vh}
+.login-card{display:flex;flex-direction:column;align-items:center;gap:18px;padding:40px 36px;border:0.5px solid var(--border2);border-radius:var(--radius-lg);background:var(--bg2);width:300px}
+.login-logo{font-size:15px;font-weight:600;letter-spacing:.04em;color:var(--text)}
+.login-sub{font-size:12px;color:var(--text2);text-align:center;line-height:1.5}
+.btn-google{display:flex;align-items:center;gap:10px;padding:9px 16px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);cursor:pointer;font-size:13px;width:100%;justify-content:center}
+.btn-google:hover{background:var(--bg3)}
+.btn-google svg{width:18px;height:18px;flex-shrink:0}
+
+/* ── Loading ── */
+#loading-screen{display:flex;align-items:center;justify-content:center;height:100vh;color:var(--text2);font-size:13px;gap:8px}
+
+/* ── App ── */
+#app{display:none;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{display:flex;align-items:center;padding:0 16px;border-bottom:0.5px solid var(--border);background:var(--bg);flex-shrink:0}
+.logo{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--text2);margin-right:20px;padding:10px 0;border-right:0.5px solid var(--border);padding-right:16px;white-space:nowrap}
+.tab{padding:11px 14px;cursor:pointer;font-size:13px;color:var(--text2);border-bottom:2px solid transparent;white-space:nowrap;user-select:none}
+.tab.active{color:var(--text);border-bottom-color:var(--text);font-weight:500}
+.tab:hover:not(.active){background:var(--bg2)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.user-name{font-size:12px;color:var(--text3)}
+.content{display:flex;flex:1;overflow:hidden}
+.sidebar{width:220px;border-right:0.5px solid var(--border);display:flex;flex-direction:column;background:var(--bg2);flex-shrink:0;position:relative}
+.sidebar-resize{position:absolute;top:0;right:-3px;bottom:0;width:6px;cursor:col-resize;z-index:10}
+.sidebar-resize:hover,.sidebar-resize.dragging{background:var(--blue);opacity:.35}
+.sidebar-head{padding:10px 12px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.sidebar-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.btn-icon{width:28px;height:28px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;font-size:16px}
+.btn-icon:hover{background:var(--bg3)}
+.tlist{flex:1;overflow-y:auto;padding:4px}
+.titem{padding:8px 10px;cursor:pointer;border-radius:var(--radius);display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.titem:hover{background:var(--bg3)}
+.titem.active{background:var(--bg);box-shadow:0 0 0 0.5px var(--border2)}
+.titem-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.titem-name{font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.titem-total{font-size:12px;color:var(--text2);font-variant-numeric:tabular-nums}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.main-head{padding:10px 14px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.main-title{font-size:15px;font-weight:500;flex:1;min-width:120px}
+.btn{padding:5px 11px;font-size:13px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg2);color:var(--text);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn:hover{background:var(--bg3)}
+.btn-primary{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn-primary:hover{opacity:.85}
+.color-sel{padding:4px 7px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg2);color:var(--text);cursor:pointer}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 14px;border-bottom:0.5px solid var(--border);flex-shrink:0}
+.metric{background:var(--bg2);border-radius:var(--radius);padding:9px 11px}
+.metric-label{font-size:11px;color:var(--text2);margin-bottom:3px}
+.metric-val{font-size:17px;font-weight:500;font-variant-numeric:tabular-nums}
+.poslist-wrap{flex:1;overflow-y:auto}
+.poslist{padding:8px 14px}
+.pos-head{display:grid;grid-template-columns:72px 52px 1fr 56px 82px 78px 80px 74px 74px;gap:5px;padding:5px 7px;font-size:11px;color:var(--text3);font-weight:500;border-bottom:0.5px solid var(--border);margin-bottom:3px}
+.pos-row{display:grid;grid-template-columns:72px 52px 1fr 56px 82px 78px 80px 74px 74px;gap:5px;align-items:center;padding:6px 7px;border-radius:6px}
+.pos-row:hover{background:var(--bg2)}
+.pos-code{font-size:11px;color:var(--text2);font-family:monospace}
+.pos-name{font-size:13px}
+.pos-num{font-size:13px;text-align:right;font-variant-numeric:tabular-nums;font-family:monospace}
+.qty-input{width:44px;text-align:center;padding:2px 3px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:13px}
+.fak-input{width:54px;text-align:center;padding:2px 3px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:12px}
+.uvkat-sel{width:100%;padding:2px 2px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:11px}
+.uvkat-sel.assigned{border-color:var(--amber);color:var(--amber);font-weight:500}
+.fak-cell{display:flex;flex-direction:column;gap:2px;align-items:stretch}
+.uv-toggle{font-size:9px;padding:1px 0;border:0.5px solid var(--border);border-radius:3px;cursor:pointer;background:transparent;color:var(--text3);text-align:center;width:100%;line-height:1.2}
+.uv-toggle:hover{border-color:var(--amber);color:var(--amber)}
+.uv-toggle.active{border-color:var(--amber);color:var(--amber);font-weight:600}
+.pos-code-wrap{display:flex;flex-direction:column;gap:1px}
+.pos-code-sub{font-size:10px;color:var(--text3);white-space:nowrap}
+.pos-code-sub.is-fix{color:var(--green)}
+.fak-input.custom{border-color:var(--amber);color:var(--amber);font-weight:500}
+.del-btn{width:24px;height:24px;border:none;background:none;cursor:pointer;color:var(--text3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.del-btn:hover{background:#fcebeb;color:var(--red)}
+.action-bar{padding:9px 14px;border-top:0.5px solid var(--border);display:flex;gap:7px;background:var(--bg);flex-shrink:0}
+.empty-state{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:14px}
+.catalog-toolbar{padding:9px 14px;display:flex;gap:7px;border-bottom:0.5px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.search-in{flex:1;min-width:140px;padding:6px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text)}
+.cat-sel{padding:6px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:13px}
+.cat-wrap{flex:1;overflow-y:auto}
+.ct-head{display:grid;grid-template-columns:68px 1fr 66px 66px 70px 78px 80px 74px 74px 112px;gap:5px;padding:6px 14px;font-size:11px;color:var(--text3);font-weight:500;position:sticky;top:0;background:var(--bg);border-bottom:0.5px solid var(--border);z-index:1}
+.ct-row{display:grid;grid-template-columns:68px 1fr 66px 66px 70px 78px 80px 74px 74px 112px;gap:5px;align-items:center;padding:6px 14px;border-bottom:0.5px solid var(--border)}
+.ct-row:hover{background:var(--bg2)}
+.ct-grp{padding:5px 14px 3px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;background:var(--bg2);border-bottom:0.5px solid var(--border);position:sticky;top:32px;z-index:1}
+.add-btn{padding:3px 9px;font-size:12px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg);color:var(--text)}
+.edit-pos-btn{padding:3px 7px;font-size:12px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;background:var(--bg);color:var(--text3)}
+.edit-pos-btn:hover{color:var(--amber);border-color:var(--amber)}
+.ct-custom-badge{font-size:8px;font-weight:700;color:var(--amber);letter-spacing:.04em;vertical-align:middle;margin-left:3px}
+.pe-section{border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.pe-section-head{font-size:12px;font-weight:600;margin-bottom:8px}
+.pe-row{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.pe-label{font-size:11px;color:var(--text3);margin-bottom:3px}
+.pe-radio{display:flex;gap:10px;margin-bottom:6px}
+.pe-radio label{font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer}
+.pe-grp-sel{font-size:11px;padding:3px 6px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);width:100%}
+.btn-danger{background:var(--red-bg,#2a1515);color:var(--red);border:0.5px solid var(--red);border-radius:var(--radius);padding:5px 12px;font-size:13px;cursor:pointer}
+.btn-danger:hover{opacity:.85}
+.pe-modal .modal{width:560px;max-height:90vh}
+.add-btn:hover{background:var(--bg2)}
+.settings-wrap{padding:22px;max-width:450px;overflow-y:auto}
+.field-group{margin-bottom:16px}
+.field-label{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
+.field-in{width:100%;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text)}
+.field-hint{font-size:12px;color:var(--text3);margin-top:4px}
+.divider{border:none;border-top:0.5px solid var(--border);margin:18px 0}
+.pill-warn{display:inline-flex;align-items:center;gap:3px;padding:1px 5px;border-radius:9px;font-size:10px;font-weight:500;background:#FAEEDA;color:#854F0B;margin-left:4px;vertical-align:middle}
+.pill-grp{display:inline-flex;align-items:center;padding:1px 6px;border-radius:9px;font-size:10px;color:var(--text3);background:var(--bg2);margin-left:4px;vertical-align:middle;border:0.5px solid var(--border)}
+.note-icon{color:var(--text3);cursor:help;font-size:12px;vertical-align:middle;margin-left:3px}
+.note-icon:hover{color:var(--blue)}
+.conflict-banner{padding:8px 14px;background:#FAEEDA;color:#854F0B;font-size:12px;display:flex;align-items:flex-start;gap:8px;border-bottom:0.5px solid #e8c98a;line-height:1.6;flex-shrink:0}
+@media(prefers-color-scheme:dark){.conflict-banner{background:#3d2800;color:#EFC050;border-bottom-color:#5a3a00}}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg);border-radius:var(--radius-lg);padding:18px;width:380px;border:0.5px solid var(--border2);max-height:82vh;display:flex;flex-direction:column}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:12px;flex-shrink:0}
+.modal-list{flex:1;overflow-y:auto;border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px}
+.modal-actions{display:flex;gap:7px;justify-content:flex-end;flex-shrink:0}
+.mitem{display:flex;align-items:flex-start;gap:7px;padding:7px 9px;border-bottom:0.5px solid var(--border);cursor:pointer}
+.mitem:hover{background:var(--bg2)}
+.mitem:last-child{border-bottom:none}
+.mitem-name{font-size:13px;line-height:1.3}
+.mitem-note{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4}
+#add-modal .modal{width:620px}
+.mgrp{padding:4px 9px 2px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;background:var(--bg2);border-bottom:0.5px solid var(--border)}
+.save-indicator{font-size:11px;color:var(--text3);padding:0 8px;opacity:0;transition:opacity .3s}
+.save-indicator.visible{opacity:1}
+.kasse-sel{padding:4px 9px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg2);color:var(--text);cursor:pointer;font-weight:600}
+.kat-kasse-tabs{display:flex;gap:2px;background:var(--bg3);border-radius:var(--radius);padding:3px;flex-shrink:0}
+.kat-kasse-tab{padding:4px 13px;font-size:12px;font-weight:500;border-radius:6px;border:none;cursor:pointer;background:transparent;color:var(--text2);transition:background .12s,color .12s}
+.kat-kasse-tab.active{background:var(--bg);color:var(--text);box-shadow:0 0 0 0.5px var(--border2)}
+.kat-kasse-tab:hover:not(.active){background:var(--bg2);color:var(--text)}
+@media print{
+  .topbar,.sidebar,.main-head,.metrics,.action-bar,.del-btn,.add-btn,.btn,.catalog-toolbar,.modal-bg{display:none!important}
+  .poslist-wrap{overflow:visible!important}
+  .print-header{display:block!important}
+  body,html{overflow:visible!important;height:auto!important}
+  .content,.main{overflow:visible!important;height:auto!important}
+  #app{display:block!important;height:auto!important}
+}
+.print-header{display:none;padding:0 0 14px;border-bottom:1px solid #000;margin-bottom:14px;font-size:12px}
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading-screen">
+  <i class="ti ti-loader" style="font-size:18px;animation:spin 1s linear infinite"></i>
+  <span>Wird geladen…</span>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+
+<!-- App -->
+<div id="app">
+  <div class="topbar">
+    <div class="logo">werkeins · Honorar</div>
+    <div class="tab active" data-tab="vorlagen">Vorlagen</div>
+    <div class="tab" data-tab="katalog">Positionenkatalog</div>
+    <div class="topbar-right">
+      <span style="font-size:11px;color:var(--text3);padding:0 8px">Leseansicht</span>
+    </div>
+  </div>
+
+  <div class="content" id="view-vorlagen">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-resize" id="sidebar-resize"></div>
+      <div class="sidebar-head">
+        <span class="sidebar-label">Vorlagen</span>
+      </div>
+      <div class="tlist" id="tlist"></div>
+    </div>
+    <div class="main">
+      <div class="empty-state" id="empty-state">Vorlage auswählen</div>
+      <div id="detail-wrap" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+        <div class="main-head">
+          <div class="main-title" id="v-title"></div>
+          <select class="kasse-sel" id="v-kasse" onchange="window.setKasse(this.value)" title="Krankenversicherung für Rückerstattungsberechnung">
+            <option value="oegk">ÖGK</option>
+            <option value="bvaeb">BVAEB</option>
+            <option value="svs">SVS</option>
+          </select>
+          <button class="btn" onclick="window.printNote()"><i class="ti ti-printer"></i> Drucken</button>
+        </div>
+        <div class="metrics" id="metrics-bar"></div>
+        <div class="poslist-wrap">
+          <div class="print-header" id="print-header"></div>
+          <div class="conflict-banner" id="conflict-banner" style="display:none"></div>
+          <div class="poslist">
+            <div class="pos-head">
+              <span>Pos.</span><span style="text-align:right">Pkt / €</span><span>Bezeichnung</span><span style="text-align:right">Mge.</span>
+              <span id="fak-col-head" style="text-align:right;color:var(--amber)">Faktor</span>
+              <span id="ks-col-head" style="text-align:right;color:var(--blue)">Kassensatz</span>
+              <span id="ruck-col-head" style="text-align:right;color:var(--green)">Rückerstattung</span>
+              <span style="text-align:right;color:var(--amber)">Honorar</span>
+              <span style="text-align:right;color:var(--red)">Eigenanteil</span><span></span>
+            </div>
+            <div id="pos-rows"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content" id="view-katalog" style="display:none;flex-direction:column">
+    <div class="catalog-toolbar">
+      <div class="kat-kasse-tabs">
+        <button class="kat-kasse-tab active" data-kk="oegk" onclick="window.setKatKasse('oegk')">ÖGK</button>
+        <button class="kat-kasse-tab" data-kk="bvaeb" onclick="window.setKatKasse('bvaeb')">BVAEB</button>
+        <button class="kat-kasse-tab" data-kk="svs" onclick="window.setKatKasse('svs')">SVS</button>
+      </div>
+      <input class="search-in" id="kat-search" placeholder="Code oder Bezeichnung suchen…" oninput="window.renderKatalog()">
+      <select class="cat-sel" id="kat-cat" onchange="window.renderKatalog()">
+        <option value="">Alle Gruppen</option>
+      </select>
+      <button class="btn" onclick="window.openPosNew()" style="font-size:12px;padding:4px 10px;white-space:nowrap">+ Neue Position</button>
+    </div>
+    <div class="cat-wrap">
+      <div class="ct-head">
+        <span>Pos.</span><span>Bezeichnung</span>
+        <span id="kat-comp1-head" style="text-align:right;color:var(--violet)">BVAEB</span>
+        <span id="kat-comp2-head" style="text-align:right;color:var(--green)">SVS</span>
+        <span style="text-align:right">Pkt / €</span>
+        <span id="kat-ks-head" style="text-align:right;color:var(--blue)">Kassensatz</span>
+        <span id="kat-ruck-head" style="text-align:right;color:var(--green)">Rückerstattung</span>
+        <span style="text-align:right;color:var(--amber)">Honorar</span>
+        <span style="text-align:right;color:var(--red)">Eigenanteil</span><span></span>
+      </div>
+      <div id="kat-rows"></div>
+    </div>
+  </div>
+
+  <!-- view-settings entfernt (Leseansicht) -->
+  <div class="content" id="view-settings" style="display:none">
+    <div class="settings-wrap">
+      <div class="field-group">
+        <div class="field-label">Punktewert (€ / Punkt)</div>
+        <input class="field-in" type="number" id="s-pkt" step="0.01" min="0.1" max="5" value="0.80">
+        <div class="field-hint">Kassensatz = Punkte × Punktewert · Vorarlberg 2025: 0,80 €/Pkt</div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Honorarfaktor (× Kassensatz)</div>
+        <input class="field-in" type="number" id="s-fak" step="0.01" min="1" max="10" value="2.5" oninput="window.saveSettings()">
+        <div class="field-hint">Mein Honorar = Kassensatz × Faktor</div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">ÖGK Rückerstattungsquote (%)</div>
+        <input class="field-in" type="number" id="s-ruck" step="1" min="50" max="100" value="80" oninput="window.saveSettings()">
+      </div>
+      <hr class="divider">
+      <div class="field-group">
+        <div class="field-label" style="font-size:13px;font-weight:600;margin-bottom:8px">BVAEB – Beamtenversicherung</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
+          <div>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:5px">Rückerstattungsquote (%)</div>
+            <input class="field-in" type="number" id="s-bvaeb-ruck" step="1" min="50" max="100" value="90" oninput="window.saveSettings()">
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:5px">Selbstbehalt (%)</div>
+            <input class="field-in" type="number" id="s-bvaeb-selbst" step="1" min="0" max="50" value="10" oninput="window.saveSettings()">
+          </div>
+        </div>
+        <div class="field-hint">Erstattung = Kassensatz × Ruck% × (1 – Selbst%) · Standard: 90 % × 90 % = 81 %</div>
+        <div style="margin-top:10px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Punktewerte (€/Pkt)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Grundleistungen AM</div>
+              <input class="field-in" type="number" id="s-bvaeb-pkt1" step="0.0001" min="0.1" max="5" value="1.3567" oninput="window.saveSettings()">
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Allgemeine Leistungen</div>
+              <input class="field-in" type="number" id="s-bvaeb-pkt2" step="0.0001" min="0.1" max="5" value="1.2194" oninput="window.saveSettings()">
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Röntgen</div>
+              <input class="field-in" type="number" id="s-bvaeb-pkt3" step="0.0001" min="0.1" max="5" value="1.1104" oninput="window.saveSettings()">
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Labor</div>
+              <input class="field-in" type="number" id="s-bvaeb-pkt4" step="0.0001" min="0.1" max="5" value="1.2892" oninput="window.saveSettings()">
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="field-group">
+        <div class="field-label" style="font-size:13px;font-weight:600;margin-bottom:8px">SVS – Selbständigenversicherung</div>
+        <div style="margin-bottom:4px">
+          <div style="font-size:12px;color:var(--text2);margin-bottom:5px">Rückerstattungsquote (%)</div>
+          <input class="field-in" type="number" id="s-svs-ruck" step="1" min="50" max="100" value="80" oninput="window.saveSettings()">
+        </div>
+        <div style="margin-top:10px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Punktewerte (€/Pkt)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Allgemeine Leistungen</div>
+              <input class="field-in" type="number" id="s-svs-pkt1" step="0.0001" min="0.1" max="5" value="0.7989" oninput="window.saveSettings()">
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Sonographie</div>
+              <input class="field-in" type="number" id="s-svs-pkt2" step="0.0001" min="0.1" max="5" value="0.5480" oninput="window.saveSettings()">
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:3px">Röntgen</div>
+              <input class="field-in" type="number" id="s-svs-pkt3" step="0.0001" min="0.1" max="5" value="0.5438" oninput="window.saveSettings()">
+            </div>
+          </div>
+        </div>
+        <div class="field-hint" style="margin-top:6px">Erstattung = Kassensatz des Vertragspartners × Ruck% · kein Selbstbehalt</div>
+      </div>
+      <hr class="divider">
+      <div class="field-group">
+        <div class="field-label">Name / Ordination (für Druck)</div>
+        <input class="field-in" type="text" id="s-name" placeholder="Dr. Max Mustermann" oninput="window.saveSettings()" style="margin-bottom:7px">
+        <input class="field-in" type="text" id="s-adr" placeholder="Adresse, PLZ Ort" oninput="window.saveSettings()" style="margin-bottom:7px">
+        <input class="field-in" type="text" id="s-tel" placeholder="Tel. / E-Mail" oninput="window.saveSettings()">
+      </div>
+      <div class="field-hint">Alle Einstellungen werden automatisch in der Cloud gespeichert.</div>
+      <hr class="divider">
+      <div class="field-group">
+        <div class="field-label">UV-Tarif Faktoren (Privat-Unfallversicherung)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px">K1 – Grundleistung / Gespräch</div>
+            <input class="field-in" type="number" id="s-uvk1" step="0.01" min="1" max="20" value="4.90" oninput="window.saveSettings()">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px">K2 – Techn. (großer Zeitaufwand)</div>
+            <input class="field-in" type="number" id="s-uvk2" step="0.01" min="1" max="20" value="3.85" oninput="window.saveSettings()">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px">K3 – Techn. (geringer Zeitaufwand)</div>
+            <input class="field-in" type="number" id="s-uvk3" step="0.01" min="1" max="20" value="2.70" oninput="window.saveSettings()">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px">K4 – Röntgenunkosten (2× ÖGK)</div>
+            <input class="field-in" type="number" id="s-uvk4" step="0.01" min="1" max="20" value="2.00" oninput="window.saveSettings()">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px">K5 – Laborleistungen</div>
+            <input class="field-in" type="number" id="s-uvk5" step="0.01" min="1" max="20" value="1.64" oninput="window.saveSettings()">
+          </div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="field-group">
+        <div class="field-label">Vorlagen</div>
+        <button class="btn" onclick="window.resetDefaults()" style="font-size:12px;color:var(--text2)">Vorlagen auf Standard zurücksetzen (24 Vorlagen)</button>
+        <div class="field-hint">Löscht alle bestehenden Vorlagen und ersetzt sie durch die 24 Standard-Vorlagen (Normal + UV).</div>
+      </div>
+      <hr class="divider">
+      <div class="field-group">
+        <div class="field-label">Daten exportieren</div>
+        <button class="btn" onclick="window.exportData()" style="font-size:12px;color:var(--text2)"><i class="ti ti-download"></i> Daten als JSON herunterladen</button>
+        <div class="field-hint">Exportiert alle Vorlagen und Einstellungen als JSON-Datei (z.B. für Backup oder Weitergabe).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Position hinzufügen -->
+  <div class="modal-bg" id="add-modal" onclick="if(event.target===this)window.closeModal()">
+    <div class="modal">
+      <h3>Position hinzufügen</h3>
+      <input class="search-in" id="modal-search" placeholder="Code oder Bezeichnung suchen…" oninput="window.renderModalList()" style="width:100%;margin-bottom:7px">
+      <select class="cat-sel" id="modal-cat" onchange="window.renderModalList()" style="width:100%;margin-bottom:7px;font-size:13px">
+        <option value="">Alle Gruppen</option>
+      </select>
+      <div class="modal-list" id="modal-list"></div>
+      <div class="modal-actions"><button class="btn" onclick="window.closeModal()">Schließen</button></div>
+    </div>
+  </div>
+
+  <!-- Modal: Freie Position -->
+  <div class="modal-bg" id="free-pos-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal" style="max-height:300px">
+      <h3 id="free-pos-title">Freie Position</h3>
+      <div class="field-group">
+        <div class="field-label">Bezeichnung</div>
+        <input class="field-in" type="text" id="free-pos-name" placeholder="z.B. Hausbesuchspauschale" style="margin-bottom:10px">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Betrag (€ pro Stück)</div>
+        <input class="field-in" type="number" id="free-pos-betrag" min="0" step="0.01" placeholder="0.00">
+        <div class="field-hint">Wird direkt als Honorar übernommen — kein Faktor, keine Kassensatz-Berechnung.</div>
+      </div>
+      <div class="modal-actions" style="margin-top:10px">
+        <button class="btn" onclick="document.getElementById('free-pos-modal').classList.remove('open')">Abbrechen</button>
+        <button class="btn btn-primary" onclick="window.confirmFreePos()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Umbenennen -->
+  <div class="modal-bg" id="rename-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal" style="max-height:220px">
+      <h3>Vorlage benennen</h3>
+      <input class="field-in" type="text" id="rename-input" placeholder="Name der Vorlage" style="margin-bottom:14px">
+      <div class="modal-actions">
+        <button class="btn" onclick="document.getElementById('rename-modal').classList.remove('open')">Abbrechen</button>
+        <button class="btn btn-primary" onclick="window.confirmRename()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+// Leseansicht — keine Firebase-Authentifizierung
+const INITIAL_DATA = {"vorlagen":[{"name":"Erstuntersuchung","id":"sxngdui","positions":[{"faktor":2.5,"code":"10","uvKat":null,"qty":1},{"qty":1,"code":"32","faktor":2.5},{"faktor":2.5,"code":"230","qty":1},{"type":"free","qty":1,"betrag":38.27,"name":"Mein Honorar"},{"qty":1,"code":"239","uvKat":null}],"color":"#185FA5"},{"id":"jsy3crf","name":"Erstuntersuchung + Sono","color":"#185FA5","positions":[{"qty":1,"code":"10"},{"code":"32","qty":1},{"code":"890","qty":1},{"code":"230","qty":1},{"qty":1,"type":"free","betrag":16.76,"name":"Mein Honorar"}]},{"color":"#185FA5","positions":[{"qty":1,"code":"10"},{"code":"32","qty":1},{"qty":2,"code":"812"},{"qty":1,"code":"835"},{"qty":1,"code":"836"},{"code":"230","qty":1},{"qty":1,"type":"free","betrag":28.09,"name":"Mein Honorar"}],"id":"sbut5sj","name":"Erstuntersuchung + Röntgen"},{"name":"Erstuntersuchung + Sono + Röntgen","id":"95xrh5z","positions":[{"code":"10","qty":1},{"code":"32","qty":1},{"code":"890","qty":1},{"code":"812","qty":2},{"qty":1,"code":"835"},{"code":"836","qty":1},{"code":"230","qty":1}],"color":"#185FA5"},{"name":"Kontrolle","id":"5ue3hzj","positions":[{"qty":1,"code":"11"},{"code":"32","qty":1},{"qty":1,"code":"230"},{"type":"free","qty":1,"betrag":28.7,"name":"Mein Honorar"}],"color":"#1D9E75"},{"id":"l5cst8n","name":"Kontrolle + Sono","color":"#1D9E75","positions":[{"qty":1,"code":"11"},{"qty":1,"code":"32"},{"qty":1,"code":"890"},{"code":"230","qty":1},{"name":"Mein Honorar","betrag":17.19,"qty":1,"type":"free"}]},{"id":"kqe77f5","name":"Kontrolle + Röntgen","color":"#1D9E75","positions":[{"qty":1,"code":"11"},{"qty":1,"code":"32"},{"qty":2,"code":"812"},{"code":"835","qty":1},{"qty":1,"code":"836"},{"qty":1,"code":"230"},{"name":"Mein Honorar","qty":1,"type":"free","betrag":28.52}]},{"id":"un89und","name":"Kontrolle + Sono + Röntgen","color":"#1D9E75","positions":[{"code":"11","qty":1},{"qty":1,"code":"32"},{"qty":1,"code":"890"},{"code":"812","qty":2},{"code":"835","qty":1},{"code":"836","qty":1},{"qty":1,"code":"230"}]},{"id":"fu0fmvp","name":"Stoßwellentherapie","color":"#BA7517","positions":[{"code":"11","qty":1},{"code":"32","qty":1},{"name":"Stoßwellentherapie (ESWT)","qty":1,"type":"free","betrag":30.96}]},{"name":"Eigenblutinfiltration","id":"ggeirgo","positions":[{"qty":1,"code":"11"},{"qty":1,"code":"32"},{"code":"100","qty":1},{"code":"230","qty":1},{"qty":1,"code":"890"},{"qty":1,"code":"125"},{"name":"PRP","betrag":368.15,"type":"free","qty":1}],"color":"#534AB7"},{"id":"qj537og","name":"US-gesteuerte Infiltration","color":"#0D7490","positions":[{"qty":1,"code":"11"},{"code":"32","qty":1},{"code":"890","qty":1},{"qty":1,"code":"125"},{"code":"230","qty":1},{"betrag":20,"qty":1,"type":"free","name":"Material"}]},{"color":"#6B4226","positions":[{"code":"100","qty":1},{"code":"230","qty":1},{"code":"10","qty":1}],"id":"dkghsa1","name":"Blutabnahme"},{"name":"Erstuntersuchung [UV]","id":"zms9rhx","positions":[{"qty":1,"code":"10","faktor":4},{"faktor":4,"qty":1,"code":"32"},{"faktor":4,"qty":1,"code":"230"}],"color":"#A32D2D"},{"name":"Erstuntersuchung + Sono [UV]","id":"f2hisyg","positions":[{"code":"10","qty":1,"faktor":4},{"faktor":4,"code":"32","qty":1},{"code":"890","qty":1,"faktor":4},{"faktor":4,"qty":1,"code":"230"}],"color":"#A32D2D"},{"color":"#A32D2D","positions":[{"qty":1,"code":"10","faktor":4},{"faktor":4,"code":"32","qty":1},{"qty":2,"code":"812","faktor":4},{"faktor":4,"code":"835","qty":1},{"faktor":4,"qty":1,"code":"836"},{"faktor":4,"qty":1,"code":"230"}],"id":"rz6cz0f","name":"Erstuntersuchung + Röntgen [UV]"},{"positions":[{"faktor":4.9,"code":"10","qty":1},{"qty":1,"code":"32","faktor":4.9},{"faktor":2.7,"code":"890","qty":1},{"faktor":2,"code":"835","qty":1},{"faktor":2,"code":"836","qty":1},{"faktor":4.9,"qty":1,"code":"230"},{"code":"813","qty":1,"faktor":0.1},{"qty":1,"code":"815"},{"code":"819","qty":1}],"color":"#A32D2D","name":"Erstuntersuchung + Sono + Röntgen [UV]","id":"e1jzd5f"},{"id":"a5f1g9o","name":"Kontrolle [UV]","color":"#7C3AED","positions":[{"faktor":4.9,"code":"11","qty":1},{"code":"32","qty":1,"faktor":3},{"faktor":3,"code":"230","qty":1}]},{"id":"ubghstb","name":"Kontrolle + Sono [UV]","color":"#7C3AED","positions":[{"faktor":3,"code":"11","qty":1},{"faktor":3,"qty":1,"code":"32"},{"faktor":3,"code":"890","qty":1},{"qty":1,"code":"230","faktor":3}]},{"name":"Kontrolle + Röntgen [UV]","id":"b4gjevb","positions":[{"faktor":3,"code":"11","qty":1},{"faktor":3,"qty":1,"code":"32"},{"qty":2,"code":"812","faktor":3},{"qty":1,"code":"835","faktor":3},{"faktor":3,"qty":1,"code":"836"},{"qty":1,"code":"230","faktor":3}],"color":"#7C3AED"},{"name":"Kontrolle + Sono + Röntgen [UV]","id":"o5wnbry","positions":[{"faktor":3,"qty":1,"code":"11"},{"code":"32","qty":1,"faktor":3},{"code":"890","qty":1,"faktor":3},{"faktor":3,"code":"812","qty":2},{"faktor":3,"qty":1,"code":"835"},{"qty":1,"code":"836","faktor":3},{"faktor":3,"code":"230","qty":1}],"color":"#7C3AED"},{"name":"Stoßwellentherapie [UV]","id":"z3zgs36","positions":[{"qty":1,"code":"11","faktor":3},{"code":"32","qty":1,"faktor":3},{"name":"Stoßwellentherapie (ESWT)","type":"free","qty":1,"betrag":0}],"color":"#92400E"},{"color":"#1E40AF","positions":[{"faktor":3,"code":"11","qty":1},{"faktor":3,"qty":1,"code":"32"},{"faktor":3,"code":"100","qty":1},{"faktor":3,"code":"114","qty":1},{"qty":1,"code":"230","faktor":3}],"id":"316fu05","name":"Eigenblutinfiltration [UV]"},{"positions":[{"qty":1,"code":"11","faktor":3},{"faktor":3,"code":"32","qty":1},{"qty":1,"code":"890","faktor":3},{"faktor":3,"qty":1,"code":"125"},{"faktor":3,"qty":1,"code":"230"}],"color":"#065F46","name":"US-gesteuerte Infiltration [UV]","id":"ekdl0g2"},{"color":"#374151","positions":[{"qty":1,"code":"100","faktor":3},{"code":"230","qty":1,"faktor":3}],"id":"1c2y014","name":"Blutabnahme [UV]"}],"settings":{"pkt":0.8173,"fak":2.5,"ruck":80,"name":"","adr":"","tel":"","uvFak":{"1":4.9,"2":3.85,"3":2.7,"4":2,"5":1.64},"bvaeb":{"ruck":90,"selbst":10},"svs":{"ruck":80}},"dbCustom":[{"bva":{"code":"US12","fix":34.15},"code":"890","pkt":35,"warn":true,"cat":"Sonographie","name":"Ein Organ (z.B. GB+Gallenwege, beide Nieren, Uterus)","fix":null,"_uvKat":3,"svs":{"pkt":60,"code":"US12","pktWert":0.548}}]};
+
+// ── POSITIONSDATENBANK (Honorartarif Vorarlberg, ab 01.01.2025) ──
+const DB = [
+// A/01/01 Ordination AM
+{code:'10',   name:'Erste Ordination',                                          cat:'Ordination AM',    pkt:20,  fix:null, bva:{code:'A1',pkt:20,pktWert:1.3567}, svs:{code:'A1',pkt:26,pktWert:0.7989}},
+{code:'11',   name:'Jede weitere Ordination',                                   cat:'Ordination AM',    pkt:10,  fix:null, bva:{code:'A2',pkt:11.5,pktWert:1.3567}, svs:{code:'A2',pkt:18,pktWert:0.7989}},
+{code:'12',   name:'ZUSCHLAG Sofortbehandlung Akutfall außerh. OZ',             cat:'Ordination AM',    pkt:4,   fix:null, bva:{code:'A3',pkt:4,pktWert:1.3567}, svs:{code:'A3',pkt:18,pktWert:0.7989}},
+{code:'13',   name:'ZUSCHLAG Ordination Wochenende/Feiertag (Dringlichkeit)',   cat:'Ordination AM',    pkt:10,  fix:null, bva:{code:'A4',pkt:8,pktWert:1.3567}, svs:{code:'A4',pkt:18,pktWert:0.7989}},
+{code:'14',   name:'ZUSCHLAG Nacht (20:00–7:00 Uhr)',                           cat:'Ordination AM',    pkt:10,  fix:null, bva:{code:'A5',pkt:8,pktWert:1.3567}, svs:{code:'A5',pkt:27,pktWert:0.7989}},
+{code:'15',   name:'Rezept (ohne Ordination)',                                  cat:'Ordination AM',    pkt:4,   fix:null},
+{code:'16',   name:'Ordination Wochend(Feiertags)dienst (zusätzl. Pauschale)', cat:'Ordination AM',    pkt:4,   fix:37.20},
+{code:'18NZ', name:'Weitere Ordination via KH-Zuweisung',                      cat:'Ordination AM',    pkt:18,  fix:null, bva:{code:'A2',pkt:11.5,pktWert:1.3567}, svs:{code:'A2',pkt:18,pktWert:0.7989}},
+{code:'18EZ', name:'Erste Ordination via KH-Zuweisung',                        cat:'Ordination AM',    pkt:26,  fix:null, bva:{code:'A1',pkt:20,pktWert:1.3567}, svs:{code:'A1',pkt:26,pktWert:0.7989}},
+{code:'18',   name:'Erste Ordination via ärztl. Zuweisung (mit Befundbericht)',cat:'Ordination AM',    pkt:26,  fix:null, bva:{code:'A1',pkt:20,pktWert:1.3567}, svs:{code:'A1',pkt:26,pktWert:0.7989}},
+{code:'SC1',  name:'Senioren-Check (Patienten ab 70. Lebensjahr)',               cat:'Ordination AM',    pkt:null,fix:null, kasseOnly:['svs'], svs:{code:'SC1',pkt:32.8,pktWert:0.7989}},
+// A/01/02 Krankenbesuche AM
+{code:'20',   name:'Krankenbesuch (1. und jeder weitere)',                      cat:'Krankenbesuch AM', pkt:42,  fix:24.80, bva:{code:'B1',pkt:46,pktWert:1.3567}},
+{code:'21',   name:'ZUSCHLAG dringender Krankenbesuch',                         cat:'Krankenbesuch AM', pkt:10,  fix:null, bva:{code:'B3',pkt:15,pktWert:1.3567}},
+{code:'22',   name:'ZUSCHLAG Krankenbesuch Wochenende/Feiertag (Dringlichkeit)',cat:'Krankenbesuch AM', pkt:14,  fix:null, bva:{code:'B4',pkt:15,pktWert:1.3567}},
+{code:'23',   name:'ZUSCHLAG Krankenbesuch bei Nacht (20:00–7:00 Uhr)',         cat:'Krankenbesuch AM', pkt:14,  fix:64.45, bva:{code:'B5',pkt:30,pktWert:1.3567}},
+{code:'24',   name:'Mitbesuch (Heim, Familie, Wohnblock; nicht gehfähig)',      cat:'Krankenbesuch AM', pkt:20,  fix:8.16},
+{code:'25',   name:'Krankenbesuch Wochend(Feiertags)dienst (zusätzl. Pauschale)',cat:'Krankenbesuch AM',pkt:4,  fix:86.81},
+// A/01/03 Zeitversäumnis
+{code:'30',   name:'Zeitversäumnis bei Tag (je angefangene 30 min)',            cat:'Zeitversäumnis',   pkt:20,  fix:null, bva:{code:'C1',pkt:8,pktWert:1.2194}},
+{code:'31',   name:'Zeitversäumnis bei Nacht (je angefangene 30 min)',          cat:'Zeitversäumnis',   pkt:40,  fix:null, bva:{code:'C2',pkt:12,pktWert:1.2194}, svs:{code:'3b',pkt:40,pktWert:0.7989}},
+{code:'32LC', name:'Ärztl. Gespräch Long Covid (1× pro Patient)',               cat:'Zeitversäumnis',   pkt:14,  fix:null},
+{code:'32',   name:'Ärztl. Gespräch (je angefangene 15 min, ab 16. Min.)',      cat:'Zeitversäumnis',   pkt:14,  fix:null, bva:{code:'C1',pkt:8,pktWert:1.2194}, svs:{code:'3a',pkt:20,pktWert:0.7989}},
+{code:'33',   name:'Psychosomatisches Gespräch, je 20 min (ÖÄK-Diplom)',       cat:'Zeitversäumnis',   pkt:35,  fix:null, warn:true, bva:{code:'PS',fix:25.62}, svs:{code:'PS',fix:25.57}},
+{code:'34',   name:'Koordinierungszuschlag AM (1×/Quartal, max. 5% der Fälle)',cat:'Zeitversäumnis',   pkt:null,fix:24.80, bva:{code:'J1',pkt:null,fix:18.412}, svs:{code:'1j',pkt:23,pktWert:0.7989}},
+{code:'TA',   name:'Ausführliche diagnostisch-therapeutische Aussprache',        cat:'Zeitversäumnis',   pkt:null,fix:null, kasseOnly:['bvaeb','svs'], bva:{code:'TA',fix:20.013}, svs:{code:'TA',pkt:25,pktWert:0.7989}},
+// A/01/04 Konsilium
+{code:'40',   name:'Konsilium bei Tag – Berufener',                             cat:'Konsilium',        pkt:40,  fix:null, bva:{code:'D1',pkt:15,pktWert:1.2194}, svs:{code:'4a',pkt:30,pktWert:0.7989}},
+{code:'41',   name:'Konsilium bei Tag – Berufender',                            cat:'Konsilium',        pkt:30,  fix:null, bva:{code:'D1',pkt:15,pktWert:1.2194}, svs:{code:'4a',pkt:30,pktWert:0.7989}},
+{code:'42',   name:'Konsilium bei Nacht – Berufener',                           cat:'Konsilium',        pkt:80,  fix:null, bva:{code:'D2',pkt:20,pktWert:1.2194}},
+{code:'43',   name:'Konsilium bei Nacht – Berufender',                          cat:'Konsilium',        pkt:60,  fix:null, bva:{code:'D2',pkt:20,pktWert:1.2194}},
+{code:'44',   name:'Schmerzboard (je 60 min, max. 3× pro Sitzung)',             cat:'Konsilium',        pkt:null,fix:129.96},
+// A/02/01 Blutabnahme
+{code:'100',  name:'Blutabnahme aus der Vene',                                  cat:'Blutabnahme',      pkt:4,   fix:null, bva:{code:'10a',pkt:4,pktWert:1.2194}, svs:{code:'10a',pkt:8,pktWert:0.7989}},
+{code:'101',  name:'Blutabnahme aus der Vene – Kinder bis 10 J.',              cat:'Blutabnahme',      pkt:8,   fix:null, bva:{code:'10b',pkt:8,pktWert:1.2194}},
+{code:'102',  name:'Aderlass (mindestens 150 ml)',                              cat:'Blutabnahme',      pkt:10,  fix:null, bva:{code:'10c',pkt:8,pktWert:1.2194}},
+{code:'103',  name:'Mikroblutentnahme – Kinder bis 6 J. (Zuschlag)',           cat:'Blutabnahme',      pkt:4,   fix:null},
+// A/02/02 Injektionen
+{code:'110',  name:'Subcutane/intracutane Injektion (mit Ordination abgegolten)',cat:'Injektionen',    pkt:0,   fix:null},
+{code:'111',  name:'Intramuskuläre Injektion',                                  cat:'Injektionen',      pkt:4,   fix:null, bva:{code:'11b',pkt:2,pktWert:1.2194}, svs:{code:'11b',pkt:2,pktWert:0.7989}},
+{code:'112',  name:'Intravenöse Injektion',                                     cat:'Injektionen',      pkt:6,   fix:null, bva:{code:'11c',pkt:3,pktWert:1.2194}, svs:{code:'11c',pkt:6,pktWert:0.7989}},
+{code:'113',  name:'Intravenöse Injektion – Kinder bis 10 J.',                 cat:'Injektionen',      pkt:10,  fix:null},
+{code:'114',  name:'Eigenblutinjektion (Venenpunktion + i.m. Inj.)',            cat:'Injektionen',      pkt:10,  fix:null, bva:{code:'11e',pkt:6,pktWert:1.2194}},
+{code:'115',  name:'Intraarterielle Injektion',                                 cat:'Injektionen',      pkt:14,  fix:null},
+{code:'116',  name:'Intracardiale Injektion',                                   cat:'Injektionen',      pkt:14,  fix:null},
+{code:'117',  name:'Subconjunktivale Injektion',                                cat:'Injektionen',      pkt:4,   fix:null},
+{code:'118',  name:'Parabulbäre Injektion',                                     cat:'Injektionen',      pkt:8,   fix:null},
+{code:'119',  name:'Epidurale Injektion / Injektion in Nervenknoten',           cat:'Injektionen',      pkt:24,  fix:null},
+{code:'120',  name:'Injektion Plexus coeliacus / Ganglion Gasseri',             cat:'Injektionen',      pkt:50,  fix:null},
+{code:'121',  name:'Intrapleurale / intraperitoneale Injektion',                cat:'Injektionen',      pkt:12,  fix:null},
+{code:'122',  name:'Krampfadernverödung (max. 5 pro Sitzung)',                  cat:'Injektionen',      pkt:8,   fix:null},
+{code:'123',  name:'Haemorrhoidenverödung durch Injektion',                     cat:'Injektionen',      pkt:8,   fix:null},
+{code:'124',  name:'Periarticuläre Injektion',                                  cat:'Injektionen',      pkt:10,  fix:null, bva:{code:'11u',pkt:10,pktWert:1.2194}, svs:{code:'11u',pkt:18,pktWert:0.7989}},
+{code:'125',  name:'Intraarticuläre Injektion (Gelenk)',                        cat:'Injektionen',      pkt:20,  fix:null, bva:{code:'11v',pkt:23,pktWert:1.2194}, svs:{code:'11v',pkt:50,pktWert:0.7989}},
+// A/02/03 Infiltrationen
+{code:'130',  name:'Subcutane Infiltration',                                    cat:'Infiltrationen',   pkt:8,   fix:null, bva:{code:'12a',pkt:4,pktWert:1.2194}, svs:{code:'12a',pkt:7,pktWert:0.7989}},
+{code:'131',  name:'Intramuskuläre Infiltration',                               cat:'Infiltrationen',   pkt:8,   fix:null, bva:{code:'12b',pkt:4,pktWert:1.2194}, svs:{code:'12b',pkt:7,pktWert:0.7989}},
+{code:'132',  name:'Perineurale Infiltration',                                  cat:'Infiltrationen',   pkt:8,   fix:null},
+{code:'133',  name:'Intracutane Infiltration durch Dermojet (pro Sitzung)',     cat:'Infiltrationen',   pkt:8,   fix:null},
+// A/02/04 Infusionen
+{code:'140',  name:'Intraarterielle Infusion',                                  cat:'Infusionen',       pkt:40,  fix:null},
+{code:'141',  name:'Intravenöse Dauertropfinfusion',                            cat:'Infusionen',       pkt:20,  fix:null, bva:{code:'13b',pkt:20,pktWert:1.2194}, svs:{code:'13b',pkt:25,pktWert:0.7989}},
+// A/02/05 Allergietestungen & Impfungen
+{code:'150',  name:'Tine-Test und ähnliche, je',                                cat:'Allergietestungen',pkt:2,   fix:null},
+{code:'151',  name:'Allergieproben, Hautfunktionsprüfung, je',                  cat:'Allergietestungen',pkt:2,   fix:null},
+{code:'152',  name:'Intradermaler Pricktest, je',                               cat:'Allergietestungen',pkt:6,   fix:null},
+{code:'153',  name:'Therapeutische Impfung',                                    cat:'Allergietestungen',pkt:8,   fix:null},
+// A/02/06 Punktionen diagnostisch
+{code:'160',  name:'Punktion oberfl. Körperteile (Cyste, Schleimbeutel u.ä.)', cat:'Punktionen diagn.',pkt:10,  fix:null},
+{code:'161',  name:'Punktion eines Gelenkes',                                   cat:'Punktionen diagn.',pkt:20,  fix:null},
+{code:'162',  name:'Punktion Brust- oder Bauchhöhle',                           cat:'Punktionen diagn.',pkt:14,  fix:null},
+{code:'163',  name:'Punktion Herzbeutel',                                       cat:'Punktionen diagn.',pkt:40,  fix:null},
+{code:'164',  name:'Lumbalpunktion',                                            cat:'Punktionen diagn.',pkt:30,  fix:null},
+{code:'165',  name:'Suboccipitalpunktion',                                      cat:'Punktionen diagn.',pkt:30,  fix:null},
+{code:'166',  name:'Sternalpunktion',                                           cat:'Punktionen diagn.',pkt:30,  fix:null},
+{code:'167',  name:'Punktion der Prostata',                                     cat:'Punktionen diagn.',pkt:20,  fix:null},
+{code:'168',  name:'Punktion Leber, Milz oder Nieren (ohne Laparoskopie)',      cat:'Punktionen diagn.',pkt:60,  fix:null},
+{code:'169',  name:'Punktion während der Laparoskopie',                         cat:'Punktionen diagn.',pkt:30,  fix:null},
+{code:'170',  name:'Punktion der Harnblase',                                    cat:'Punktionen diagn.',pkt:20,  fix:null},
+// A/02/07 Punktionen therapeutisch
+{code:'171',  name:'Punktion Cyste/Schleimbeutel/Abszeß/Hämatom (ther.)',      cat:'Punktionen ther.', pkt:16,  fix:null},
+{code:'172',  name:'Punktion größere Gelenke (inkl. ev. Füllung)',              cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'173',  name:'Punktion Brust-/Bauchhöhle oder Douglas',                  cat:'Punktionen ther.', pkt:50,  fix:null},
+{code:'174',  name:'Punktion Herzbeutel (therapeutisch)',                       cat:'Punktionen ther.', pkt:60,  fix:null},
+{code:'175',  name:'Lumbalpunktion (therapeutisch)',                             cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'176',  name:'Suboccipitalpunktion (therapeutisch)',                       cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'177',  name:'Liquorpunktion Kinder (Fontanella)',                         cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'178',  name:'Punktion Wasserbruch mit Einspritzung',                     cat:'Punktionen ther.', pkt:20,  fix:null},
+{code:'179',  name:'Punktion Harnblase (therapeutisch)',                         cat:'Punktionen ther.', pkt:30,  fix:null},
+// A/02/08 Betäubung
+{code:'180',  name:'Kälte- oder Oberflächenanästhesie',                         cat:'Betäubung',        pkt:4,   fix:null},
+{code:'181',  name:'Infiltrationsanästhesie',                                   cat:'Betäubung',        pkt:8,   fix:null},
+{code:'182',  name:'Leitungsanästhesie',                                        cat:'Betäubung',        pkt:16,  fix:null},
+{code:'183',  name:'Inhalations- oder i.v. Narkose',                            cat:'Betäubung',        pkt:30,  fix:null},
+{code:'184',  name:'Sacralanästhesie oder Plexusanästhesie',                    cat:'Betäubung',        pkt:30,  fix:null},
+{code:'185',  name:'Lumbalanästhesie',                                          cat:'Betäubung',        pkt:40,  fix:null},
+{code:'186',  name:'Narkose mit Intubation',                                    cat:'Betäubung',        pkt:50,  fix:null},
+{code:'187',  name:'Lokalanästhesie in das Bruchhämatom',                       cat:'Betäubung',        pkt:16,  fix:null},
+{code:'188',  name:'Lumbale Sympathikusblockade',                               cat:'Betäubung',        pkt:24,  fix:null},
+// A/02/09 Wiederbelebung
+{code:'190',  name:'Intensiver Belebungsversuch beim schwer asphyktischen Neugeborenen',cat:'Wiederbelebung',pkt:20,fix:null},
+{code:'191',  name:'Wiederbelebungsversuch bei Unfällen bis 30 min',            cat:'Wiederbelebung',   pkt:30,  fix:null},
+{code:'192',  name:'Apparative Beatmung durch Saugdruckverfahren (Zuschlag)',   cat:'Wiederbelebung',   pkt:10,  fix:null},
+{code:'193',  name:'Künstliche Beatmung als Wiederbelebungsversuch',            cat:'Wiederbelebung',   pkt:30,  fix:null},
+// A/02/11 Sonstige ärztliche Verrichtungen
+{code:'200',  name:'Bougierung der Speiseröhre',                                cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'201',  name:'Ausheberung und Spülung des Magens',                        cat:'Sonstige Verrichten.',pkt:40,fix:null},
+{code:'202',  name:'Zuschlag Magenspülung bei Kindern bis 10 J.',               cat:'Sonstige Verrichten.',pkt:20,fix:null},
+{code:'209',  name:'Digitaluntersuchung des Mastdarmes',                        cat:'Sonstige Verrichten.',pkt:6, fix:null},
+{code:'210',  name:'Bougierung des Mastdarmes oder einer Colostomiefistel',     cat:'Sonstige Verrichten.',pkt:6, fix:null},
+{code:'211',  name:'Proktoskopie',                                              cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'212',  name:'Sphinkterdehnung',                                          cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'213',  name:'Hohe Darmirrigation',                                       cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'214',  name:'Digitale Ausräumung des Mastdarmes',                        cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'220',  name:'Extraktion eines Zahnes, einwurzelig',                      cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'221',  name:'Extraktion eines Zahnes, mehrwurzelig',                     cat:'Sonstige Verrichten.',pkt:16,fix:null},
+{code:'222',  name:'Oszillometrie mit graphischer Dokumentation',               cat:'Sonstige Verrichten.',pkt:20,fix:null},
+{code:'223',  name:'Oszillometrie ohne graph. Dokumentation',                   cat:'Sonstige Verrichten.',pkt:12,fix:null},
+{code:'224',  name:'Untersuchung auf Pilzbefall mit Woodschem Licht',           cat:'Sonstige Verrichten.',pkt:4, fix:null},
+{code:'225',  name:'Lösung von Konglutinationen pro Fall',                      cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'226',  name:'Durchtrennung des Zungenbändchens',                         cat:'Sonstige Verrichten.',pkt:8, fix:null},
+{code:'227',  name:'Sondierung einer Fistel',                                   cat:'Sonstige Verrichten.',pkt:4, fix:null},
+{code:'228',  name:'Konservative Behandlung von Hernien, je Sitzung',           cat:'Sonstige Verrichten.',pkt:6, fix:null},
+{code:'229',  name:'Erhebung des Venenstatus (Trendelenburg, Dokumentation)',   cat:'Sonstige Verrichten.',pkt:10,fix:null},
+{code:'230',  name:'Ausführlicher ärztl. Befundbericht (kassenärztl. Bereich)', cat:'Sonstige Verrichten.',pkt:6, fix:null, svs:{code:'3c',pkt:15,pktWert:0.7989}},
+{code:'231',  name:'Nicht direktionale Ultraschall-Dopplermessung distaler Arteriendrücke (beide Beine)',cat:'Sonstige Verrichten.',pkt:15,fix:null},
+{code:'235',  name:'Wechsel von Magenaustauschsonden (Gastrotube)',             cat:'Sonstige Verrichten.',pkt:14,fix:null},
+{code:'236',  name:'Wechsel von suprapubischen Blasenkathetern',                cat:'Sonstige Verrichten.',pkt:14,fix:null},
+{code:'237',  name:'Nadelakupunktur (ÄK-Diplom Akupunktur erforderlich)',       cat:'Sonstige Verrichten.',pkt:20,fix:null,warn:true},
+{code:'239',  name:'Heilmittelberatungsgespräch (max. 15% der Fälle)',          cat:'Sonstige Verrichten.',pkt:10,fix:null, bva:{code:'HMG',fix:14.84}, svs:{code:'HMG',fix:12.78}},
+// A/04/01 Wundversorgung
+{code:'290',  name:'Wunde mit Naht und Verband (eine Naht)',                    cat:'Wundversorgung',   pkt:20,  fix:null, bva:{code:'25d',pkt:38,pktWert:1.2194}},
+{code:'291',  name:'Kleine Wunde mit Butterfly oder Gewebekleber',              cat:'Wundversorgung',   pkt:10,  fix:null, bva:{code:'25a',pkt:8,pktWert:1.2194}},
+{code:'292',  name:'Abtragung mehrerer großer Blasen (eine Sitzung)',           cat:'Wundversorgung',   pkt:10,  fix:null, bva:{code:'25c',pkt:10,pktWert:1.2194}},
+{code:'293',  name:'Nahtentfernung bei größeren Wundnähten (≥ 12 Nähte)',      cat:'Wundversorgung',   pkt:10,  fix:null},
+// A/04/02 Kleine operative Eingriffe
+{code:'300',  name:'Incision Abszess, Furunkel, Panaritium, Atherom',          cat:'Operative Eingriffe',pkt:10,fix:null, bva:{code:'26a',pkt:10,pktWert:1.2194}},
+{code:'301',  name:'Exkochleation/Ätzung/Kaustik einer Warze oder Geschwulst', cat:'Operative Eingriffe',pkt:10,fix:null, bva:{code:'26d',pkt:5,pktWert:1.2194}},
+{code:'302',  name:'Exkochleation/Ätzung/Kaustik mehrerer Warzen (eine Sitzung)',cat:'Operative Eingriffe',pkt:20,fix:null, bva:{code:'26e',pkt:10,pktWert:1.2194}},
+{code:'303',  name:'Entfernung eines Finger- oder Zehennagels',                 cat:'Operative Eingriffe',pkt:20,fix:null, bva:{code:'26g',pkt:10,pktWert:1.2194}},
+{code:'304',  name:'Bluttransfusion mit Konserve',                              cat:'Operative Eingriffe',pkt:30,fix:null},
+{code:'305',  name:'Incision nach Krampfadernverödung und Thrombektomie',       cat:'Operative Eingriffe',pkt:5, fix:null},
+{code:'26i',  name:'Chirodiagnostik und Chirotherapie AM (max. 5×/Quartal)',    cat:'Operative Eingriffe',pkt:null,fix:null, kasseOnly:['svs'], svs:{code:'26i',pkt:40,pktWert:0.7989}},
+// A/04/03 Verbände
+{code:'310',  name:'Größerer Verband (Kopf, Schulter, Becken; Zinkleimbinde)',  cat:'Verbände',         pkt:14,  fix:null, bva:{code:'27a',pkt:12,pktWert:1.2194}},
+{code:'311',  name:'Gipsverband Hand und Unterarm',                             cat:'Verbände',         pkt:30,  fix:null, bva:{code:'27d',pkt:23,pktWert:1.2194}},
+{code:'312',  name:'Gipsverband Hand, Unter- und Oberarm',                      cat:'Verbände',         pkt:50,  fix:null, bva:{code:'27e',pkt:38,pktWert:1.2194}},
+{code:'313',  name:'Gipsverband obere Extremität und Schultergürtel',           cat:'Verbände',         pkt:120, fix:null, bva:{code:'27f',pkt:83,pktWert:1.2194}},
+{code:'314',  name:'Gipsverband Fuß, Unterschenkel oder Hülse',                 cat:'Verbände',         pkt:50,  fix:null, bva:{code:'27d',pkt:23,pktWert:1.2194}},
+{code:'315',  name:'Gipsverband Fuß, Unter- und Oberschenkel',                  cat:'Verbände',         pkt:80,  fix:null, bva:{code:'27e',pkt:38,pktWert:1.2194}},
+{code:'316',  name:'Gipsverband untere Extremität und Becken',                  cat:'Verbände',         pkt:150, fix:null, bva:{code:'27f',pkt:83,pktWert:1.2194}},
+{code:'317',  name:'Abnahme eines großen Gipsverbandes',                        cat:'Verbände',         pkt:10,  fix:null, bva:{code:'27h',pkt:10,pktWert:1.2194}},
+{code:'318',  name:'Anbringung Gehbügel / Reparatur Gipsverband',               cat:'Verbände',         pkt:10,  fix:null},
+{code:'319',  name:'Abänderung fester Verband (Fensterung, Aufkeilung)',        cat:'Verbände',         pkt:10,  fix:null},
+{code:'320',  name:'Abduktionsschienenverband mit Stärke- oder Gipsfixation',   cat:'Verbände',         pkt:40,  fix:null},
+{code:'321',  name:'Armverband nach Desault mit Gipsfixation',                  cat:'Verbände',         pkt:50,  fix:null},
+{code:'322',  name:'Behandlung chron. Hautwunde / Ulcus (> 10 min)',            cat:'Verbände',         pkt:14,  fix:null},
+// A/04/04 Orthopädische Verrichtungen
+{code:'330',  name:'Modell für Einlagen bei Senk-/Spreiz-/Knickfuß',           cat:'Orthopädie',       pkt:30,  fix:null},
+{code:'331',  name:'Überprüfung und Anpassung eines orthopäd. Behelfs',         cat:'Orthopädie',       pkt:10,  fix:null},
+{code:'332',  name:'Elastischer Kompressionsverband mit Schaumgummi/Tape',      cat:'Orthopädie',       pkt:20,  fix:null},
+{code:'333',  name:'Manuelles Wirbelsäulenredressement (max. 3×/Krankheitsfall)',cat:'Orthopädie',      pkt:20,  fix:null},
+{code:'334',  name:'Manuelle Therapie Gelenke (nach GMM, max. 3×/Fall)',        cat:'Orthopädie',       pkt:12,  fix:null},
+{code:'335',  name:'Anleitung gymn. Übungen durch den Arzt',                    cat:'Orthopädie',       pkt:10,  fix:null},
+// A/04/05 Knochenbrüche
+{code:'340',  name:'Provisorische Versorgung kleiner Knochen (Finger, Zehen, Rippen)',cat:'Knochenbrüche',pkt:10,fix:null, bva:{code:'29a',pkt:6,pktWert:1.2194}},
+{code:'341',  name:'Provisorische Versorgung alle übrigen Knochen',             cat:'Knochenbrüche',    pkt:30,  fix:null, bva:{code:'29b',pkt:10,pktWert:1.2194}},
+// A/06/02 HNO – Therapeutische Verrichtungen (AM-relevant)
+{code:'376',  name:'Ohrmikroskopie',                                            cat:'HNO',              pkt:10,  fix:null},
+{code:'377',  name:'Stimmgabelprüfung',                                         cat:'HNO',              pkt:8,   fix:null},
+{code:'381',  name:'Schwierige Entfernung Fremdkörper aus Nase/Rachen/Ohr',    cat:'HNO',              pkt:10,  fix:null},
+{code:'382',  name:'Fremdkörperentfernung Nase/Rachen/Ohr – Kinder bis 10 J.',cat:'HNO',              pkt:16,  fix:null},
+{code:'383',  name:'Ätzung/Elektrokoagulation Nasenschleimhaut, Nasentamponade, je Seite',cat:'HNO',   pkt:12,  fix:null},
+{code:'384',  name:'Schichtentamponade',                                        cat:'HNO',              pkt:12,  fix:null},
+{code:'385',  name:'Cerumenentfernung, je Ohr',                                 cat:'HNO',              pkt:6,   fix:null},
+{code:'386',  name:'Anwendung des Tubenkatheters (inkl. Oberflächenanästhesie), je Seite',cat:'HNO',   pkt:6,   fix:null},
+// A/07/01 EKG
+{code:'400',  name:'Ruhe-EKG (Standard, Goldberger)',                           cat:'EKG',              pkt:10,  fix:null, warn:true},
+{code:'401',  name:'Ruhe-EKG + 3 Brustwandableitungen',                        cat:'EKG',              pkt:15,  fix:null, warn:true},
+{code:'402',  name:'Ruhe-EKG + 6 Brustwandableitungen',                        cat:'EKG',              pkt:20,  fix:null, warn:true, bva:{code:'34a',fix:53.6075}, svs:{code:'34a',pkt:69,pktWert:0.7989}},
+{code:'403',  name:'Ergometrie + Ruhe-EKG (Genehmigung erforderlich)',          cat:'EKG',              pkt:80,  fix:null, warn:true},
+{code:'404',  name:'ZUSCHLAG EKG am Krankenbett',                               cat:'EKG',              pkt:20,  fix:null, warn:true, bva:{code:'34f',pkt:10,pktWert:1.2194}},
+{code:'405',  name:'Rheokardiographie, Apexcardiographie, Carotispulskurve',    cat:'EKG',              pkt:40,  fix:null},
+{code:'408',  name:'Orthostaseprüfung nach Schellong',                          cat:'EKG',              pkt:10,  fix:null},
+{code:'415',  name:'24h-Blutdruckmonitoring (Sondergenehmigung / Therapiekontrolle AM)',cat:'EKG',      pkt:50,  fix:null, warn:true, bva:{code:'34x',fix:52.5361}, svs:{code:'34e',pkt:65,pktWert:0.7989}},
+// A/11 Physikalische Behandlung (AM)
+{code:'500',  name:'Manuelle Teilmassage (mind. 10 min)',                       cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'501',  name:'Apparatmassage (mind. 10 min)',                             cat:'Physikalisch',     pkt:4,   fix:null},
+{code:'502',  name:'Pneumomassage des Trommelfelles',                           cat:'Physikalisch',     pkt:6,   fix:null},
+{code:'510',  name:'Anleitung zu heilgymn. Übungen',                            cat:'Physikalisch',     pkt:6,   fix:null},
+{code:'511',  name:'Extensionsbehandlung am Extensionstisch',                   cat:'Physikalisch',     pkt:14,  fix:null},
+{code:'512',  name:'Orthop. Gruppenturnen 2–4 Personen (mind. 30 min/Person)', cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'513',  name:'Glissonschlinge',                                           cat:'Physikalisch',     pkt:6,   fix:null},
+{code:'514',  name:'Kryo-Therapie',                                             cat:'Physikalisch',     pkt:4,   fix:null},
+{code:'520',  name:'Anwendung von Wärmelampen (Sollux, Rotlicht, Blaulicht)',   cat:'Physikalisch',     pkt:4,   fix:null},
+{code:'521',  name:'Schwellstrom oder Exponentialstrom (Lähmungsbehandlung)',   cat:'Physikalisch',     pkt:10,  fix:null},
+{code:'522',  name:'Galvanisation, Interferenzströme, Diadynamische Ströme',    cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'523',  name:'Iontophorese',                                              cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'524',  name:'Kurzwelle und verwandte Hochfrequenzverfahren',             cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'525',  name:'Ultraschall',                                               cat:'Physikalisch',     pkt:8,   fix:null},
+{code:'530',  name:'Dampfinhalation',                                           cat:'Physikalisch',     pkt:4,   fix:null},
+{code:'531',  name:'Aerosolinhalation',                                         cat:'Physikalisch',     pkt:6,   fix:null},
+// A/12 Labor (AM-relevant)
+{code:'600',  name:'Blutbefund komplett (Erythro, Leuko, Hb, Diffzählung, Hkt)',cat:'Labor',           pkt:30,  fix:null, bva:{code:'1.01',pkt:3.4,pktWert:1.2892}},
+{code:'601',  name:'Rotes Blutbild (Erythro, Hkt, Hb, Färbeindex)',            cat:'Labor',            pkt:12,  fix:null},
+{code:'602',  name:'Weißes Blutbild (Leuko- und Differentialzählung)',          cat:'Labor',            pkt:16,  fix:null},
+{code:'603',  name:'Erythrocyten',                                              cat:'Labor',            pkt:6,   fix:null},
+{code:'604',  name:'Hämoglobin',                                                cat:'Labor',            pkt:4,   fix:null},
+{code:'606',  name:'Leukocyten',                                                cat:'Labor',            pkt:8,   fix:null},
+{code:'607',  name:'Differentialzählung',                                       cat:'Labor',            pkt:10,  fix:null},
+{code:'609',  name:'Hämatokrit',                                                cat:'Labor',            pkt:6,   fix:null},
+{code:'620',  name:'Blutsenkung / Mikrosenkung mit Blutabnahme',                cat:'Labor',            pkt:8,   fix:null},
+{code:'630',  name:'Thrombocyten',                                              cat:'Labor',            pkt:12,  fix:null},
+{code:'633',  name:'Prothrombinzeit (Quick)',                                    cat:'Labor',            pkt:10,  fix:null, bva:{code:'2.04',pkt:4.0,pktWert:1.2892}},
+{code:'634',  name:'Partielle Thromboplastinzeit (PTT), Thrombinzeit',          cat:'Labor',            pkt:12,  fix:null},
+{code:'635',  name:'Antikoagulantienkontrolle (AM + Innere Medizin)',           cat:'Labor',            pkt:6,   fix:null, bva:{code:'2.05',pkt:4.0,pktWert:1.2892}},
+{code:'636',  name:'D-Dimer',                                                   cat:'Labor',            pkt:8,   fix:null},
+{code:'640',  name:'Bestimmung von Harnstoff',                                  cat:'Labor',            pkt:14,  fix:null},
+{code:'642',  name:'Blutzucker, Streifentest',                                  cat:'Labor',            pkt:4,   fix:null, bva:{code:'3.01',pkt:0.93,pktWert:1.2892}},
+{code:'643',  name:'Blutzucker mittels Reflotest',                              cat:'Labor',            pkt:10,  fix:null, bva:{code:'3.01',pkt:0.93,pktWert:1.2892}},
+{code:'645',  name:'Latex-Rheumafaktortest',                                    cat:'Labor',            pkt:14,  fix:null},
+{code:'646',  name:'C-reaktives Protein',                                       cat:'Labor',            pkt:18,  fix:null, bva:{code:'11.25',pkt:2.5,pktWert:1.2892}},
+{code:'647',  name:'Bilirubin',                                                 cat:'Labor',            pkt:12,  fix:null},
+{code:'648',  name:'Blutzuckerkurve oder Tagesprofil, komplett',                cat:'Labor',            pkt:40,  fix:null, bva:{code:'15.01',pkt:5.0,pktWert:1.2892}},
+{code:'649',  name:'Troponin-T Test',                                           cat:'Labor',            pkt:7,   fix:null, bva:{code:'4.20',pkt:7.2,pktWert:1.2892}},
+{code:'660',  name:'Phosphatase (alkalisch, saure); Transaminasen (GOT, GPT)',  cat:'Labor',            pkt:11,  fix:null},
+{code:'680',  name:'Harnuntersuchung mit Streifen (einzel oder mehrfach)',      cat:'Labor',            pkt:2,   fix:null, bva:{code:'5.01',pkt:0.93,pktWert:1.2892}},
+{code:'681',  name:'Spez. Gewicht (Harn)',                                      cat:'Labor',            pkt:2,   fix:null},
+{code:'682',  name:'Sediment',                                                  cat:'Labor',            pkt:8,   fix:null, bva:{code:'5.03',pkt:0.93,pktWert:1.2892}},
+{code:'683',  name:'Harnkultur nach Objektträgermethode (Urikult)',             cat:'Labor',            pkt:6,   fix:null},
+{code:'710',  name:'Stuhl auf Blut',                                            cat:'Labor',            pkt:4,   fix:null, bva:{code:'7.02',pkt:2.0,pktWert:1.2892}},
+{code:'720',  name:'Bestimmung der Vitalkapazität',                             cat:'Labor',            pkt:10,  fix:null},
+{code:'721',  name:'Bestimmung der VC, Tieffenautest und Atemgrenzwert',        cat:'Labor',            pkt:16,  fix:null},
+{code:'726',  name:'Blutgasanalyse (Limit: 25% der Fälle)',                    cat:'Labor',            pkt:35,  fix:null},
+{code:'770',  name:'Serologischer Schwangerschaftstest (nur kurat. Notwendigkeit)',cat:'Labor',         pkt:32,  fix:null},
+// A/13/02 Röntgen Aufnahmen
+{code:'810',  name:'Röntgen 9×12',                                              cat:'Röntgen Aufnahmen',pkt:null,fix:6.74,  warn:true, bva:{code:'r5a',fix:7.7243}},
+{code:'811',  name:'Röntgen 10×10',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:8.72,  warn:true},
+{code:'812',  name:'Röntgen 13×18',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:7.95,  warn:true, bva:{code:'r5b',fix:9.9796}, svs:{code:'r5b',pkt:22,pktWert:0.5438}},
+{code:'813',  name:'Röntgen 18×24',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.09, warn:true, bva:{code:'r5c',fix:12.5848}},
+{code:'814',  name:'Röntgen 15×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.85, warn:true, bva:{code:'r5d',fix:15.5165}},
+{code:'815',  name:'Röntgen 24×30',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:11.78, warn:true, bva:{code:'r5e',fix:16.8695}},
+{code:'816',  name:'Röntgen 30×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:16.06, warn:true, bva:{code:'r5f',fix:19.4294}},
+{code:'817',  name:'Röntgen 35×35',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:17.62, warn:true, bva:{code:'r5g',fix:21.0194}},
+{code:'818',  name:'Röntgen 20×40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:14.18, warn:true, bva:{code:'r5i',fix:17.2416}},
+{code:'819',  name:'Röntgen 35×43',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:20.96, warn:true},
+{code:'820',  name:'Röntgen 30×90',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:49.54, warn:true},
+{code:'821',  name:'Zahnfilm (je Aufnahme)',                                    cat:'Röntgen Aufnahmen',pkt:null,fix:3.55,  warn:true, bva:{code:'r5h',fix:5.1984}},
+// A/13/04 Röntgen Honorar Teilradiologen
+{code:'835',  name:'Erste Handhabung pro Quartal (Teilradiologe)',              cat:'Röntgen Honorar',  pkt:8,   fix:null, warn:true},
+{code:'836',  name:'Jede weitere Handhabung (Teilradiologe)',                   cat:'Röntgen Honorar',  pkt:2,   fix:null, warn:true},
+// A/14/01 Sonographie (AM mit Qualifikation)
+{code:'850',  name:'Oberbauch (Leber, GB, Milz, Pankreas, Gefäße, ggf. Nieren)',cat:'Sonographie',     pkt:70,  fix:null, warn:true},
+{code:'860',  name:'Nieren, Retroperitoneum, ggf. Harnwege, Blase, Prostata',  cat:'Sonographie',      pkt:60,  fix:null, warn:true},
+{code:'870',  name:'Weibl. Becken (Uterus, Adnexe, ggf. Blase)',               cat:'Sonographie',      pkt:50,  fix:null, warn:true},
+{code:'880',  name:'Männl. Becken (Blase, Prostata, ggf. Darmabschnitte)',     cat:'Sonographie',      pkt:38,  fix:null, warn:true},
+{code:'890',  name:'Ein Organ (z.B. GB+Gallenwege, beide Nieren, Uterus)',      cat:'Sonographie',      pkt:35,  fix:null, warn:true, bva:{code:'US12',fix:34.15}, svs:{code:'US12',pkt:60,pktWert:0.5480}},
+{code:'892',  name:'Endovaginale Sonographie',                                  cat:'Sonographie',      pkt:42,  fix:null, warn:true},
+{code:'893',  name:'Transrektale Prostatasonographie',                          cat:'Sonographie',      pkt:42,  fix:null, warn:true},
+{code:'894',  name:'Sonographie Mamma (bei unklarem Mammographiebefund)',       cat:'Sonographie',      pkt:25,  fix:null, warn:true},
+{code:'895',  name:'Sonographie Weichteile einer Schulter',                     cat:'Sonographie',      pkt:35,  fix:null, warn:true},
+{code:'900',  name:'Geburtshilfl. Ultraschall (med. Indikation)',               cat:'Sonographie',      pkt:40,  fix:null, warn:true},
+{code:'910',  name:'Differentialdiagn. Fetaluntersuchung',                      cat:'Sonographie',      pkt:70,  fix:null, warn:true},
+{code:'920',  name:'Echokardiographie (2D-Bild + TM)',                         cat:'Sonographie',      pkt:80,  fix:null, warn:true},
+{code:'922',  name:'Dopplerechokardiographie / Farbdoppler-Echokardiographie',  cat:'Sonographie',      pkt:100, fix:null, warn:true},
+{code:'930',  name:'Schilddrüse',                                               cat:'Sonographie',      pkt:35,  fix:null, warn:true},
+{code:'940',  name:'Hüftgelenke beim Säugling',                                 cat:'Sonographie',      pkt:35,  fix:null, warn:true},
+{code:'945',  name:'Duplexsonographie Carotis-vertebralis-System',              cat:'Sonographie',      pkt:90,  fix:null, warn:true},
+{code:'946',  name:'Farbduplexsono Extremitätenarterien (path. Vorbefund)',     cat:'Sonographie',      pkt:50,  fix:null, warn:true},
+{code:'947',  name:'Farbduplexsono Extremitätenvenen (Thrombose/Insuffizienz)', cat:'Sonographie',      pkt:50,  fix:null, warn:true},
+{code:'950',  name:'ZUSCHLAG weiteres Organ (zu Pos. 850–895 und 930)',         cat:'Sonographie',      pkt:10,  fix:null, warn:true},
+];
+
+const GRP_ORDER = ['Ordination AM','Krankenbesuch AM','Zeitversäumnis','Konsilium','Blutabnahme','Injektionen','Infiltrationen','Infusionen','Allergietestungen','Punktionen diagn.','Punktionen ther.','Betäubung','Wiederbelebung','Sonstige Verrichten.','Wundversorgung','Operative Eingriffe','Verbände','Orthopädie','Knochenbrüche','HNO','EKG','Physikalisch','Labor','Röntgen Aufnahmen','Röntgen Honorar','Sonographie'];
+const GRP_LABEL = {
+  'Ordination AM':'A/01/01 · Ordination AM',
+  'Krankenbesuch AM':'A/01/02 · Krankenbesuche AM',
+  'Zeitversäumnis':'A/01/03 · Zeitversäumnis',
+  'Konsilium':'A/01/04 · Konsilium',
+  'Blutabnahme':'A/02/01 · Blutabnahme',
+  'Injektionen':'A/02/02 · Injektionen',
+  'Infiltrationen':'A/02/03 · Infiltrationen',
+  'Infusionen':'A/02/04 · Infusionen',
+  'Allergietestungen':'A/02/05 · Allergietestungen & Impfungen',
+  'Punktionen diagn.':'A/02/06 · Punktionen diagnostisch',
+  'Punktionen ther.':'A/02/07 · Punktionen therapeutisch',
+  'Betäubung':'A/02/08 · Betäubung',
+  'Wiederbelebung':'A/02/09 · Wiederbelebung',
+  'Sonstige Verrichten.':'A/02/11 · Sonstige Verrichtungen',
+  'Wundversorgung':'A/04/01 · Wundversorgung',
+  'Operative Eingriffe':'A/04/02 · Kleine operative Eingriffe',
+  'Verbände':'A/04/03 · Verbände',
+  'Orthopädie':'A/04/04 · Orthopädische Verrichtungen',
+  'Knochenbrüche':'A/04/05 · Knochenbrüche',
+  'HNO':'A/06 · HNO (Grundversorgung AM)',
+  'EKG':'A/07/01 · EKG',
+  'Physikalisch':'A/11 · Physikalische Behandlung',
+  'Labor':'A/12 · Labor',
+  'Röntgen Aufnahmen':'A/13/02 · Röntgen Aufnahmen',
+  'Röntgen Honorar':'A/13/04 · Röntgen Honorar (Teilradiologen)',
+  'Sonographie':'A/14/01 · Sonographie (mit Qualifikation)',
+};
+const BVA_CAT_LABEL = {
+  'Ordination AM':        'Ordination (Kap. A)',
+  'Krankenbesuch AM':     'Krankenbesuch (Kap. B)',
+  'Zeitversäumnis':       'Zeitversäumnis (Kap. C) · Sonstige (TA / PS / HMG)',
+  'Konsilium':            'Konsilium (Kap. D)',
+  'Blutabnahme':          'Blutabnahme',
+  'Injektionen':          'Injektionen',
+  'Infiltrationen':       'Infiltrationen',
+  'Infusionen':           'Infusionen',
+  'Sonstige Verrichten.': 'Sonstige Leistungen',
+  'Wundversorgung':       'Wundversorgung',
+  'Operative Eingriffe':  'Operative Eingriffe',
+  'Verbände':             'Verbände',
+  'Knochenbrüche':        'Schiene / Gipsverband',
+  'EKG':                  'EKG / Rhythmologie',
+  'Labor':                'Labor (Kap. XIV)',
+  'Röntgen Aufnahmen':    'Röntgen (Kap. XIII)',
+  'Sonographie':          'Sonographie (Kap. XI)',
+};
+const SVS_CAT_LABEL = {
+  'Ordination AM':        'Ordination (A.I)',
+  'Zeitversäumnis':       'Zeitversäumnis (A.III) · Sonstige (TA / PS / HMG)',
+  'Konsilium':            'Konsilium (A.IV)',
+  'Blutabnahme':          'Blutabnahme (A.V)',
+  'Injektionen':          'Injektionen (A.VI)',
+  'Infiltrationen':       'Infiltrationen (A.VII)',
+  'Infusionen':           'Infusionen (A.VIII)',
+  'Sonstige Verrichten.': 'Sonstige Leistungen',
+  'Operative Eingriffe':  'Operative Eingriffe (A.IX)',
+  'EKG':                  'EKG (A.VIII)',
+  'Röntgen Aufnahmen':    'Röntgen (A.XIII)',
+  'Sonographie':          'Sonographie (A.XI)',
+};
+function catLabel(cat, kk) {
+  if (kk==='bvaeb') return BVA_CAT_LABEL[cat] || GRP_LABEL[cat] || cat;
+  if (kk==='svs')   return SVS_CAT_LABEL[cat] || GRP_LABEL[cat] || cat;
+  return GRP_LABEL[cat] || cat;
+}
+const COLORS = ['#185FA5','#1D9E75','#BA7517','#A32D2D','#534AB7','#5F5E5A'];
+
+// ── LIMITIERUNGEN & HINWEISE (aus Honorartarif Vorarlberg 2025) ──
+const NOTES = {
+  '12':  'Nur bei ärztlich dringenden Fällen außerhalb der Ordinationszeit',
+  '13':  'Nur bei Dringlichkeit (Erste Hilfe), außerhalb der Ordinationszeit',
+  '15':  'Nicht kombinierbar mit Ordination (Pos. 10, 11, 18 etc.)',
+  '21':  'Nur bei Verdacht auf akut lebensbedrohlichen Zustand (Unfall, Kollaps, Blutung) · Notwendigkeit begründen',
+  '22':  'Nur bei Dringlichkeit (Erste Hilfe)',
+  '23':  'Notwendigkeit ist zu begründen',
+  '30':  'Nicht verrechenbar wenn Zeitversäumnis durch Sonderleistung oder Operation verursacht',
+  '31':  'Nicht verrechenbar wenn Zeitversäumnis durch Sonderleistung oder Operation verursacht',
+  '32':  'Max. 3× pro Quartal pro Patient',
+  '32LC':'1× pro Patient (Long Covid-Verdacht, ab 5. Woche nach COVID-Erkrankung)',
+  '34':  '1× pro Fall und Quartal · Koordinationstätigkeit dokumentieren · z.B. Koordination mit Physiotherapeuten',
+  '40':  'Ich rufe einen anderen Arzt an (ich bin der Konsiliar) · Beratungsleistung des zugezogenen Arztes',
+  '41':  'Ein anderer Arzt ruft mich an und fragt mich um Rat · Ich gebe das Konsilium',
+  '44':  'Max. 3× pro Sitzung · 1× pro Patient und Quartal',
+  '111': 'Bei Serieninjektionen (>3 Injektionen): nicht mit Ordination kombinierbar',
+  '112': 'Bei Serieninjektionen (>3 Injektionen): nicht mit Ordination kombinierbar',
+  '113': 'Bei Serieninjektionen (>3 Injektionen): nicht mit Ordination kombinierbar',
+  '114': 'Bei Serieninjektionen (>3 Injektionen): nicht mit Ordination kombinierbar',
+  '122': 'Max. 5 Verödungen pro Sitzung',
+  '151': 'Pos. 151 und 152 zusammen max. 50 Punkte pro Patient und Quartal',
+  '152': 'Pos. 151 und 152 zusammen max. 50 Punkte pro Patient und Quartal',
+  '293': '1× pro Patient und Tag · mind. 12 Nähte oder Klammern erforderlich',
+  '332': 'Normaler Kompressionsverband nach Varizenverödung NICHT verrechenbar',
+  '333': 'Max. 3× pro Krankheitsfall',
+  '334': 'Max. 3× pro Krankheitsfall',
+  '335': 'Nur für Kinderärzte und Fachärzte für Orthopädie – nicht für AM!',
+  '400': 'Nicht mit Pos. 403 kombinierbar · Schriftliche Befunddokumentation erforderlich (aufzubewahren)',
+  '401': 'Nicht mit Pos. 403 kombinierbar · Schriftliche Befunddokumentation erforderlich (aufzubewahren)',
+  '402': 'Nicht mit Pos. 403 kombinierbar · Schriftliche Befunddokumentation erforderlich (aufzubewahren)',
+  '403': 'Nur nach Genehmigung verrechenbar · Nicht mit Pos. 400, 401, 402 kombinierbar',
+  '404': 'Schriftliche Befunddokumentation erforderlich (aufzubewahren)',
+  '415': 'AM: nur bei Neueinstellung/Therapiekontrolle (Indikation Ziffer 3) · Ausbildungsnachweis erforderlich',
+  '500': 'Max. 2× pro Patient und Quartal',
+  '501': 'Max. 2× pro Patient und Quartal',
+  '850': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen (860–895) · AM: abdominelle Qualifikation erforderlich',
+  '860': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen · AM: abdominelle Qualifikation erforderlich',
+  '870': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen · AM: gynäkol.-geburtshilfl. Qualifikation erforderlich',
+  '880': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen · AM: abdominelle Qualifikation erforderlich',
+  '890': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen · AM: abdominelle ODER gynäkol. Qualifikation',
+  '892': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen · AM: gynäkol.-geburtshilfl. Qualifikation erforderlich',
+  '893': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen',
+  '894': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen',
+  '895': 'Nicht gleichzeitig mit anderen Sono-Hauptleistungen',
+  '835': 'Immer die erste radiologische Untersuchung pro Quartal · Alle weiteren Untersuchungen desselben Quartals → Pos. 836',
+  '836': 'Jede weitere Röntgen-Untersuchung nach der ersten im selben Quartal · Erste Untersuchung → Pos. 835',
+  '920': 'Nicht mit Pos. 922 kombinierbar',
+  '922': 'Nicht mit Pos. 920 kombinierbar',
+  '946': 'Nur bei pathologischem Vorbefund der Druckindexbestimmung',
+  '947': 'Nur bei klinischem Hinweis auf Thrombose oder venöse Insuffizienz',
+};
+
+// BVAEB-spezifische Limitierungen (nach BVA-Tarif)
+const BVAEB_NOTES = {
+  // Ordination
+  'A1':  'Ärztliche Erstuntersuchung (inkl. Anamnese, Untersuchung, Beratung) · 1× pro Quartal',
+  'A2':  'Folgeuntersuchung · In derselben Sitzung nicht mit A1 kombinierbar',
+  'A3':  'Zuschlag Ordination außerhalb der Normalzeit (Mo–Fr 18–20 Uhr, Sa 12–18 Uhr)',
+  'A4':  'Zuschlag Ordination an Sonn- und Feiertagen',
+  'A5':  'Zuschlag Ordination bei Nacht (Mo–Sa 20–8 Uhr; So/Feiertag 0–24 Uhr) · Von A3–A5 je Ordination nur der höchstwertige Zuschlag verrechenbar',
+  // Krankenbesuch
+  'B1':  'Erster Krankenbesuch je Besuchsrunde · Inkl. Anamnese, Untersuchung, Beratung',
+  'B2':  'Weiterer Krankenbesuch – jeder weitere Patient je Besuchsrunde',
+  'B3':  'Zuschlag Krankenbesuch außerhalb der Normalzeit',
+  'B4':  'Zuschlag Krankenbesuch an Sonn- und Feiertagen',
+  'B5':  'Zuschlag Krankenbesuch bei Nacht · Von B3–B5 je Besuch nur der höchstwertige Zuschlag verrechenbar',
+  // Zeitversäumnis
+  'C1':  'Zeitversäumnis bei Krankenbesuchen bei Tag · Je angefangene ½ Stunde Wartezeit',
+  'C2':  'Zeitversäumnis bei Krankenbesuchen bei Nacht · Je angefangene ½ Stunde Wartezeit',
+  'TA':  'Ausführliche therapeutische Aussprache · € 20,01 fix · Mind. 10 Min. · Max. 33 % der Fälle/Quartal (AM) · Nicht mit PS oder HMG kombinierbar',
+  'HMG': 'Heilmittelberatungsgespräch · € 14,84 fix · Max. 12 % der Fälle/Quartal · Nicht gleichzeitig mit TA',
+  'PS':  'Psychosomatisch orientiertes D+B-Gespräch · € 25,62 fix · ÖÄK-Diplom Psychosom. Medizin erforderlich · Nicht mit TA kombinierbar',
+  // Konsilium
+  'D1':  'Konsilium (Berufener oder Berufender) · Dokumentationspflicht',
+  'D2':  'Konsilium schriftlich (Anforderung oder Befundbericht) · Dokumentationspflicht',
+  // Koordinierung
+  'J1':  'Koordinierungszuschlag · 1× pro Fall und Quartal · Max. 5 % der Fälle',
+  // Blutabnahme
+  '10a': 'Blutabnahme aus der Vene · Bei Serienblutabnahmen ggf. nicht mit Ordination kombinierbar',
+  '10b': 'Kapilläre Blutabnahme (Fingerbeere/Ohrläppchen)',
+  '10c': 'Blutabnahme ohne eigene Punktion (z.B. aus liegendem Katheter)',
+  // Injektionen
+  '11b': 'Intramuskuläre Injektion · Bei Serieninjektionen (>3): nicht mit Ordination kombinierbar',
+  '11c': 'Intravenöse Injektion · Bei Serieninjektionen (>3): nicht mit Ordination kombinierbar',
+  '11e': 'Eigenblutinjektion (Venenpunktion + i.m.) · Bei Serieninjektionen (>3): nicht mit Ordination kombinierbar',
+  '11u': 'Periarticuläre Injektion',
+  '11v': 'Intraarticuläre Injektion · Dokumentationspflicht',
+  // Infiltrationen
+  '12a': 'Subcutane Infiltration',
+  '12b': 'Intramuskuläre Infiltration',
+  // Infusionen
+  '13b': 'Intravenöse Dauertropfinfusion · Dokumentationspflicht',
+  // Wundversorgung
+  '25a': 'Kleine Wundversorgung (Reinigung, Desinfektion, einfacher Wundverschluss)',
+  '25c': 'Mittlere Wundversorgung (aufwändigere Versorgung oder mehrere Wunden)',
+  '25d': 'Große Wundversorgung (ausgedehnte oder mehrschichtige Wundversorgung)',
+  // Operative Eingriffe
+  '26a': 'Kleiner operativer Eingriff (z.B. Abszessinzision, Exzision kleiner Läsionen)',
+  '26d': 'Mittelgroßer operativer Eingriff',
+  '26e': 'Ergänzungsleistung zu operativem Eingriff',
+  '26g': 'Weitere Ergänzungsleistung zu operativem Eingriff',
+  // Verbände
+  '27a': 'Einfacher Verband (Wundabdeckung, Pflasterverband)',
+  '27d': 'Mittlerer Verband (z.B. Kompressionsverband, Mehrschichtverband)',
+  '27e': 'Großer Verband (ausgedehnter Kompressionsverband)',
+  '27f': 'Sehr großer Verband (z.B. zirkulärer Extremitätenverband)',
+  '27h': 'Kleiner Spezialverband (z.B. Fingerkuppenverband, Ohr)',
+  // Knochenbrüche / Orthopädie
+  '29a': 'Ruhigstellung / Schiene (Gipsschiene oder Kunststoffschiene)',
+  '29b': 'Zirkulärer Gipsverband · Inkl. Material',
+  // EKG
+  '34a': 'EKG in Ruhe (12 Ableitungen) · Dokumentationspflicht · € 53,61 fix',
+  '34f': 'EKG-Zuschlag (Belastungs-EKG oder Langzeit-EKG)',
+  '34x': 'Langzeit-EKG (24-Std.-Aufzeichnung inkl. Auswertung) · € 52,54 fix · Dokumentationspflicht',
+  // Sonographie
+  'US12':'Sonographie (ein Organ, bis 2 Quadranten) · € 34,15 fix · Dokumentationspflicht',
+  // Röntgen
+  'r5a': 'Röntgenaufnahme Format 1 (kleinstes Format) · Fix-Betrag inkl. Aufnahme und Honorar',
+  'r5b': 'Röntgenaufnahme Format 2 (13×18 cm)',
+  'r5c': 'Röntgenaufnahme Format 3 (18×24 cm)',
+  'r5d': 'Röntgenaufnahme Format 4 (24×30 cm)',
+  'r5e': 'Röntgenaufnahme Format 5 (30×40 cm)',
+  'r5f': 'Röntgenaufnahme Format 6 (35×43 cm)',
+  'r5g': 'Röntgenaufnahme Format 7 (43×43 cm)',
+  'r5h': 'Röntgen Kleinstformat / Spezial (z.B. Zahnfilm-äquivalent)',
+  'r5i': 'Röntgenaufnahme Spezialformat / Thorax-Übersicht',
+  // Labor
+  '1.01':  'Harnstreifen-Untersuchung (Urin-Teststreifen, mind. 8 Parameter)',
+  '2.04':  'Thromboplastinzeit (Quick/INR) · Gerinnungsdiagnostik',
+  '2.05':  'Thromboplastinzeit (Thrombotest) · Alternative Gerinnungsdiagnostik',
+  '3.01':  'Hämoglobin (photometrisch) oder Hämatokrit',
+  '4.20':  'Glukose im Blut (enzymatisch)',
+  '5.01':  'Eiweiß im Harn (qualitativ)',
+  '5.03':  'Glukose im Harn (qualitativ)',
+  '7.02':  'Okkultes Blut im Stuhl (Hämoccult)',
+  '11.25': 'C-reaktives Protein (CRP, quantitativ)',
+  '15.01': 'TSH (basales Thyreoidea-stimulierendes Hormon)',
+};
+
+// SVS-spezifische Limitierungen (nach SVS Gesamtvertrag, Stand 01.01.2026)
+const SVS_NOTES = {
+  'A1':  'Erste Ordination · 1× im Monat · Nicht neben B1 verrechenbar',
+  'A2':  'Weitere Ordination · Nicht mit A1 kombinierbar',
+  'A3':  'Zuschlag Ordination außerhalb der Sprechstunde · Nur bei ärztl. dringenden Fällen ohne festgesetzte Ordinationszeiten',
+  'A4':  'Zuschlag Ordination Sonn-/Feiertag · Nur bei ärztl. Dringlichkeit',
+  'A5':  'Zuschlag Ordination bei Nacht (20:00–07:00) · Von A3–A5 je Ordination nur der höchstwertige Zuschlag verrechenbar',
+  'SC1': 'Senioren-Check · 1× pro Kalenderjahr · Nur für Patienten ab vollendetem 70. Lebensjahr · Nicht gleichzeitig mit TA oder HMG',
+  'B1':  'Erster Krankenbesuch · 1× im Monat · Nicht neben A1 verrechenbar',
+  'B2':  'Weiterer Krankenbesuch',
+  '3a':  'Zeitversäumnis Krankenbesuch bei Tag · Je angefangene ½ Stunde',
+  '3b':  'Zeitversäumnis Krankenbesuch bei Nacht (20:00–07:00) · Je angefangene ½ Stunde',
+  '3c':  'Ausführlicher Befundbericht · Mindestinhalt: Anamnese, Status, Diagnose, Therapievorschlag · Nur bei Überweisung oder auf Verlangen des Hausarztes',
+  '1j':  'Koordinierung · 1× pro Fall und Abrechnungszeitraum · Max. 15 % der Fälle pro Jahr · Dokumentationspflicht',
+  '4a':  'Konsilium bei Tag · Berufener Arzt ist anzuführen',
+  '4b':  'Konsilium bei Nacht',
+  'TA':  'Ausführliche therapeutische Aussprache · 25 Pkt · 10–15 Min. · Max. 33 % der Fälle/Quartal (AM) · Nicht gleichzeitig mit PS, 1j oder HMG',
+  'HMG': 'Heilmittelberatungsgespräch · € 12,78 fix · Max. 12 % der Fälle/Abrechnungszeitraum · Nicht gleichzeitig mit TA',
+  'PS':  'Psychosomatisch orientiertes D+B-Gespräch · € 25,57 fix · ÖÄK-Diplom Psychosom. Medizin erforderlich · Max. 30 % der Fälle/Quartal',
+  '10a': 'Blutabnahme aus der Vene',
+  '11b': 'Intramuskuläre Injektion',
+  '11c': 'Intravenöse Injektion · Bei Serieninjektionsbehandlung ab 4. Injektion: nur 4 Pkt',
+  '11u': 'Periarticuläre Gelenksumspritzung (ein großes oder mehrere kleine Gelenke)',
+  '11v': 'Intraarticuläre Injektion (große Gelenke) · Je Gelenk max. 6 Injektionen/Abrechnungszeitraum',
+  '12a': 'Subcutane Infiltration · Max. 20 pro Behandlungsfall (darüber hinaus med. Begründung)',
+  '12b': 'Intramuskuläre Infiltration · Max. 20 pro Behandlungsfall',
+  '13b': 'Intravenöse Infusion · Max. 20 pro Behandlungsfall (darüber hinaus med. Begründung)',
+  '26i': 'Chirodiagnostik und Chirotherapie · Ausbildungsnachweis erforderlich · Max. 5 Sitzungen pro Patient und Quartal',
+  '34a': 'EKG in Ruhe (12 Ableitungen: I–III, AVR, AVL, AVF, V1–6) · Dokumentationspflicht',
+  '34e': '24-Stunden-Blutdruckmonitoring · Max. 15 % der Fälle pro Arzt und Monat · Befund 3 Jahre aufzubewahren',
+  'r5b': 'Röntgenaufnahme (13×18 cm) · Punktewert A.XIII: 0,5438 €/Pkt (ab 01.01.2026)',
+  'US12':'Sonographie ein Organ · Punktewert A.XI: 0,5480 €/Pkt (ab 01.01.2026)',
+};
+
+const CONFLICTS_WITH = {
+  '15':  ['10','11','18','18NZ','18EZ'],
+  '400': ['403'], '401': ['403'], '402': ['403'],
+  '403': ['400','401','402'],
+  '920': ['922'], '922': ['920'],
+};
+
+const CONFLICT_GROUPS = [
+  {codes:['10','18','18EZ'],   msg:'Erste Ordination: nur eine Abrechnungsposition möglich (10 / 18 / 18EZ)'},
+  {codes:['11','18NZ'],        msg:'Weitere Ordination: nur eine Abrechnungsposition möglich (11 / 18NZ)'},
+  {codes:['850','860','870','880','890','892','893','894','895'], msg:'Sono-Hauptleistungen nicht gleichzeitig verrechenbar (nur eine + ggf. Pos. 950)'},
+];
+// Kreuzgruppen: Erste- und Weitere-Ordination schließen sich gegenseitig aus
+const CROSS_CONFLICTS = [
+  {
+    groupA: ['10','18','18EZ'],
+    groupB: ['11','18NZ'],
+    msg: 'Erste und Weitere Ordination nicht kombinierbar'
+  },
+];
+
+// UV-Tarif Kategorien (Privat-Unfallversicherung)
+const UV_KAT = {
+  1: { short:'K1', label:'Kat. 1 – Grundleistung / Gesprächsmedizin',                   fak: 4.90 },
+  2: { short:'K2', label:'Kat. 2 – Technische Leistung (großer Zeitaufwand)',            fak: 3.85 },
+  3: { short:'K3', label:'Kat. 3 – Technische Leistung (geringer Zeitaufwand)',          fak: 2.70 },
+  4: { short:'K4', label:'Kat. 4 – Röntgenunkosten (2× ÖGK)',                           fak: 2.00 },
+  5: { short:'K5', label:'Kat. 5 – Laborleistungen',                                     fak: 1.64 },
+};
+// Standard UV-Kategorien nach Positions-Code (für Auto-Zuweisung)
+const UV_DEFAULT_KAT = {
+  '10':1,'11':1,'18':1,'18EZ':1,'18NZ':1,'12':1,'13':1,'14':1,'16':1,
+  '32':1,'33':1,'34':1,'230':1,
+  '100':3,'101':3,'102':3,'103':3,
+  '110':3,'111':3,'112':3,'113':3,'114':3,'115':3,
+  '120':3,'121':3,'122':3,'123':3,'124':3,'125':3,
+  '130':3,'131':3,'132':3,'133':3,
+  '181':2,'182':2,'191':2,'192':2,
+  '810':4,'811':4,'812':4,'813':4,'814':4,'815':4,'816':4,'817':4,
+  '818':4,'819':4,'820':4,'821':4,'835':4,'836':4,
+  '850':3,'860':3,'870':3,'880':3,'890':3,'892':3,'893':3,'894':3,'895':3,'950':3,
+  '400':3,'401':3,'402':3,'403':3,'404':3,'415':3,
+  '620':5,'630':5,'640':5,'650':5,'660':5,'670':5,'680':5,'681':5,'682':5,'683':5,
+};
+
+// Populate category selects
+function populateCatSelects() {
+  const opts = GRP_ORDER.map(g => `<option value="${g}">${GRP_LABEL[g]||g}</option>`).join('');
+  ['kat-cat','modal-cat'].forEach(id => {
+    const el = document.getElementById(id);
+    el.innerHTML = '<option value="">Alle Gruppen</option>' + opts;
+  });
+}
+
+function updateKatCatFilter(kk) {
+  const el = document.getElementById('kat-cat');
+  const prev = el.value;
+  const available = new Set(
+    getDB()
+      .filter(d => {
+        if (kk==='bvaeb') return !!d.bva;
+        if (kk==='svs')   return !!d.svs;
+        return !d.kasseOnly;
+      })
+      .map(d => kk==='bvaeb' ? (d.bva?.cat||d.cat) : kk==='svs' ? (d.svs?.cat||d.cat) : d.cat)
+  );
+  const opts = GRP_ORDER.filter(g => available.has(g))
+    .map(g => `<option value="${g}">${catLabel(g, kk)}</option>`).join('');
+  el.innerHTML = '<option value="">Alle Gruppen</option>' + opts;
+  el.value = available.has(prev) ? prev : '';
+}
+
+// ── STATE ──
+let state = {
+  vorlagen: [],
+  dbCustom: [],
+  activeId: null,
+  kasse: 'oegk',
+  katKasse: 'oegk',
+  settings: { pkt: 0.80, fak: 2.5, ruck: 80, name: '', adr: '', tel: '',
+              uvFak: {1:4.90, 2:3.85, 3:2.70, 4:2.00, 5:1.64},
+              bvaeb: {ruck:90, selbst:10, pkt1:1.3567, pkt2:1.2194, pkt3:1.1104, pkt4:1.2892},
+              svs: {ruck:80, pkt1:0.7989, pkt2:0.5480, pkt3:0.5438} }
+};
+
+function getDB() {
+  const custom = state.dbCustom || [];
+  if (!custom.length) return DB;
+  const overCodes = new Set(custom.filter(c => DB.some(d => d.code===c.code)).map(c => c.code));
+  const additions = custom.filter(c => !DB.some(d => d.code===c.code));
+  const merged = DB.map(d => overCodes.has(d.code) ? custom.find(c => c.code===d.code) : d);
+  additions.forEach(a => {
+    const lastIdx = merged.reduce((best,d,i) => d.cat===a.cat ? i : best, -1);
+    if (lastIdx>=0) merged.splice(lastIdx+1, 0, a); else merged.push(a);
+  });
+  return merged;
+}
+
+// ── CALCULATIONS ──
+function ks(pos)         { return pos.fix != null ? pos.fix : parseFloat(((pos.pkt||0)*state.settings.pkt).toFixed(4)); }
+function rueck(pos)      { return parseFloat((ks(pos)*state.settings.ruck/100).toFixed(4)); }
+function hon(pos, fak)   { let b=ks(pos); if(b===0&&pos.kasseOnly){const k=pos.kasseOnly.includes(state.kasse)?state.kasse:pos.kasseOnly[0];b=ksK(pos,k);} return parseFloat((b*(fak??state.settings.fak)).toFixed(4)); }
+function eigen(pos, fak) { return Math.max(0, parseFloat((hon(pos,fak)-rueck(pos)).toFixed(4))); }
+function bvaPktWert(d) {
+  const c = state.settings.bvaeb || {};
+  const w = d.bva.pktWert;
+  if (w === 1.3567) return c.pkt1 ?? 1.3567;
+  if (w === 1.2194) return c.pkt2 ?? 1.2194;
+  if (w === 1.1104) return c.pkt3 ?? 1.1104;
+  if (w === 1.2892) return c.pkt4 ?? 1.2892;
+  return w;
+}
+function svsPktWert(d) {
+  const c = state.settings.svs || {};
+  const w = d.svs.pktWert;
+  if (w === 0.7989) return c.pkt1 ?? 0.7989;
+  if (w === 0.5480) return c.pkt2 ?? 0.5480;
+  if (w === 0.5438) return c.pkt3 ?? 0.5438;
+  return w;
+}
+function ksK(dbPos, kasse) {
+  const k = kasse ?? state.kasse;
+  if (k === 'bvaeb') {
+    if (!dbPos.bva) return 0;
+    return dbPos.bva.fix != null ? dbPos.bva.fix : parseFloat(((dbPos.bva.pkt||0)*bvaPktWert(dbPos)).toFixed(4));
+  }
+  if (k === 'svs') {
+    if (!dbPos.svs) return 0;
+    return dbPos.svs.fix != null ? dbPos.svs.fix : parseFloat(((dbPos.svs.pkt||0)*svsPktWert(dbPos)).toFixed(4));
+  }
+  return ks(dbPos);
+}
+function rueckK(dbPos, kasse) {
+  const k = kasse ?? state.kasse;
+  if (k === 'bvaeb') {
+    if (!dbPos.bva) return 0;
+    const b = state.settings.bvaeb || {ruck:90, selbst:10};
+    return parseFloat((ksK(dbPos, k) * (b.ruck/100) * (1 - b.selbst/100)).toFixed(4));
+  }
+  if (k === 'svs') {
+    if (!dbPos.svs) return 0;
+    const sv = state.settings.svs || {ruck:80};
+    return parseFloat((ksK(dbPos, k) * (sv.ruck/100)).toFixed(4));
+  }
+  return rueck(dbPos);
+}
+function eigenK(dbPos, fak, kasse) { return Math.max(0, parseFloat((hon(dbPos,fak)-rueckK(dbPos, kasse)).toFixed(4))); }
+function setKasse(k) { state.kasse = k; renderSidebar(); renderDetail(); renderKatalog(); }
+function setKatKasse(k) { state.katKasse = k; updateKatCatFilter(k); renderKatalog(); }
+function fmt(v)     { return v.toFixed(2)+' €'; }
+function esc(s)     { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function uid()      { return Math.random().toString(36).slice(2,9); }
+
+// ── LESEANSICHT: kein Speichern ──
+function save() { /* read-only */ }
+
+function load() {
+  const d = INITIAL_DATA;
+  const defUvFak = {1:4.90,2:3.85,3:2.70,4:2.00,5:1.64};
+  state.vorlagen = d.vorlagen || [];
+  state.dbCustom = d.dbCustom || [];
+  state.settings = Object.assign({pkt:0.80,fak:2.5,ruck:80,name:'',adr:'',tel:'',uvFak:defUvFak,bvaeb:{ruck:90,selbst:10},svs:{ruck:80}}, d.settings || {});
+  if (!state.settings.uvFak) state.settings.uvFak = defUvFak;
+  state.settings.bvaeb = Object.assign({ruck:90,selbst:10}, state.settings.bvaeb||{});
+  state.settings.svs = Object.assign({ruck:80}, state.settings.svs||{});
+  applySettings();
+  renderAll();
+}
+
+function initDefaults() {
+  const p   = (code, qty)      => ({code, qty: qty||1});
+  const pUV = (code, qty, kat) => ({code, qty: qty||1, uvKat: kat||null});
+  const fr  = (name)           => ({type:'free', name, betrag:0, qty:1});
+  // Kategorie-Zuordnung nach Position
+  const pu = (code, qty) => pUV(code, qty, UV_DEFAULT_KAT[code]||null);
+
+  state.vorlagen = [
+    // ── Erstuntersuchung – Normal ──────────────────────────────
+    {id:uid(), name:'Erstuntersuchung',                       color:'#185FA5', positions:[p('10'), p('32'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono',                color:'#185FA5', positions:[p('10'), p('32'), p('890'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen',             color:'#185FA5', positions:[p('10'), p('32'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen',      color:'#185FA5', positions:[p('10'), p('32'), p('890'), p('812',2), p('835'), p('836'), p('230')]},
+    // ── Kontrolle – Normal ─────────────────────────────────────
+    {id:uid(), name:'Kontrolle',                              color:'#1D9E75', positions:[p('11'), p('32'), p('230')]},
+    {id:uid(), name:'Kontrolle + Sono',                       color:'#1D9E75', positions:[p('11'), p('32'), p('890'), p('230')]},
+    {id:uid(), name:'Kontrolle + Röntgen',                    color:'#1D9E75', positions:[p('11'), p('32'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Kontrolle + Sono + Röntgen',             color:'#1D9E75', positions:[p('11'), p('32'), p('890'), p('812',2), p('835'), p('836'), p('230')]},
+    // ── Spezialleistungen – Normal ─────────────────────────────
+    {id:uid(), name:'Stoßwellentherapie',                     color:'#BA7517', positions:[p('11'), p('32'), fr('Stoßwellentherapie (ESWT)')]},
+    {id:uid(), name:'Eigenblutinfiltration',                  color:'#534AB7', positions:[p('11'), p('32'), p('100'), p('114'), p('230')]},
+    {id:uid(), name:'US-gesteuerte Infiltration',             color:'#0D7490', positions:[p('11'), p('32'), p('890'), p('125'), p('230')]},
+    {id:uid(), name:'Blutabnahme',                            color:'#6B4226', positions:[p('100'), p('230')]},
+    // ── Erstuntersuchung – Unfalltarif [UV] ────────────────────
+    {id:uid(), name:'Erstuntersuchung [UV]',                  color:'#A32D2D', isUV:true, positions:[pu('10'), pu('32'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono [UV]',           color:'#A32D2D', isUV:true, positions:[pu('10'), pu('32'), pu('890'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen [UV]',        color:'#A32D2D', isUV:true, positions:[pu('10'), pu('32'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen [UV]', color:'#A32D2D', isUV:true, positions:[pu('10'), pu('32'), pu('890'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    // ── Kontrolle – Unfalltarif [UV] ───────────────────────────
+    {id:uid(), name:'Kontrolle [UV]',                         color:'#7C3AED', isUV:true, positions:[pu('11'), pu('32'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Sono [UV]',                  color:'#7C3AED', isUV:true, positions:[pu('11'), pu('32'), pu('890'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Röntgen [UV]',               color:'#7C3AED', isUV:true, positions:[pu('11'), pu('32'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Sono + Röntgen [UV]',        color:'#7C3AED', isUV:true, positions:[pu('11'), pu('32'), pu('890'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    // ── Spezialleistungen – Unfalltarif [UV] ──────────────────
+    {id:uid(), name:'Stoßwellentherapie [UV]',                color:'#92400E', isUV:true, positions:[pu('11'), pu('32'), fr('Stoßwellentherapie (ESWT)')]},
+    {id:uid(), name:'Eigenblutinfiltration [UV]',             color:'#1E40AF', isUV:true, positions:[pu('11'), pu('32'), pu('100'), pu('114'), pu('230')]},
+    {id:uid(), name:'US-gesteuerte Infiltration [UV]',        color:'#065F46', isUV:true, positions:[pu('11'), pu('32'), pu('890'), pu('125'), pu('230')]},
+    {id:uid(), name:'Blutabnahme [UV]',                       color:'#374151', isUV:true, positions:[pu('100'), pu('230')]},
+  ];
+}
+
+function resetDefaults() { /* read-only */ }
+
+// ── RENDER ──
+function applySettings() { /* Leseansicht — kein Einstellungsformular */ }
+
+function detectConflicts(codes) {
+  const conflicts = []; const seen = new Set();
+  codes.forEach(code => {
+    (CONFLICTS_WITH[code]||[]).forEach(nw => {
+      if (!codes.includes(nw)) return;
+      const key = [code,nw].sort().join('+');
+      if (seen.has(key)) return; seen.add(key);
+      const a = getDB().find(d => d.code===code), b = getDB().find(d => d.code===nw);
+      conflicts.push(`Pos. ${code} und Pos. ${nw} dürfen nicht kombiniert werden (${a?a.name:code} ↔ ${b?b.name:nw})`);
+    });
+  });
+  CONFLICT_GROUPS.forEach(g => {
+    const found = codes.filter(c => g.codes.includes(c));
+    if (found.length > 1) conflicts.push(`${g.msg}: ${found.join(', ')}`);
+  });
+  CROSS_CONFLICTS.forEach(x => {
+    const foundA = codes.filter(c => x.groupA.includes(c));
+    const foundB = codes.filter(c => x.groupB.includes(c));
+    if (foundA.length > 0 && foundB.length > 0)
+      conflicts.push(`${x.msg}: ${[...foundA,...foundB].join(', ')}`);
+  });
+  return conflicts;
+}
+function kasseCovBadges(d) {
+  if (d.kasseOnly) {
+    if (d.kasseOnly.length > 1 && !d.kasseOnly.includes('oegk')) {
+      return `<div style="display:flex;gap:3px;margin-top:1px"><span style="font-size:8px;font-weight:700;letter-spacing:.03em;color:var(--text3)">kein ÖGK</span></div>`;
+    }
+    const k = d.kasseOnly[0];
+    const col = k==='svs'?'var(--green)':k==='bvaeb'?'var(--violet)':'var(--text2)';
+    const lbl = k==='svs'?'Nur SVS':k==='bvaeb'?'Nur BVA':k.toUpperCase();
+    return `<div style="display:flex;gap:3px;margin-top:1px"><span style="font-size:8px;font-weight:700;letter-spacing:.03em;color:${col}">${lbl}</span></div>`;
+  }
+  const b = `<span style="font-size:8px;font-weight:700;letter-spacing:.03em;color:${d.bva?'var(--violet)':'var(--border2)'}">BVA</span>`;
+  const s = `<span style="font-size:8px;font-weight:700;letter-spacing:.03em;color:${d.svs?'var(--green)':'var(--border2)'}">SVS</span>`;
+  return `<div style="display:flex;gap:3px;margin-top:1px">${b}${s}</div>`;
+}
+function renderAll() { renderSidebar(); renderDetail(); renderKatalog(); }
+
+function effFak(p) {
+  if (p.uvKat && UV_KAT[p.uvKat]) return state.settings.uvFak?.[p.uvKat] ?? UV_KAT[p.uvKat].fak;
+  if (p.faktor != null && p.faktor > 0) return p.faktor;
+  return undefined;
+}
+
+function sumV(v) {
+  let ksT=0,rT=0,hT=0,eT=0;
+  (v.positions||[]).forEach(p => {
+    const q = p.qty||1;
+    if (p.type==='free') { const b=(p.betrag||0)*q; hT+=b; eT+=b; return; }
+    const dbPos = getDB().find(d => d.code===p.code); if (!dbPos) return;
+    const fak = effFak(p);
+    ksT+=ksK(dbPos)*q; rT+=rueckK(dbPos)*q; hT+=hon(dbPos,fak)*q; eT+=eigenK(dbPos,fak)*q;
+  });
+  return {ks:ksT, r:rT, h:hT, e:eT};
+}
+
+function renderSidebar() {
+  document.getElementById('tlist').innerHTML = state.vorlagen.map(v => {
+    const t = sumV(v);
+    return `<div class="titem${v.id===state.activeId?' active':''}" onclick="window.selectV('${v.id}')">
+      <div class="titem-dot" style="background:${v.color||'#185FA5'}"></div>
+      <div class="titem-name">${esc(v.name)}</div>
+      <div class="titem-total">${fmt(t.h)}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectV(id) { state.activeId=id; renderSidebar(); renderDetail(); }
+
+function renderDetail() {
+  const v = state.vorlagen.find(x => x.id===state.activeId);
+  document.getElementById('empty-state').style.display = v?'none':'flex';
+  const dw = document.getElementById('detail-wrap');
+  dw.style.display = v?'flex':'none';
+  if (!v) return;
+  document.getElementById('v-title').textContent = v.name;
+  document.getElementById('v-color').value = v.color||'#185FA5';
+  const t = sumV(v);
+  const kL = state.kasse==='bvaeb'?'BVAEB-Kassensatz':state.kasse==='svs'?'SVS-Kassensatz':'Kassensatz';
+  const rL = state.kasse==='bvaeb'?'BVAEB-Rückerstattung':state.kasse==='svs'?'SVS-Rückerstattung':'Rückerstattung';
+  document.getElementById('v-kasse').value = state.kasse||'oegk';
+  document.getElementById('ks-col-head').textContent = kL;
+  document.getElementById('ruck-col-head').textContent = rL;
+  document.getElementById('metrics-bar').innerHTML = `
+    <div class="metric"><div class="metric-label">${kL}</div><div class="metric-val" style="color:var(--blue)">${fmt(t.ks)}</div></div>
+    <div class="metric"><div class="metric-label">${rL}</div><div class="metric-val" style="color:var(--green)">${fmt(t.r)}</div></div>
+    <div class="metric"><div class="metric-label">Mein Honorar</div><div class="metric-val" style="color:var(--amber)">${fmt(t.h)}</div></div>
+    <div class="metric"><div class="metric-label">Eigenanteil Patient</div><div class="metric-val" style="color:var(--red)">${fmt(t.e)}</div></div>`;
+  // Conflict detection
+  const catCodes = (v.positions||[]).filter(p => !p.type || p.type!=='free').map(p => p.code);
+  const conflicts = detectConflicts(catCodes);
+  const banner = document.getElementById('conflict-banner');
+  if (conflicts.length > 0) {
+    banner.innerHTML = `<i class="ti ti-alert-triangle" style="flex-shrink:0;margin-top:2px"></i><div>${conflicts.map(c => `<div>${esc(c)}</div>`).join('')}</div>`;
+    banner.style.display = 'flex';
+  } else {
+    banner.style.display = 'none';
+  }
+
+  document.getElementById('fak-col-head').textContent = 'Privat / UV';
+
+  document.getElementById('pos-rows').innerHTML = (v.positions||[]).map((p,i) => {
+    const q = p.qty||1;
+    if (p.type==='free') {
+      const total = parseFloat(((p.betrag||0)*q).toFixed(2));
+      return `<div class="pos-row">
+        <span><span class="pill-grp" style="font-size:10px">FREI</span></span>
+        <span></span>
+        <span class="pos-name" style="color:var(--text2)">${esc(p.name||'–')}</span>
+        <span class="pos-num" style="text-align:center">${q}</span>
+        <span class="pos-num" style="color:var(--text3)">—</span>
+        <span class="pos-num" style="color:var(--text3)">—</span>
+        <span class="pos-num" style="color:var(--text3)">—</span>
+        <span class="pos-num" style="color:var(--amber)">${fmt(total)}</span>
+        <span class="pos-num" style="color:var(--red)">${fmt(total)}</span>
+      </div>`;
+    }
+    const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return '';
+    const fak = effFak(p);
+    const kAvail = (!dbPos.kasseOnly&&state.kasse==='oegk') || (state.kasse==='bvaeb'&&!!dbPos.bva) || (state.kasse==='svs'&&!!dbPos.svs);
+    const codeTop = state.kasse==='bvaeb'&&dbPos.bva
+      ? `<div class="pos-code-wrap"><span class="pos-code">${esc(dbPos.bva.code)}</span><span class="pos-code-sub">ÖGK: ${esc(dbPos.code)}</span></div>`
+      : state.kasse==='svs'&&dbPos.svs
+        ? dbPos.kasseOnly
+          ? `<span class="pos-code">${esc(dbPos.svs.code)}</span>`
+          : `<div class="pos-code-wrap"><span class="pos-code">${esc(dbPos.svs.code)}</span><span class="pos-code-sub">ÖGK: ${esc(dbPos.code)}</span></div>`
+        : `<span class="pos-code">${esc(dbPos.code)}</span>`;
+    const kasseCode = `<div style="display:flex;flex-direction:column;gap:2px">${codeTop}${kasseCovBadges(dbPos)}</div>`;
+    const wb = dbPos.warn ? `<span class="pill-warn"><i class="ti ti-alert-triangle"></i> SG</span>` : '';
+    const noteText = state.kasse==='bvaeb'&&dbPos.bva&&BVAEB_NOTES[dbPos.bva.code] ? BVAEB_NOTES[dbPos.bva.code]
+      : state.kasse==='svs'&&dbPos.svs&&SVS_NOTES[dbPos.svs.code] ? SVS_NOTES[dbPos.svs.code]
+      : NOTES[dbPos.code];
+    const ni = noteText ? `<i class="ti ti-info-circle note-icon" title="${esc(noteText)}"></i>` : '';
+    const pktCell = dbPos.kasseOnly
+      ? (dbPos.svs?.fix!=null ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right;font-size:9px">€ ${dbPos.svs.fix.toFixed(2)}</span>` : `<span class="pos-num" style="color:var(--text3);text-align:right;font-size:9px">${dbPos.svs?.pkt??'?'} Pkt</span>`)
+      : dbPos.fix != null
+        ? `<span class="pos-num is-fix" style="color:var(--green);text-align:right;font-size:9px">€ ${dbPos.fix.toFixed(2)}</span>`
+        : `<span class="pos-num" style="color:var(--text3);text-align:right;font-size:9px">${dbPos.pkt} Pkt</span>`;
+    const uvF = state.settings.uvFak || {1:4.90,2:3.85,3:2.70,4:2.00,5:1.64};
+    const uvSel = `<select class="uvkat-sel${p.uvKat?' assigned':''}" onchange="window.updateUvKat('${v.id}',${i},this.value)" title="${p.uvKat ? UV_KAT[p.uvKat].label : ''}">
+           <option value="0" ${!p.uvKat?'selected':''}>–</option>
+           <option value="1" ${p.uvKat===1?'selected':''}>K1 ×${(uvF[1]||4.90).toFixed(2)}</option>
+           <option value="2" ${p.uvKat===2?'selected':''}>K2 ×${(uvF[2]||3.85).toFixed(2)}</option>
+           <option value="3" ${p.uvKat===3?'selected':''}>K3 ×${(uvF[3]||2.70).toFixed(2)}</option>
+           <option value="4" ${p.uvKat===4?'selected':''}>K4 ×${(uvF[4]||2.00).toFixed(2)}</option>
+           <option value="5" ${p.uvKat===5?'selected':''}>K5 ×${(uvF[5]||1.64).toFixed(2)}</option>
+         </select>`;
+    const privInput = `<input class="${p.faktor?'fak-input custom':'fak-input'}" type="number" min="0.1" max="20" step="0.01" value="${p.faktor||''}" placeholder="${state.settings.fak}" title="Honorarfaktor (leer = global ${state.settings.fak}×)" onchange="window.updateFaktor('${v.id}',${i},this.value)" style="width:100%">`;
+    const fakCell = `<div class="fak-cell">
+      <button class="uv-toggle${p.uvKat?' active':''}" onclick="window.toggleUvMode('${v.id}',${i},'${dbPos.code}')" title="${p.uvKat?'Zurück zu Privatfaktor':'UV-Kategorie aktivieren'}">
+        ${p.uvKat ? `UV ${UV_KAT[p.uvKat].short}` : UV_DEFAULT_KAT[dbPos.code] ? `UV·${UV_KAT[UV_DEFAULT_KAT[dbPos.code]].short}` : 'UV'}
+      </button>
+      ${p.uvKat ? uvSel : privInput}
+    </div>`;
+    const fakLabel = p.uvKat ? `UV·${UV_KAT[p.uvKat].short}` : `×${(effFak(p)??state.settings.fak).toFixed(2)}`;
+    return `<div class="pos-row">
+      ${kasseCode}${pktCell}
+      <span class="pos-name">${esc(dbPos.name)}${wb}${ni}</span>
+      <span class="pos-num" style="text-align:center">${q}</span>
+      <span class="pos-num" style="color:var(--amber);text-align:right">${fakLabel}</span>
+      <span class="pos-num" style="color:var(--blue)">${kAvail?fmt(ksK(dbPos)*q):'—'}</span>
+      <span class="pos-num" style="color:var(--green)">${kAvail?fmt(rueckK(dbPos)*q):'—'}</span>
+      <span class="pos-num" style="color:var(--amber)">${fmt(hon(dbPos,fak)*q)}</span>
+      <span class="pos-num" style="color:var(--red)">${kAvail?fmt(eigenK(dbPos,fak)*q):fmt(hon(dbPos,fak)*q)}</span>
+    </div>`;
+  }).join('');
+}
+
+function compCell(d, k) {
+  const pw = v => v.toFixed(4).replace(/(\.\d{2}?)0*$/, '$1').replace('.', ',');
+  let code, mid, ksAmt;
+  if (k === 'oegk') {
+    if (d.kasseOnly) return `<span style="color:var(--text3);font-size:11px;text-align:right">—</span>`;
+    code = d.code;
+    mid = d.fix!=null ? `€ ${d.fix.toFixed(2)} fix` : `${d.pkt||0} × ${pw(state.settings.pkt)}`;
+    ksAmt = fmt(ksK(d,'oegk'));
+  } else if (k === 'bvaeb') {
+    if (!d.bva) return `<span style="color:var(--text3);font-size:11px;text-align:right">—</span>`;
+    code = d.bva.code;
+    mid = d.bva.fix!=null ? `€ ${d.bva.fix.toFixed(2)} fix` : `${d.bva.pkt||0} × ${pw(bvaPktWert(d))}`;
+    ksAmt = fmt(ksK(d,'bvaeb'));
+  } else {
+    if (!d.svs) return `<span style="color:var(--text3);font-size:11px;text-align:right">—</span>`;
+    code = d.svs.code;
+    mid = d.svs.fix!=null ? `€ ${d.svs.fix.toFixed(2)} fix` : `${d.svs.pkt||0} × ${pw(svsPktWert(d))}`;
+    ksAmt = fmt(ksK(d,'svs'));
+  }
+  const col = k==='bvaeb'?'var(--violet)':k==='svs'?'var(--green)':'var(--blue)';
+  return `<div style="display:flex;flex-direction:column;gap:1px;text-align:right"><span style="font-size:9px;color:var(--text3);font-family:monospace">${esc(code)}</span><span style="font-size:9px;color:var(--text2)">${mid}</span><span style="font-family:monospace;font-size:11px;font-weight:600;color:${col}">${ksAmt}</span></div>`;
+}
+
+function renderKatalog() {
+  const kk = state.katKasse || 'oegk';
+  const q = document.getElementById('kat-search').value.toLowerCase();
+  const cat = document.getElementById('kat-cat').value;
+  const ksH = kk==='bvaeb'?'BVAEB-Kassensatz':kk==='svs'?'SVS-Kassensatz':'ÖGK-Kassensatz';
+  const rH  = kk==='bvaeb'?'BVAEB-Erstattung':kk==='svs'?'SVS-Erstattung':'Rückerstattung';
+  document.getElementById('kat-ks-head').textContent = ksH;
+  document.getElementById('kat-ruck-head').textContent = rH;
+  const compKassen = {oegk:['bvaeb','svs'], bvaeb:['oegk','svs'], svs:['oegk','bvaeb']};
+  const [c1, c2] = compKassen[kk];
+  const compLabels = {oegk:'ÖGK', bvaeb:'BVAEB', svs:'SVS'};
+  const compColors = {oegk:'var(--blue)', bvaeb:'var(--violet)', svs:'var(--green)'};
+  const comp1El = document.getElementById('kat-comp1-head');
+  const comp2El = document.getElementById('kat-comp2-head');
+  comp1El.textContent = compLabels[c1]; comp1El.style.color = compColors[c1];
+  comp2El.textContent = compLabels[c2]; comp2El.style.color = compColors[c2];
+  document.querySelectorAll('.kat-kasse-tab').forEach(el => el.classList.toggle('active', el.dataset.kk===kk));
+  const fl = getDB().filter(d => {
+    if (kk==='bvaeb' && !d.bva) return false;
+    if (kk==='svs'   && !d.svs) return false;
+    if (kk==='oegk'  && d.kasseOnly) return false;
+    const effCat = kk==='bvaeb' ? (d.bva?.cat||d.cat) : kk==='svs' ? (d.svs?.cat||d.cat) : d.cat;
+    if (cat && effCat!==cat) return false;
+    if (q) {
+      const nc = kk==='bvaeb'&&d.bva ? d.bva.code.toLowerCase() : kk==='svs'&&d.svs ? d.svs.code.toLowerCase() : '';
+      if (!d.code.toLowerCase().includes(q) && !nc.includes(q) && !d.name.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+  let html=''; let lastCat='';
+  fl.forEach(d => {
+    const effCat = kk==='bvaeb' ? (d.bva?.cat||d.cat) : kk==='svs' ? (d.svs?.cat||d.cat) : d.cat;
+    if (effCat!==lastCat) { html+=`<div class="ct-grp">${esc(catLabel(effCat, kk))}</div>`; lastCat=effCat; }
+    const nc = kk==='bvaeb'&&d.bva ? d.bva.code : kk==='svs'&&d.svs ? d.svs.code : d.code;
+    const ogkSub = d.kasseOnly ? '' : `<span style="font-size:9px;color:var(--text3)">ÖGK: ${esc(d.code)}</span>`;
+    const uvKatKey = d._uvKat ?? UV_DEFAULT_KAT[d.code];
+    const uvBadge = uvKatKey ? `<span style="font-size:9px;font-weight:600;color:var(--amber);letter-spacing:.02em">${UV_KAT[uvKatKey].short}</span>` : '';
+    const codeDiv = kk!=='oegk'
+      ? `<div style="display:flex;flex-direction:column;gap:1px"><span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(nc)}</span>${ogkSub}${kasseCovBadges(d)}${uvBadge}</div>`
+      : `<div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:monospace;font-size:11px;color:var(--text2)">${esc(d.code)}</span>${kasseCovBadges(d)}${uvBadge}</div>`;
+    const kd = kk==='bvaeb'?d.bva:kk==='svs'?d.svs:null;
+    const ps = kd ? (kd.fix!=null ? fmt(kd.fix)+' fix' : `${kd.pkt||0} Pkt`) : (d.fix!=null ? fmt(d.fix)+' fix' : `${d.pkt||0} Pkt`);
+    const isCustom = (state.dbCustom||[]).some(c => c.code===d.code);
+    const customBadge = isCustom ? `<span class="ct-custom-badge">✎</span>` : '';
+    const wb = d.warn ? `<span class="pill-warn">⚠ SG</span>` : '';
+    const noteText = kk==='bvaeb'&&d.bva&&BVAEB_NOTES[d.bva.code] ? BVAEB_NOTES[d.bva.code]
+      : kk==='svs'&&d.svs&&SVS_NOTES[d.svs.code] ? SVS_NOTES[d.svs.code]
+      : NOTES[d.code];
+    const ni = noteText ? `<i class="ti ti-info-circle note-icon" title="${esc(noteText)}"></i>` : '';
+    const canAdd = !!state.activeId;
+    html += `<div class="ct-row">
+      ${codeDiv}
+      <span style="font-size:13px">${esc(d.name)}${customBadge} ${wb}${ni}</span>
+      ${compCell(d, c1)}
+      ${compCell(d, c2)}
+      <span style="text-align:right;font-size:12px;color:var(--text2)">${ps}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--blue)">${fmt(ksK(d,kk))}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--green)">${fmt(rueckK(d,kk))}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--amber)">${fmt(hon(d))}</span>
+      <span style="text-align:right;font-family:monospace;font-size:13px;color:var(--red)">${fmt(eigenK(d,undefined,kk))}</span>
+      <span></span>
+    </div>`;
+  });
+  document.getElementById('kat-rows').innerHTML = html || '<div style="padding:20px;text-align:center;color:var(--text3)">Keine Positionen gefunden</div>';
+}
+
+function renderModalList() {
+  const q = document.getElementById('modal-search').value.toLowerCase();
+  const cat = document.getElementById('modal-cat').value;
+  const v = state.vorlagen.find(x => x.id===state.activeId);
+  const used = (v?v.positions:[]).map(p => p.code);
+  const fl = getDB().filter(d => {
+    if (cat && d.cat!==cat) return false;
+    if (q && !d.code.toLowerCase().includes(q) && !d.name.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  let html=''; let lastCat='';
+  fl.forEach(d => {
+    if (d.cat!==lastCat) { html+=`<div class="mgrp">${esc(GRP_LABEL[d.cat]||d.cat)}</div>`; lastCat=d.cat; }
+    const inUse = used.includes(d.code);
+    const wb = d.warn ? ` <span class="pill-warn">⚠ SG</span>` : '';
+    const note = NOTES[d.code] ? `<div class="mitem-note">${esc(NOTES[d.code])}</div>` : '';
+    html += `<div class="mitem" onclick="window.addPosToV('${d.code}')">
+      <span style="font-family:monospace;font-size:11px;color:var(--text2);width:44px;flex-shrink:0;padding-top:2px">${esc(d.code)}</span>
+      <span style="flex:1"><span class="mitem-name">${esc(d.name)}${wb}</span>${note}</span>
+      <span style="font-size:12px;color:var(--amber);margin-right:7px;flex-shrink:0;padding-top:2px">${fmt(hon(d))}</span>
+      ${inUse?'<span style="color:var(--green);font-size:13px;flex-shrink:0">✓</span>':'<button class="add-btn" style="flex-shrink:0">+</button>'}
+    </div>`;
+  });
+  document.getElementById('modal-list').innerHTML = html || '<div style="padding:20px;text-align:center;color:var(--text3)">Keine Positionen gefunden</div>';
+}
+
+// ── CRUD ──
+function updateQty(vid, idx, val) {
+  const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
+  v.positions[idx].qty = Math.max(1, parseInt(val)||1);
+  save(); renderSidebar(); renderDetail();
+}
+function updateFaktor(vid, idx, val) {
+  const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
+  const f = parseFloat(val);
+  v.positions[idx].faktor = (!val || isNaN(f) || f <= 0) ? null : f;
+  save(); renderSidebar(); renderDetail();
+}
+function updateUvKat(vid, idx, val) {
+  const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
+  const k = parseInt(val);
+  v.positions[idx].uvKat = (k >= 1 && k <= 5) ? k : null;
+  save(); renderSidebar(); renderDetail();
+}
+function toggleUvMode(vid, idx, code) {
+  const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
+  const p = v.positions[idx];
+  if (p.uvKat) {
+    p.uvKat = null;
+  } else {
+    p.uvKat = UV_DEFAULT_KAT[code] || 1;
+  }
+  save(); renderSidebar(); renderDetail();
+}
+function removePos(vid, idx) {
+  const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
+  v.positions.splice(idx,1); save(); renderSidebar(); renderDetail();
+}
+function updateColor() {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  v.color = document.getElementById('v-color').value; save(); renderSidebar();
+}
+function newVorlage() {
+  const v = {id:uid(), name:'Neue Vorlage', color:COLORS[state.vorlagen.length%COLORS.length], positions:[]};
+  state.vorlagen.push(v); state.activeId=v.id; save(); renderAll();
+  setTimeout(renameVorlage, 80);
+}
+function renameVorlage() {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  document.getElementById('rename-input').value = v.name;
+  document.getElementById('rename-modal').classList.add('open');
+  setTimeout(() => document.getElementById('rename-input').focus(), 50);
+}
+function confirmRename() {
+  const v = state.vorlagen.find(x => x.id===state.activeId);
+  const n = document.getElementById('rename-input').value.trim();
+  if (v && n) { v.name=n; save(); renderAll(); }
+  document.getElementById('rename-modal').classList.remove('open');
+}
+function deleteVorlage() {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  if (!confirm('Vorlage "'+v.name+'" wirklich löschen?')) return;
+  state.vorlagen = state.vorlagen.filter(x => x.id!==state.activeId);
+  state.activeId = state.vorlagen.length ? state.vorlagen[0].id : null;
+  save(); renderAll();
+}
+function openAddModal() {
+  if (!state.activeId) return;
+  document.getElementById('modal-search').value='';
+  document.getElementById('modal-cat').value='';
+  renderModalList();
+  document.getElementById('add-modal').classList.add('open');
+  setTimeout(() => document.getElementById('modal-search').focus(), 50);
+}
+function closeModal() { document.getElementById('add-modal').classList.remove('open'); }
+function addPosToV(code) {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  const e = v.positions.find(p => p.code===code);
+  if (e) { e.qty=(e.qty||1)+1; } else { v.positions.push({code, qty:1}); }
+  save(); renderSidebar(); renderDetail(); renderModalList();
+}
+function quickAdd(code) {
+  if (!state.activeId) { alert('Bitte zuerst eine Vorlage auswählen.'); switchTab('vorlagen'); return; }
+  addPosToV(code);
+}
+let editFreeIdx = null;
+function openFreePosModal(editIdx) {
+  if (!state.activeId) return;
+  editFreeIdx = editIdx ?? null;
+  const v = state.vorlagen.find(x => x.id===state.activeId);
+  document.getElementById('free-pos-title').textContent = editIdx != null ? 'Freie Position bearbeiten' : 'Freie Position hinzufügen';
+  if (editIdx != null && v) {
+    const p = v.positions[editIdx];
+    document.getElementById('free-pos-name').value = p.name || '';
+    document.getElementById('free-pos-betrag').value = p.betrag != null ? p.betrag : '';
+  } else {
+    document.getElementById('free-pos-name').value = '';
+    document.getElementById('free-pos-betrag').value = '';
+  }
+  document.getElementById('free-pos-modal').classList.add('open');
+  setTimeout(() => document.getElementById('free-pos-name').focus(), 50);
+}
+function confirmFreePos() {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  const name = document.getElementById('free-pos-name').value.trim();
+  const betrag = parseFloat(document.getElementById('free-pos-betrag').value);
+  if (!name) { document.getElementById('free-pos-name').focus(); return; }
+  if (isNaN(betrag) || betrag < 0) { document.getElementById('free-pos-betrag').focus(); return; }
+  if (editFreeIdx != null) {
+    v.positions[editFreeIdx].name = name;
+    v.positions[editFreeIdx].betrag = betrag;
+  } else {
+    v.positions.push({ type: 'free', name, betrag, qty: 1 });
+  }
+  document.getElementById('free-pos-modal').classList.remove('open');
+  save(); renderSidebar(); renderDetail();
+}
+function saveSettings() { /* read-only */ }
+function printNote() {
+  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
+  const s = state.settings; const t = sumV(v);
+  const today = new Date().toLocaleDateString('de-AT');
+  document.getElementById('print-header').innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+      <div><strong>${esc(s.name||'Arzt / Ordination')}</strong><br>${esc(s.adr||'')}${s.adr?'<br>':''}${esc(s.tel||'')}</div>
+      <div style="text-align:right"><strong>Honorarnote</strong><br>Datum: ${today}<br>Vorlage: ${esc(v.name)}<br>Kasse: ${state.kasse==='bvaeb'?'BVAEB':state.kasse==='svs'?'SVS':'ÖGK'}</div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px">
+      <thead><tr style="border-bottom:1px solid #000;font-weight:600">
+        <td>Pos.</td><td>Bezeichnung</td><td style="text-align:right">Mge.</td>
+        <td style="text-align:right">Kassensatz</td><td style="text-align:right">Rückerstattung</td>
+        <td style="text-align:right">Honorar</td><td style="text-align:right">Eigenanteil</td>
+      </tr></thead>
+      <tbody>${(v.positions||[]).map(p => {
+        const q = p.qty||1;
+        if (p.type==='free') {
+          const total = fmt((p.betrag||0)*q);
+          return `<tr style="border-bottom:0.5px solid #ddd"><td style="font-family:monospace;font-size:10px">FREI</td><td>${esc(p.name||'')}</td><td style="text-align:right">${q}</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">${total}</td><td style="text-align:right">${total}</td></tr>`;
+        }
+        const dbPos = DB.find(d => d.code===p.code); if (!dbPos) return '';
+        const fak = (p.faktor != null && p.faktor > 0) ? p.faktor : undefined;
+        const pKA = state.kasse==='oegk' || (state.kasse==='bvaeb'&&!!dbPos.bva) || (state.kasse==='svs'&&!!dbPos.svs);
+        return `<tr style="border-bottom:0.5px solid #ddd"><td style="font-family:monospace">${esc(dbPos.code)}</td><td>${esc(dbPos.name)}</td><td style="text-align:right">${q}</td><td style="text-align:right">${pKA?fmt(ksK(dbPos)*q):'—'}</td><td style="text-align:right">${pKA?fmt(rueckK(dbPos)*q):'—'}</td><td style="text-align:right">${fmt(hon(dbPos,fak)*q)}</td><td style="text-align:right">${pKA?fmt(eigenK(dbPos,fak)*q):fmt(hon(dbPos,fak)*q)}</td></tr>`;
+      }).join('')}</tbody>
+      <tfoot><tr style="border-top:2px solid #000;font-weight:600">
+        <td colspan="3">Gesamt</td>
+        <td style="text-align:right">${fmt(t.ks)}</td><td style="text-align:right">${fmt(t.r)}</td>
+        <td style="text-align:right">${fmt(t.h)}</td><td style="text-align:right">${fmt(t.e)}</td>
+      </tr></tfoot>
+    </table>
+    <div style="font-size:10px;color:#888">ÖGK-Punktewert: ${s.pkt.toFixed(2)} €/Pkt · Honorarfaktor: ${s.fak}× · ${state.kasse==='bvaeb'?`BVAEB: Ruck. ${(s.bvaeb||{ruck:90}).ruck}%, Selbstbehalt ${(s.bvaeb||{selbst:10}).selbst}%`:state.kasse==='svs'?`SVS: Ruck. ${(s.svs||{ruck:80}).ruck}%`:`ÖGK: Ruck. ${s.ruck}%`} · Honorartarif Vorarlberg 2025</div>`;
+  window.print();
+}
+function switchTab(tab) {
+  ['vorlagen','katalog','settings'].forEach(t => {
+    const el = document.getElementById('view-'+t);
+    el.style.display = t===tab ? 'flex' : 'none';
+    if (t==='katalog' && t===tab) el.style.flexDirection='column';
+    if (t==='settings' && t===tab) el.style.flexDirection='row';
+  });
+  document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.tab===tab));
+  if (tab==='katalog') { updateKatCatFilter(state.katKasse||'oegk'); renderKatalog(); }
+}
+
+// ── START: Leseansicht direkt ohne Login ──
+document.getElementById('loading-screen').style.display = 'none';
+document.getElementById('app').style.display = 'flex';
+populateCatSelects();
+load();
+
+// ── EXPOSE TO WINDOW ──
+window.selectV       = selectV;
+window.newVorlage    = newVorlage;
+window.renameVorlage = renameVorlage;
+window.confirmRename = confirmRename;
+window.deleteVorlage = deleteVorlage;
+window.updateColor   = updateColor;
+window.updateQty     = updateQty;
+window.updateFaktor  = updateFaktor;
+window.updateUvKat   = updateUvKat;
+window.toggleUvMode  = toggleUvMode;
+window.removePos     = removePos;
+window.openAddModal    = openAddModal;
+window.closeModal      = closeModal;
+window.openFreePosModal = openFreePosModal;
+window.confirmFreePos  = confirmFreePos;
+window.addPosToV     = addPosToV;
+window.quickAdd      = quickAdd;
+window.renderKatalog = renderKatalog;
+window.renderModalList = renderModalList;
+window.saveSettings  = saveSettings;
+window.resetDefaults = resetDefaults;
+window.printNote     = printNote;
+window.setKasse      = setKasse;
+window.setKatKasse   = setKatKasse;
+window.switchTab     = switchTab;
+
+// ── POSITIONS-EDITOR ──
+let peEditCode = null;
+
+function populatePeCat() {
+  document.getElementById('pe-cat').innerHTML =
+    GRP_ORDER.map(g => `<option value="${g}">${GRP_LABEL[g]||g}</option>`).join('');
+  const bvaKeys = GRP_ORDER.filter(g => g in BVA_CAT_LABEL);
+  document.getElementById('pe-bva-cat').innerHTML =
+    '<option value="">— wie ÖGK-Kategorie —</option>' +
+    bvaKeys.map(g => `<option value="${g}">${BVA_CAT_LABEL[g]}</option>`).join('');
+  const svsKeys = GRP_ORDER.filter(g => g in SVS_CAT_LABEL);
+  document.getElementById('pe-svs-cat').innerHTML =
+    '<option value="">— wie ÖGK-Kategorie —</option>' +
+    svsKeys.map(g => `<option value="${g}">${SVS_CAT_LABEL[g]}</option>`).join('');
+}
+
+function openPosNew() {
+  peEditCode = null;
+  populatePeCat();
+  document.getElementById('pos-edit-title').childNodes[0].textContent = 'Neue Position anlegen';
+  document.getElementById('pe-delete-btn').style.display = 'none';
+  resetPosForm();
+  document.getElementById('pos-edit-modal').classList.add('open');
+}
+
+function openPosEdit(code) {
+  const pos = getDB().find(d => d.code===code);
+  if (!pos) return;
+  peEditCode = code;
+  populatePeCat();
+  document.getElementById('pos-edit-title').childNodes[0].textContent = `Position bearbeiten: ${code}`;
+  const isCustom = (state.dbCustom||[]).some(c => c.code===code);
+  const isBuiltin = DB.some(d => d.code===code);
+  const delBtn = document.getElementById('pe-delete-btn');
+  delBtn.style.display = isCustom ? '' : 'none';
+  delBtn.textContent = (isCustom && isBuiltin) ? 'Änderungen zurücksetzen' : 'Position löschen';
+  fillPosForm(pos);
+  document.getElementById('pos-edit-modal').classList.add('open');
+}
+
+function closePosEdit() {
+  document.getElementById('pos-edit-modal').classList.remove('open');
+}
+
+function resetPosForm() {
+  document.getElementById('pe-code').value = '';
+  document.getElementById('pe-name').value = '';
+  document.getElementById('pe-cat').value = GRP_ORDER[0];
+  document.querySelector('[name="pe-oegk-type"][value="pkt"]').checked = true;
+  updatePeOegkType('pkt');
+  document.getElementById('pe-pkt').value = '';
+  document.getElementById('pe-fix').value = '';
+  document.getElementById('pe-bva-aktiv').checked = false;
+  updatePeBvaFields(false);
+  document.getElementById('pe-bva-cat').value = '';
+  document.getElementById('pe-bva-code').value = '';
+  document.querySelector('[name="pe-bva-type"][value="pkt"]').checked = true;
+  updatePeBvaType('pkt');
+  document.getElementById('pe-bva-pkt').value = '';
+  document.getElementById('pe-bva-fix').value = '';
+  document.getElementById('pe-bva-grp').value = '2';
+  document.getElementById('pe-svs-aktiv').checked = false;
+  updatePeSvsFields(false);
+  document.getElementById('pe-svs-cat').value = '';
+  document.getElementById('pe-svs-code').value = '';
+  document.querySelector('[name="pe-svs-type"][value="pkt"]').checked = true;
+  updatePeSvsType('pkt');
+  document.getElementById('pe-svs-pkt').value = '';
+  document.getElementById('pe-svs-fix').value = '';
+  document.getElementById('pe-svs-grp').value = '1';
+  document.getElementById('pe-warn').checked = false;
+  document.getElementById('pe-uvkat').value = '';
+  document.getElementById('pe-kasseonly').value = '';
+}
+
+function fillPosForm(pos) {
+  document.getElementById('pe-code').value = pos.code;
+  document.getElementById('pe-name').value = pos.name;
+  document.getElementById('pe-cat').value = pos.cat;
+  const ko = pos.kasseOnly || [];
+  if (ko.length && !ko.includes('oegk')) {
+    document.querySelector('[name="pe-oegk-type"][value="none"]').checked = true;
+    updatePeOegkType('none');
+  } else if (pos.fix != null) {
+    document.querySelector('[name="pe-oegk-type"][value="fix"]').checked = true;
+    document.getElementById('pe-fix').value = pos.fix;
+    updatePeOegkType('fix');
+  } else {
+    document.querySelector('[name="pe-oegk-type"][value="pkt"]').checked = true;
+    document.getElementById('pe-pkt').value = pos.pkt ?? '';
+    updatePeOegkType('pkt');
+  }
+  if (pos.bva) {
+    document.getElementById('pe-bva-aktiv').checked = true;
+    document.getElementById('pe-bva-cat').value  = pos.bva.cat||'';
+    document.getElementById('pe-bva-code').value = pos.bva.code||'';
+    if (pos.bva.fix != null) {
+      document.querySelector('[name="pe-bva-type"][value="fix"]').checked = true;
+      document.getElementById('pe-bva-fix').value = pos.bva.fix;
+      updatePeBvaType('fix');
+    } else {
+      document.querySelector('[name="pe-bva-type"][value="pkt"]').checked = true;
+      document.getElementById('pe-bva-pkt').value = pos.bva.pkt ?? '';
+      const pw = pos.bva.pktWert;
+      document.getElementById('pe-bva-grp').value = pw===1.3567?'1':pw===1.2194?'2':pw===1.1104?'3':pw===1.2892?'4':'2';
+      updatePeBvaType('pkt');
+    }
+    updatePeBvaFields(true);
+  } else {
+    document.getElementById('pe-bva-aktiv').checked = false;
+    updatePeBvaFields(false);
+  }
+  if (pos.svs) {
+    document.getElementById('pe-svs-aktiv').checked = true;
+    document.getElementById('pe-svs-cat').value  = pos.svs.cat||'';
+    document.getElementById('pe-svs-code').value = pos.svs.code||'';
+    if (pos.svs.fix != null) {
+      document.querySelector('[name="pe-svs-type"][value="fix"]').checked = true;
+      document.getElementById('pe-svs-fix').value = pos.svs.fix;
+      updatePeSvsType('fix');
+    } else {
+      document.querySelector('[name="pe-svs-type"][value="pkt"]').checked = true;
+      document.getElementById('pe-svs-pkt').value = pos.svs.pkt ?? '';
+      const pw = pos.svs.pktWert;
+      document.getElementById('pe-svs-grp').value = pw===0.7989?'1':pw===0.5480?'2':pw===0.5438?'3':'1';
+      updatePeSvsType('pkt');
+    }
+    updatePeSvsFields(true);
+  } else {
+    document.getElementById('pe-svs-aktiv').checked = false;
+    updatePeSvsFields(false);
+  }
+  document.getElementById('pe-warn').checked = !!pos.warn;
+  const uvk = pos._uvKat ?? UV_DEFAULT_KAT[pos.code];
+  document.getElementById('pe-uvkat').value = uvk ? String(uvk) : '';
+  if (ko.length>1 && !ko.includes('oegk')) document.getElementById('pe-kasseonly').value = 'noegk';
+  else if (ko.length===1 && ko[0]==='svs') document.getElementById('pe-kasseonly').value = 'svs';
+  else if (ko.length===1 && ko[0]==='bvaeb') document.getElementById('pe-kasseonly').value = 'bvaeb';
+  else document.getElementById('pe-kasseonly').value = '';
+}
+
+function updatePeOegkType(v) {
+  document.getElementById('pe-oegk-pkt-row').style.display = v==='pkt' ? 'flex' : 'none';
+  document.getElementById('pe-oegk-fix-row').style.display = v==='fix' ? 'flex' : 'none';
+}
+function updatePeBvaFields(show) { document.getElementById('pe-bva-fields').style.display = show ? '' : 'none'; }
+function updatePeSvsFields(show) { document.getElementById('pe-svs-fields').style.display = show ? '' : 'none'; }
+function updatePeBvaType(v) {
+  document.getElementById('pe-bva-pkt-row').style.display = v==='pkt' ? 'flex' : 'none';
+  document.getElementById('pe-bva-fix-row').style.display = v==='fix' ? 'flex' : 'none';
+}
+function updatePeSvsType(v) {
+  document.getElementById('pe-svs-pkt-row').style.display = v==='pkt' ? 'flex' : 'none';
+  document.getElementById('pe-svs-fix-row').style.display = v==='fix' ? 'flex' : 'none';
+}
+
+function savePosEdit() {
+  const code = document.getElementById('pe-code').value.trim();
+  const name = document.getElementById('pe-name').value.trim();
+  const cat  = document.getElementById('pe-cat').value;
+  if (!code || !name || !cat) { alert('Code, Bezeichnung und Kategorie sind Pflichtfelder.'); return; }
+  if (!peEditCode && (state.dbCustom||[]).some(c => c.code===code) && !DB.some(d => d.code===code)) {
+    alert('Ein benutzerdefinierter Eintrag mit diesem Code existiert bereits.'); return;
+  }
+  const oegkType = document.querySelector('[name="pe-oegk-type"]:checked').value;
+  let pkt = null, fix = null;
+  if (oegkType==='pkt') pkt = parseFloat(document.getElementById('pe-pkt').value)||0;
+  else if (oegkType==='fix') fix = parseFloat(document.getElementById('pe-fix').value)||0;
+  let bva = null;
+  if (document.getElementById('pe-bva-aktiv').checked) {
+    const bvaCode = document.getElementById('pe-bva-code').value.trim();
+    const bvaType = document.querySelector('[name="pe-bva-type"]:checked').value;
+    const bvaPwMap = {1:1.3567,2:1.2194,3:1.1104,4:1.2892};
+    const bvaCat = document.getElementById('pe-bva-cat').value;
+    if (bvaType==='fix') bva = {code:bvaCode, fix:parseFloat(document.getElementById('pe-bva-fix').value)||0};
+    else bva = {code:bvaCode, pkt:parseFloat(document.getElementById('pe-bva-pkt').value)||0, pktWert:bvaPwMap[document.getElementById('pe-bva-grp').value]||1.2194};
+    if (bvaCat) bva.cat = bvaCat;
+  }
+  let svs = null;
+  if (document.getElementById('pe-svs-aktiv').checked) {
+    const svsCode = document.getElementById('pe-svs-code').value.trim();
+    const svsType = document.querySelector('[name="pe-svs-type"]:checked').value;
+    const svsPwMap = {1:0.7989,2:0.5480,3:0.5438};
+    const svsCat = document.getElementById('pe-svs-cat').value;
+    if (svsType==='fix') svs = {code:svsCode, fix:parseFloat(document.getElementById('pe-svs-fix').value)||0};
+    else svs = {code:svsCode, pkt:parseFloat(document.getElementById('pe-svs-pkt').value)||0, pktWert:svsPwMap[document.getElementById('pe-svs-grp').value]||0.7989};
+    if (svsCat) svs.cat = svsCat;
+  }
+  const koVal = document.getElementById('pe-kasseonly').value;
+  let kasseOnly = null;
+  if (oegkType==='none'||koVal==='noegk') kasseOnly = ['bvaeb','svs'];
+  else if (koVal==='svs') kasseOnly = ['svs'];
+  else if (koVal==='bvaeb') kasseOnly = ['bvaeb'];
+  const pos = {code, name, cat, pkt, fix};
+  if (kasseOnly) pos.kasseOnly = kasseOnly;
+  if (bva) pos.bva = bva;
+  if (svs) pos.svs = svs;
+  if (document.getElementById('pe-warn').checked) pos.warn = true;
+  const uvkVal = document.getElementById('pe-uvkat').value;
+  if (uvkVal) pos._uvKat = parseInt(uvkVal);
+  if (!state.dbCustom) state.dbCustom = [];
+  const existing = state.dbCustom.findIndex(c => c.code===(peEditCode||code));
+  if (existing>=0) state.dbCustom[existing] = pos;
+  else state.dbCustom.push(pos);
+  save();
+  closePosEdit();
+  renderAll();
+}
+
+function deletePosCustom() {
+  if (!peEditCode) return;
+  const isBuiltin = DB.some(d => d.code===peEditCode);
+  const msg = isBuiltin ? `Änderungen an Position ${peEditCode} zurücksetzen?` : `Position ${peEditCode} endgültig löschen?`;
+  if (!confirm(msg)) return;
+  state.dbCustom = (state.dbCustom||[]).filter(c => c.code!==peEditCode);
+  save();
+  closePosEdit();
+  renderAll();
+}
+
+window.openPosNew    = openPosNew;
+window.openPosEdit   = openPosEdit;
+window.closePosEdit  = closePosEdit;
+window.savePosEdit   = savePosEdit;
+window.deletePosCustom = deletePosCustom;
+window.updatePeOegkType = updatePeOegkType;
+window.updatePeBvaFields = updatePeBvaFields;
+window.updatePeSvsFields = updatePeSvsFields;
+window.updatePeBvaType = updatePeBvaType;
+window.updatePeSvsType = updatePeSvsType;
+
+// ── EVENT LISTENERS ──
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+document.getElementById('rename-input').addEventListener('keydown', e => {
+  if (e.key==='Enter') confirmRename();
+  if (e.key==='Escape') document.getElementById('rename-modal').classList.remove('open');
+});
+['free-pos-name','free-pos-betrag'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key==='Enter') confirmFreePos();
+    if (e.key==='Escape') document.getElementById('free-pos-modal').classList.remove('open');
+  });
+});
+
+// ── Sidebar resize ──
+(function() {
+  const sidebar = document.getElementById('sidebar');
+  const handle  = document.getElementById('sidebar-resize');
+  const MIN = 160, MAX = 480;
+  const saved = parseInt(localStorage.getItem('sidebarW'));
+  if (saved && saved >= MIN && saved <= MAX) sidebar.style.width = saved + 'px';
+  let startX, startW;
+  handle.addEventListener('mousedown', e => {
+    e.preventDefault();
+    startX = e.clientX;
+    startW = sidebar.offsetWidth;
+    handle.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  });
+  document.addEventListener('mousemove', e => {
+    if (!handle.classList.contains('dragging')) return;
+    const w = Math.min(MAX, Math.max(MIN, startW + e.clientX - startX));
+    sidebar.style.width = w + 'px';
+  });
+  document.addEventListener('mouseup', () => {
+    if (!handle.classList.contains('dragging')) return;
+    handle.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    localStorage.setItem('sidebarW', sidebar.offsetWidth);
+  });
+})();
+</script>
+
+<!-- ── Positions-Editor Modal ── -->
+<div class="modal-bg pe-modal" id="pos-edit-modal" onclick="if(event.target===this)window.closePosEdit()">
+  <div class="modal" style="width:560px;max-height:90vh;overflow-y:auto">
+    <h3 id="pos-edit-title" style="display:flex;justify-content:space-between;align-items:center">
+      Position bearbeiten
+      <button class="btn" onclick="window.closePosEdit()" style="font-size:18px;line-height:1;padding:2px 7px">×</button>
+    </h3>
+
+    <!-- Code + Name -->
+    <div style="display:grid;grid-template-columns:120px 1fr;gap:8px;margin-bottom:10px">
+      <div>
+        <div class="pe-label">Code <span style="color:var(--red)">*</span></div>
+        <input class="field-in" id="pe-code" type="text" placeholder="z.B. 10" style="font-family:monospace">
+      </div>
+      <div>
+        <div class="pe-label">Bezeichnung <span style="color:var(--red)">*</span></div>
+        <input class="field-in" id="pe-name" type="text" placeholder="Positionsname">
+      </div>
+    </div>
+
+    <!-- ÖGK -->
+    <div class="pe-section">
+      <div class="pe-section-head" style="color:var(--blue)">ÖGK</div>
+      <div style="margin-bottom:8px">
+        <div class="pe-label">ÖGK-Kategorie <span style="color:var(--red)">*</span></div>
+        <select class="pe-grp-sel" id="pe-cat" style="font-size:12px"></select>
+      </div>
+      <div class="pe-radio">
+        <label><input type="radio" name="pe-oegk-type" value="pkt" onchange="window.updatePeOegkType('pkt')"> Punkte × Punktewert</label>
+        <label><input type="radio" name="pe-oegk-type" value="fix" onchange="window.updatePeOegkType('fix')"> Fixbetrag €</label>
+        <label><input type="radio" name="pe-oegk-type" value="none" onchange="window.updatePeOegkType('none')"> Kein ÖGK</label>
+      </div>
+      <div id="pe-oegk-pkt-row" style="display:flex;align-items:center;gap:6px">
+        <input class="field-in" id="pe-pkt" type="number" placeholder="Punkte" step="0.01" min="0" style="width:100px">
+        <span class="pe-label" style="margin:0">Pkt</span>
+      </div>
+      <div id="pe-oegk-fix-row" style="display:none;align-items:center;gap:6px">
+        <input class="field-in" id="pe-fix" type="number" placeholder="0.00" step="0.01" min="0" style="width:100px">
+        <span class="pe-label" style="margin:0">€ fix</span>
+      </div>
+    </div>
+
+    <!-- BVAEB -->
+    <div class="pe-section">
+      <div class="pe-section-head" style="color:var(--violet);display:flex;align-items:center;gap:8px;margin-bottom:0">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:600;font-size:12px">
+          <input type="checkbox" id="pe-bva-aktiv" onchange="window.updatePeBvaFields(this.checked)">
+          BVAEB
+        </label>
+      </div>
+      <div id="pe-bva-fields" style="display:none;margin-top:10px">
+        <div style="margin-bottom:8px">
+          <div class="pe-label">BVA-Kapitel (Kategorie)</div>
+          <select class="pe-grp-sel" id="pe-bva-cat"></select>
+        </div>
+        <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <div class="pe-label">BVA-Code</div>
+            <input class="field-in" id="pe-bva-code" type="text" placeholder="z.B. A1" style="font-family:monospace">
+          </div>
+          <div>
+            <div class="pe-label">Punktewert-Gruppe</div>
+            <select class="pe-grp-sel" id="pe-bva-grp">
+              <option value="1">Grundleistungen AM (1,3567)</option>
+              <option value="2" selected>Allgemeine Leistungen (1,2194)</option>
+              <option value="3">Röntgen (1,1104)</option>
+              <option value="4">Labor (1,2892)</option>
+            </select>
+          </div>
+        </div>
+        <div class="pe-radio">
+          <label><input type="radio" name="pe-bva-type" value="pkt" onchange="window.updatePeBvaType('pkt')"> Punkte</label>
+          <label><input type="radio" name="pe-bva-type" value="fix" onchange="window.updatePeBvaType('fix')"> Fixbetrag €</label>
+        </div>
+        <div id="pe-bva-pkt-row" style="display:flex;align-items:center;gap:6px">
+          <input class="field-in" id="pe-bva-pkt" type="number" placeholder="Punkte" step="0.01" min="0" style="width:100px">
+          <span class="pe-label" style="margin:0">Pkt (× eingestellter Gruppenwert)</span>
+        </div>
+        <div id="pe-bva-fix-row" style="display:none;align-items:center;gap:6px">
+          <input class="field-in" id="pe-bva-fix" type="number" placeholder="0.00" step="0.01" min="0" style="width:100px">
+          <span class="pe-label" style="margin:0">€ fix</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SVS -->
+    <div class="pe-section">
+      <div class="pe-section-head" style="color:var(--green);display:flex;align-items:center;gap:8px;margin-bottom:0">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:600;font-size:12px">
+          <input type="checkbox" id="pe-svs-aktiv" onchange="window.updatePeSvsFields(this.checked)">
+          SVS
+        </label>
+      </div>
+      <div id="pe-svs-fields" style="display:none;margin-top:10px">
+        <div style="margin-bottom:8px">
+          <div class="pe-label">SVS-Kapitel (Kategorie)</div>
+          <select class="pe-grp-sel" id="pe-svs-cat"></select>
+        </div>
+        <div style="display:grid;grid-template-columns:110px 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <div class="pe-label">SVS-Code</div>
+            <input class="field-in" id="pe-svs-code" type="text" placeholder="z.B. A1" style="font-family:monospace">
+          </div>
+          <div>
+            <div class="pe-label">Punktewert-Gruppe</div>
+            <select class="pe-grp-sel" id="pe-svs-grp">
+              <option value="1" selected>Allgemeine Leistungen (0,7989)</option>
+              <option value="2">Sonographie (0,5480)</option>
+              <option value="3">Röntgen (0,5438)</option>
+            </select>
+          </div>
+        </div>
+        <div class="pe-radio">
+          <label><input type="radio" name="pe-svs-type" value="pkt" onchange="window.updatePeSvsType('pkt')"> Punkte</label>
+          <label><input type="radio" name="pe-svs-type" value="fix" onchange="window.updatePeSvsType('fix')"> Fixbetrag €</label>
+        </div>
+        <div id="pe-svs-pkt-row" style="display:flex;align-items:center;gap:6px">
+          <input class="field-in" id="pe-svs-pkt" type="number" placeholder="Punkte" step="0.01" min="0" style="width:100px">
+          <span class="pe-label" style="margin:0">Pkt (× eingestellter Gruppenwert)</span>
+        </div>
+        <div id="pe-svs-fix-row" style="display:none;align-items:center;gap:6px">
+          <input class="field-in" id="pe-svs-fix" type="number" placeholder="0.00" step="0.01" min="0" style="width:100px">
+          <span class="pe-label" style="margin:0">€ fix</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zusatzoptionen -->
+    <div class="pe-section">
+      <div class="pe-section-head">Zusatzoptionen</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <div class="pe-label">UV-Unfallversicherungs-Kategorie</div>
+          <select class="pe-grp-sel" id="pe-uvkat">
+            <option value="">— keine —</option>
+            <option value="1">K1 – Grundleistung / Gespräch</option>
+            <option value="2">K2 – Techn. (großer Zeitaufwand)</option>
+            <option value="3">K3 – Techn. (geringer Zeitaufwand)</option>
+            <option value="4">K4 – Röntgenunkosten</option>
+            <option value="5">K5 – Laborleistungen</option>
+          </select>
+        </div>
+        <div>
+          <div class="pe-label">Kasseneinschränkung</div>
+          <select class="pe-grp-sel" id="pe-kasseonly">
+            <option value="">Alle Kassen (ÖGK + BVA + SVS)</option>
+            <option value="noegk">Kein ÖGK (nur BVA + SVS)</option>
+            <option value="bvaeb">Nur BVAEB</option>
+            <option value="svs">Nur SVS</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+          <input type="checkbox" id="pe-warn">
+          Warnfähnchen ⚠ anzeigen (Sondergenehmigung / Diplom erforderlich)
+        </label>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-actions" style="justify-content:space-between">
+      <button class="btn-danger" id="pe-delete-btn" onclick="window.deletePosCustom()" style="display:none">Position löschen</button>
+      <div style="display:flex;gap:8px;margin-left:auto">
+        <button class="btn" onclick="window.closePosEdit()">Abbrechen</button>
+        <button class="btn" onclick="window.savePosEdit()" style="background:var(--blue);color:#fff;border-color:var(--blue)">Speichern</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
