@@ -1236,7 +1236,6 @@ function renderDetail() {
   dw.style.display = v?'flex':'none';
   if (!v) return;
   document.getElementById('v-title').textContent = v.name;
-  document.getElementById('v-color').value = v.color||'#185FA5';
   const t = sumV(v);
   const kL = state.kasse==='bvaeb'?'BVAEB-Kassensatz':state.kasse==='svs'?'SVS-Kassensatz':'Kassensatz';
   const rL = state.kasse==='bvaeb'?'BVAEB-Rückerstattung':state.kasse==='svs'?'SVS-Rückerstattung':'Rückerstattung';
@@ -1475,10 +1474,7 @@ function removePos(vid, idx) {
   const v = state.vorlagen.find(x => x.id===vid); if (!v) return;
   v.positions.splice(idx,1); save(); renderSidebar(); renderDetail();
 }
-function updateColor() {
-  const v = state.vorlagen.find(x => x.id===state.activeId); if (!v) return;
-  v.color = document.getElementById('v-color').value; save(); renderSidebar();
-}
+function updateColor() { /* read-only */ }
 function newVorlage() {
   const v = {id:uid(), name:'Neue Vorlage', color:COLORS[state.vorlagen.length%COLORS.length], positions:[]};
   state.vorlagen.push(v); state.activeId=v.id; save(); renderAll();
