@@ -1219,11 +1219,43 @@ function initDefaults() {
     {id:uid(), name:'Eigenblutinfiltration [UV]',             color:'#1E40AF', isUV:true, positions:[pu('11'), pu('32'), pu('100'), pu('114'), pu('230')]},
     {id:uid(), name:'US-gesteuerte Infiltration [UV]',        color:'#065F46', isUV:true, positions:[pu('11'), pu('32'), pu('890'), pu('125'), pu('230')]},
     {id:uid(), name:'Blutabnahme [UV]',                       color:'#374151', isUV:true, positions:[pu('100'), pu('230')]},
+    // ── Ärztliche Zuweisung – Normal ──────────────────────────────
+    {id:uid(), name:'Erstuntersuchung (ärztl. Zuweisung)',                       color:'#0369A1', positions:[p('18'), p('32'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono (ärztl. Zuweisung)',                color:'#0369A1', positions:[p('18'), p('32'), p('890'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen (ärztl. Zuweisung)',             color:'#0369A1', positions:[p('18'), p('32'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen (ärztl. Zuweisung)',      color:'#0369A1', positions:[p('18'), p('32'), p('890'), p('812',2), p('835'), p('836'), p('230')]},
+    // ── KH-Zuweisung Erstbesuch – Normal ──────────────────────────
+    {id:uid(), name:'Erstuntersuchung (KH-Zuweisung)',                           color:'#185FA5', positions:[p('18EZ'), p('32'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono (KH-Zuweisung)',                    color:'#185FA5', positions:[p('18EZ'), p('32'), p('890'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen (KH-Zuweisung)',                 color:'#185FA5', positions:[p('18EZ'), p('32'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen (KH-Zuweisung)',          color:'#185FA5', positions:[p('18EZ'), p('32'), p('890'), p('812',2), p('835'), p('836'), p('230')]},
+    // ── KH-Zuweisung Folgebesuch – Normal ─────────────────────────
+    {id:uid(), name:'Kontrolle (KH-Zuweisung)',                                  color:'#1D9E75', positions:[p('18NZ'), p('32'), p('230')]},
+    {id:uid(), name:'Kontrolle + Sono (KH-Zuweisung)',                           color:'#1D9E75', positions:[p('18NZ'), p('32'), p('890'), p('230')]},
+    {id:uid(), name:'Kontrolle + Röntgen (KH-Zuweisung)',                        color:'#1D9E75', positions:[p('18NZ'), p('32'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Kontrolle + Sono + Röntgen (KH-Zuweisung)',                 color:'#1D9E75', positions:[p('18NZ'), p('32'), p('890'), p('812',2), p('835'), p('836'), p('230')]},
+    // ── Ärztliche Zuweisung – UV ──────────────────────────────────
+    {id:uid(), name:'Erstuntersuchung (ärztl. Zuweisung) [UV]',                  color:'#991B1B', isUV:true, positions:[pu('18'), pu('32'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono (ärztl. Zuweisung) [UV]',           color:'#991B1B', isUV:true, positions:[pu('18'), pu('32'), pu('890'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen (ärztl. Zuweisung) [UV]',        color:'#991B1B', isUV:true, positions:[pu('18'), pu('32'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen (ärztl. Zuweisung) [UV]', color:'#991B1B', isUV:true, positions:[pu('18'), pu('32'), pu('890'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    // ── KH-Zuweisung Erstbesuch – UV ──────────────────────────────
+    {id:uid(), name:'Erstuntersuchung (KH-Zuweisung) [UV]',                      color:'#A32D2D', isUV:true, positions:[pu('18EZ'), pu('32'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono (KH-Zuweisung) [UV]',               color:'#A32D2D', isUV:true, positions:[pu('18EZ'), pu('32'), pu('890'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen (KH-Zuweisung) [UV]',            color:'#A32D2D', isUV:true, positions:[pu('18EZ'), pu('32'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen (KH-Zuweisung) [UV]',     color:'#A32D2D', isUV:true, positions:[pu('18EZ'), pu('32'), pu('890'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    // ── KH-Zuweisung Folgebesuch – UV ─────────────────────────────
+    {id:uid(), name:'Kontrolle (KH-Zuweisung) [UV]',                             color:'#7C3AED', isUV:true, positions:[pu('18NZ'), pu('32'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Sono (KH-Zuweisung) [UV]',                      color:'#7C3AED', isUV:true, positions:[pu('18NZ'), pu('32'), pu('890'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Röntgen (KH-Zuweisung) [UV]',                   color:'#7C3AED', isUV:true, positions:[pu('18NZ'), pu('32'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Sono + Röntgen (KH-Zuweisung) [UV]',            color:'#7C3AED', isUV:true, positions:[pu('18NZ'), pu('32'), pu('890'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    // ── Konsilium ─────────────────────────────────────────────────
+    {id:uid(), name:'Konsilium',                                                  color:'#5F5E5A', positions:[p('40'), p('41'), p('42'), p('43'), p('44')]},
   ];
 }
 
 async function resetDefaults() {
-  if (!confirm('Alle bestehenden Vorlagen löschen und durch die 24 Standard-Vorlagen ersetzen?')) return;
+  if (!confirm('Alle bestehenden Vorlagen löschen und durch die 49 Standard-Vorlagen ersetzen?')) return;
   initDefaults();
   await setDoc(doc(db, 'users', currentUser.uid), { vorlagen: state.vorlagen, settings: state.settings });
   renderAll();
@@ -1785,6 +1817,42 @@ window.setKatKasse   = setKatKasse;
 window.switchTab     = switchTab;
 window.signIn        = signIn;
 window.logOut        = logOut;
+window._addNeueVorlagen = function() {
+  const p   = (code, qty)      => ({code, qty: qty||1});
+  const pUV = (code, qty, kat) => ({code, qty: qty||1, uvKat: kat||null});
+  const pu  = (code, qty)      => pUV(code, qty, UV_DEFAULT_KAT[code]||null);
+  const neu = [
+    {id:uid(), name:'Erstuntersuchung (ärztl. Zuweisung)',                       color:'#0369A1', positions:[p('18'), p('32'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono (ärztl. Zuweisung)',                color:'#0369A1', positions:[p('18'), p('32'), p('890'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen (ärztl. Zuweisung)',             color:'#0369A1', positions:[p('18'), p('32'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen (ärztl. Zuweisung)',      color:'#0369A1', positions:[p('18'), p('32'), p('890'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung (KH-Zuweisung)',                           color:'#185FA5', positions:[p('18EZ'), p('32'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono (KH-Zuweisung)',                    color:'#185FA5', positions:[p('18EZ'), p('32'), p('890'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen (KH-Zuweisung)',                 color:'#185FA5', positions:[p('18EZ'), p('32'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen (KH-Zuweisung)',          color:'#185FA5', positions:[p('18EZ'), p('32'), p('890'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Kontrolle (KH-Zuweisung)',                                  color:'#1D9E75', positions:[p('18NZ'), p('32'), p('230')]},
+    {id:uid(), name:'Kontrolle + Sono (KH-Zuweisung)',                           color:'#1D9E75', positions:[p('18NZ'), p('32'), p('890'), p('230')]},
+    {id:uid(), name:'Kontrolle + Röntgen (KH-Zuweisung)',                        color:'#1D9E75', positions:[p('18NZ'), p('32'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Kontrolle + Sono + Röntgen (KH-Zuweisung)',                 color:'#1D9E75', positions:[p('18NZ'), p('32'), p('890'), p('812',2), p('835'), p('836'), p('230')]},
+    {id:uid(), name:'Erstuntersuchung (ärztl. Zuweisung) [UV]',                  color:'#991B1B', isUV:true, positions:[pu('18'), pu('32'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono (ärztl. Zuweisung) [UV]',           color:'#991B1B', isUV:true, positions:[pu('18'), pu('32'), pu('890'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen (ärztl. Zuweisung) [UV]',        color:'#991B1B', isUV:true, positions:[pu('18'), pu('32'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen (ärztl. Zuweisung) [UV]', color:'#991B1B', isUV:true, positions:[pu('18'), pu('32'), pu('890'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung (KH-Zuweisung) [UV]',                      color:'#A32D2D', isUV:true, positions:[pu('18EZ'), pu('32'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono (KH-Zuweisung) [UV]',               color:'#A32D2D', isUV:true, positions:[pu('18EZ'), pu('32'), pu('890'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Röntgen (KH-Zuweisung) [UV]',            color:'#A32D2D', isUV:true, positions:[pu('18EZ'), pu('32'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Erstuntersuchung + Sono + Röntgen (KH-Zuweisung) [UV]',     color:'#A32D2D', isUV:true, positions:[pu('18EZ'), pu('32'), pu('890'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Kontrolle (KH-Zuweisung) [UV]',                             color:'#7C3AED', isUV:true, positions:[pu('18NZ'), pu('32'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Sono (KH-Zuweisung) [UV]',                      color:'#7C3AED', isUV:true, positions:[pu('18NZ'), pu('32'), pu('890'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Röntgen (KH-Zuweisung) [UV]',                   color:'#7C3AED', isUV:true, positions:[pu('18NZ'), pu('32'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Kontrolle + Sono + Röntgen (KH-Zuweisung) [UV]',            color:'#7C3AED', isUV:true, positions:[pu('18NZ'), pu('32'), pu('890'), pu('812',2), pu('835'), pu('836'), pu('230')]},
+    {id:uid(), name:'Konsilium',                                                  color:'#5F5E5A', positions:[p('40'), p('41'), p('42'), p('43'), p('44')]},
+  ];
+  state.vorlagen.push(...neu);
+  save();
+  renderAll();
+  console.log('✓ 25 neue Vorlagen hinzugefügt und gespeichert.');
+};
 window.exportData    = function() {
   const data = { vorlagen: state.vorlagen, settings: state.settings, dbCustom: state.dbCustom || [] };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
