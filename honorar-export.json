@@ -1,47 +1,46 @@
 {
   "vorlagen": [
     {
-      "name": "Erstuntersuchung",
       "id": "sxngdui",
+      "color": "#185FA5",
       "positions": [
         {
-          "faktor": 2.5,
           "code": "10",
+          "faktor": 2.5,
           "uvKat": null,
           "qty": 1
         },
         {
-          "qty": 1,
-          "code": "32",
-          "faktor": 2.5
-        },
-        {
           "faktor": 2.5,
-          "code": "230",
+          "code": "32",
           "qty": 1
         },
         {
           "qty": 1,
+          "faktor": 2.5,
+          "code": "230"
+        },
+        {
           "code": "239",
+          "qty": 1,
           "uvKat": null
         },
         {
           "type": "free",
-          "name": "Mein Honorar",
           "betrag": 12.84,
+          "name": "Mein Honorar",
           "qty": 1
         }
       ],
-      "color": "#185FA5"
+      "name": "Erstuntersuchung"
     },
     {
       "id": "jsy3crf",
-      "name": "Erstuntersuchung + Sono",
       "color": "#185FA5",
       "positions": [
         {
-          "qty": 1,
-          "code": "10"
+          "code": "10",
+          "qty": 1
         },
         {
           "code": "32",
@@ -56,31 +55,31 @@
           "qty": 1
         },
         {
-          "qty": 1,
-          "type": "free",
           "betrag": 16.76,
+          "type": "free",
+          "qty": 1,
           "name": "Mein Honorar"
         }
-      ]
+      ],
+      "name": "Erstuntersuchung + Sono"
     },
     {
-      "color": "#185FA5",
       "positions": [
         {
-          "qty": 1,
-          "code": "10"
-        },
-        {
-          "code": "32",
+          "code": "10",
           "qty": 1
         },
         {
-          "qty": 2,
-          "code": "812"
+          "qty": 1,
+          "code": "32"
         },
         {
-          "qty": 1,
-          "code": "835"
+          "code": "812",
+          "qty": 2
+        },
+        {
+          "code": "835",
+          "qty": 1
         },
         {
           "qty": 1,
@@ -91,22 +90,22 @@
           "qty": 1
         },
         {
-          "qty": 1,
-          "type": "free",
           "betrag": 28.09,
+          "type": "free",
+          "qty": 1,
           "name": "Mein Honorar"
         }
       ],
-      "id": "sbut5sj",
-      "name": "Erstuntersuchung + Röntgen"
+      "name": "Erstuntersuchung + Röntgen",
+      "color": "#185FA5",
+      "id": "sbut5sj"
     },
     {
       "name": "Erstuntersuchung + Sono + Röntgen",
-      "id": "95xrh5z",
       "positions": [
         {
-          "code": "10",
-          "qty": 1
+          "qty": 1,
+          "code": "10"
         },
         {
           "code": "32",
@@ -117,8 +116,8 @@
           "qty": 1
         },
         {
-          "code": "812",
-          "qty": 2
+          "qty": 2,
+          "code": "812"
         },
         {
           "qty": 1,
@@ -131,17 +130,24 @@
         {
           "code": "230",
           "qty": 1
+        },
+        {
+          "betrag": 6.57,
+          "type": "free",
+          "name": "Mein Honorar",
+          "qty": 1
         }
       ],
-      "color": "#185FA5"
+      "color": "#185FA5",
+      "id": "95xrh5z"
     },
     {
+      "color": "#1D9E75",
       "name": "Kontrolle",
-      "id": "5ue3hzj",
       "positions": [
         {
-          "qty": 1,
-          "code": "11"
+          "code": "11",
+          "qty": 1
         },
         {
           "code": "32",
@@ -152,119 +158,77 @@
           "code": "230"
         },
         {
-          "type": "free",
+          "name": "Mein Honorar",
           "qty": 1,
           "betrag": 28.7,
-          "name": "Mein Honorar"
+          "type": "free"
+        }
+      ],
+      "id": "5ue3hzj"
+    },
+    {
+      "positions": [
+        {
+          "qty": 1,
+          "code": "11"
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "qty": 1,
+          "code": "890"
+        },
+        {
+          "qty": 1,
+          "code": "230"
+        },
+        {
+          "betrag": 12.19,
+          "type": "free",
+          "name": "Mein Honorar",
+          "qty": 1
+        }
+      ],
+      "name": "Kontrolle + Sono",
+      "color": "#1D9E75",
+      "id": "l5cst8n"
+    },
+    {
+      "id": "kqe77f5",
+      "name": "Kontrolle + Röntgen",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "11"
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "qty": 2,
+          "code": "812"
+        },
+        {
+          "qty": 2,
+          "code": "836"
+        },
+        {
+          "qty": 1,
+          "code": "230"
+        },
+        {
+          "betrag": 35.78,
+          "type": "free",
+          "name": "Mein Honorar",
+          "qty": 1
         }
       ],
       "color": "#1D9E75"
     },
     {
-      "id": "l5cst8n",
-      "name": "Kontrolle + Sono",
-      "color": "#1D9E75",
-      "positions": [
-        {
-          "qty": 1,
-          "code": "11"
-        },
-        {
-          "qty": 1,
-          "code": "32"
-        },
-        {
-          "qty": 1,
-          "code": "890"
-        },
-        {
-          "code": "230",
-          "qty": 1
-        },
-        {
-          "name": "Mein Honorar",
-          "betrag": 17.19,
-          "qty": 1,
-          "type": "free"
-        }
-      ]
-    },
-    {
-      "id": "kqe77f5",
-      "name": "Kontrolle + Röntgen",
-      "color": "#1D9E75",
-      "positions": [
-        {
-          "qty": 1,
-          "code": "11"
-        },
-        {
-          "qty": 1,
-          "code": "32"
-        },
-        {
-          "qty": 2,
-          "code": "812"
-        },
-        {
-          "code": "835",
-          "qty": 1
-        },
-        {
-          "qty": 1,
-          "code": "836"
-        },
-        {
-          "qty": 1,
-          "code": "230"
-        },
-        {
-          "name": "Mein Honorar",
-          "qty": 1,
-          "type": "free",
-          "betrag": 28.52
-        }
-      ]
-    },
-    {
-      "id": "un89und",
-      "name": "Kontrolle + Sono + Röntgen",
-      "color": "#1D9E75",
-      "positions": [
-        {
-          "code": "11",
-          "qty": 1
-        },
-        {
-          "qty": 1,
-          "code": "32"
-        },
-        {
-          "qty": 1,
-          "code": "890"
-        },
-        {
-          "code": "812",
-          "qty": 2
-        },
-        {
-          "code": "835",
-          "qty": 1
-        },
-        {
-          "code": "836",
-          "qty": 1
-        },
-        {
-          "qty": 1,
-          "code": "230"
-        }
-      ]
-    },
-    {
-      "id": "fu0fmvp",
-      "name": "Stoßwellentherapie",
-      "color": "#BA7517",
       "positions": [
         {
           "code": "11",
@@ -275,28 +239,16 @@
           "qty": 1
         },
         {
-          "name": "Stoßwellentherapie (ESWT)",
           "qty": 1,
-          "type": "free",
-          "betrag": 30.96
-        }
-      ]
-    },
-    {
-      "name": "Eigenblutinfiltration",
-      "id": "ggeirgo",
-      "positions": [
-        {
-          "qty": 1,
-          "code": "11"
+          "code": "890"
         },
         {
-          "qty": 1,
-          "code": "32"
+          "qty": 2,
+          "code": "812"
         },
         {
-          "code": "100",
-          "qty": 1
+          "qty": 2,
+          "code": "836"
         },
         {
           "code": "230",
@@ -304,24 +256,74 @@
         },
         {
           "qty": 1,
-          "code": "890"
+          "name": "Mein Honorar",
+          "betrag": 19.27,
+          "type": "free"
+        }
+      ],
+      "name": "Kontrolle + Sono + Röntgen",
+      "color": "#1D9E75",
+      "id": "un89und"
+    },
+    {
+      "id": "fu0fmvp",
+      "name": "Stoßwellentherapie",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "11"
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "type": "free",
+          "betrag": 30.96,
+          "qty": 1,
+          "name": "Stoßwellentherapie (ESWT)"
+        }
+      ],
+      "color": "#BA7517"
+    },
+    {
+      "color": "#534AB7",
+      "name": "Eigenblutinfiltration",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "11"
+        },
+        {
+          "code": "32",
+          "qty": 1
         },
         {
           "qty": 1,
-          "code": "125"
+          "code": "100"
+        },
+        {
+          "qty": 1,
+          "code": "230"
+        },
+        {
+          "qty": 1,
+          "code": "890"
+        },
+        {
+          "code": "125",
+          "qty": 1
         },
         {
           "name": "PRP",
+          "qty": 1,
           "betrag": 368.15,
-          "type": "free",
-          "qty": 1
+          "type": "free"
         }
       ],
-      "color": "#534AB7"
+      "id": "ggeirgo"
     },
     {
-      "id": "qj537og",
-      "name": "US-gesteuerte Infiltration",
       "color": "#0D7490",
       "positions": [
         {
@@ -329,30 +331,33 @@
           "code": "11"
         },
         {
-          "code": "32",
-          "qty": 1
+          "qty": 1,
+          "code": "32"
         },
         {
-          "code": "890",
+          "qty": 1,
+          "code": "890"
+        },
+        {
+          "code": "125",
           "qty": 1
         },
         {
           "qty": 1,
-          "code": "125"
-        },
-        {
-          "code": "230",
-          "qty": 1
+          "code": "230"
         },
         {
           "betrag": 20,
-          "qty": 1,
           "type": "free",
+          "qty": 1,
           "name": "Material"
         }
-      ]
+      ],
+      "name": "US-gesteuerte Infiltration",
+      "id": "qj537og"
     },
     {
+      "id": "dkghsa1",
       "color": "#6B4226",
       "positions": [
         {
@@ -360,122 +365,123 @@
           "qty": 1
         },
         {
-          "code": "230",
-          "qty": 1
+          "qty": 1,
+          "code": "230"
         },
         {
-          "code": "10",
-          "qty": 1
+          "qty": 1,
+          "code": "10"
         }
       ],
-      "id": "dkghsa1",
       "name": "Blutabnahme"
     },
     {
-      "name": "Erstuntersuchung [UV]",
       "id": "zms9rhx",
+      "name": "Erstuntersuchung [UV]",
       "positions": [
         {
+          "uvKat": 1,
           "qty": 1,
-          "code": "10",
           "faktor": 4,
-          "uvKat": 1
+          "code": "10"
         },
         {
-          "faktor": 4,
           "qty": 1,
+          "uvKat": 1,
           "code": "32",
-          "uvKat": 1
+          "faktor": 4
         },
         {
+          "uvKat": 1,
+          "qty": 1,
           "faktor": 4,
-          "qty": 1,
-          "code": "230",
-          "uvKat": 1
+          "code": "230"
         },
         {
-          "code": "239",
           "qty": 1,
-          "uvKat": 1
+          "uvKat": 1,
+          "code": "239"
         }
       ],
       "color": "#A32D2D"
     },
     {
-      "name": "Erstuntersuchung + Sono [UV]",
       "id": "f2hisyg",
       "positions": [
         {
-          "code": "10",
+          "uvKat": 1,
           "qty": 1,
-          "faktor": 4,
-          "uvKat": 1
+          "code": "10",
+          "faktor": 4
         },
         {
-          "faktor": 4,
-          "code": "32",
           "qty": 1,
-          "uvKat": 1
+          "uvKat": 1,
+          "faktor": 4,
+          "code": "32"
         },
         {
           "code": "890",
-          "qty": 1,
           "faktor": 4,
+          "qty": 1,
           "uvKat": 3
         },
         {
+          "code": "230",
           "faktor": 4,
           "qty": 1,
-          "code": "230",
           "uvKat": 1
+        }
+      ],
+      "name": "Erstuntersuchung + Sono [UV]",
+      "color": "#A32D2D"
+    },
+    {
+      "id": "rz6cz0f",
+      "name": "Erstuntersuchung + Röntgen [UV]",
+      "positions": [
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "10",
+          "faktor": 4
+        },
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "faktor": 4,
+          "code": "32"
+        },
+        {
+          "uvKat": 4,
+          "qty": 2,
+          "code": "812",
+          "faktor": 4
+        },
+        {
+          "qty": 1,
+          "uvKat": 4,
+          "code": "835",
+          "faktor": 4
+        },
+        {
+          "uvKat": 4,
+          "qty": 1,
+          "code": "836",
+          "faktor": 4
+        },
+        {
+          "qty": 1,
+          "uvKat": 1,
+          "code": "230",
+          "faktor": 4
         }
       ],
       "color": "#A32D2D"
     },
     {
       "color": "#A32D2D",
-      "positions": [
-        {
-          "qty": 1,
-          "code": "10",
-          "faktor": 4,
-          "uvKat": 1
-        },
-        {
-          "faktor": 4,
-          "code": "32",
-          "qty": 1,
-          "uvKat": 1
-        },
-        {
-          "qty": 2,
-          "code": "812",
-          "faktor": 4,
-          "uvKat": 4
-        },
-        {
-          "faktor": 4,
-          "code": "835",
-          "qty": 1,
-          "uvKat": 4
-        },
-        {
-          "faktor": 4,
-          "qty": 1,
-          "code": "836",
-          "uvKat": 4
-        },
-        {
-          "faktor": 4,
-          "qty": 1,
-          "code": "230",
-          "uvKat": 1
-        }
-      ],
-      "id": "rz6cz0f",
-      "name": "Erstuntersuchung + Röntgen [UV]"
-    },
-    {
+      "name": "Erstuntersuchung + Sono + Röntgen [UV]",
       "positions": [
         {
           "faktor": 4.9,
@@ -484,9 +490,9 @@
           "uvKat": 1
         },
         {
-          "qty": 1,
           "code": "32",
           "faktor": 4.9,
+          "qty": 1,
           "uvKat": 1
         },
         {
@@ -496,59 +502,56 @@
           "uvKat": 3
         },
         {
-          "faktor": 2,
-          "code": "835",
+          "uvKat": 4,
           "qty": 1,
-          "uvKat": 4
+          "faktor": 2,
+          "code": "835"
         },
         {
-          "faktor": 2,
-          "code": "836",
+          "uvKat": 4,
           "qty": 1,
-          "uvKat": 4
+          "code": "836",
+          "faktor": 2
         },
         {
           "faktor": 4.9,
-          "qty": 1,
           "code": "230",
-          "uvKat": 1
+          "uvKat": 1,
+          "qty": 1
         },
         {
-          "code": "813",
+          "uvKat": 4,
           "qty": 1,
           "faktor": 0.1,
-          "uvKat": 4
+          "code": "813"
         },
         {
-          "qty": 1,
           "code": "815",
-          "uvKat": 4
+          "uvKat": 4,
+          "qty": 1
         },
         {
           "code": "819",
-          "qty": 1,
-          "uvKat": 4
+          "uvKat": 4,
+          "qty": 1
         }
       ],
-      "color": "#A32D2D",
-      "name": "Erstuntersuchung + Sono + Röntgen [UV]",
       "id": "e1jzd5f"
     },
     {
       "id": "a5f1g9o",
-      "name": "Kontrolle [UV]",
       "color": "#7C3AED",
       "positions": [
         {
+          "uvKat": 1,
+          "qty": 1,
           "faktor": 4.9,
-          "code": "11",
-          "qty": 1,
-          "uvKat": 1
+          "code": "11"
         },
         {
           "code": "32",
-          "qty": 1,
           "faktor": 3,
+          "qty": 1,
           "uvKat": 1
         },
         {
@@ -557,235 +560,1022 @@
           "qty": 1,
           "uvKat": 1
         }
-      ]
+      ],
+      "name": "Kontrolle [UV]"
     },
     {
-      "id": "ubghstb",
-      "name": "Kontrolle + Sono [UV]",
       "color": "#7C3AED",
       "positions": [
         {
-          "faktor": 3,
           "code": "11",
-          "qty": 1,
-          "uvKat": 1
+          "faktor": 3,
+          "uvKat": 1,
+          "qty": 1
         },
         {
-          "faktor": 3,
+          "uvKat": 1,
           "qty": 1,
-          "code": "32",
-          "uvKat": 1
+          "faktor": 3,
+          "code": "32"
         },
         {
-          "faktor": 3,
           "code": "890",
+          "faktor": 3,
           "qty": 1,
           "uvKat": 3
         },
         {
-          "qty": 1,
-          "code": "230",
           "faktor": 3,
+          "code": "230",
+          "qty": 1,
           "uvKat": 1
         }
-      ]
+      ],
+      "name": "Kontrolle + Sono [UV]",
+      "id": "ubghstb"
     },
     {
+      "color": "#7C3AED",
       "name": "Kontrolle + Röntgen [UV]",
-      "id": "b4gjevb",
       "positions": [
         {
-          "faktor": 3,
+          "uvKat": 1,
+          "qty": 1,
           "code": "11",
-          "qty": 1,
-          "uvKat": 1
+          "faktor": 3
         },
         {
           "faktor": 3,
-          "qty": 1,
           "code": "32",
-          "uvKat": 1
+          "uvKat": 1,
+          "qty": 1
         },
         {
-          "qty": 2,
+          "faktor": 3,
           "code": "812",
-          "faktor": 3,
-          "uvKat": 4
-        },
-        {
-          "qty": 1,
-          "code": "835",
-          "faktor": 3,
+          "qty": 2,
           "uvKat": 4
         },
         {
           "faktor": 3,
-          "qty": 1,
           "code": "836",
-          "uvKat": 4
+          "uvKat": 4,
+          "qty": 2
         },
         {
-          "qty": 1,
-          "code": "230",
           "faktor": 3,
+          "code": "230",
+          "qty": 1,
           "uvKat": 1
         }
       ],
-      "color": "#7C3AED"
+      "id": "b4gjevb"
     },
     {
-      "name": "Kontrolle + Sono + Röntgen [UV]",
-      "id": "o5wnbry",
+      "color": "#7C3AED",
       "positions": [
         {
-          "faktor": 3,
+          "uvKat": 1,
           "qty": 1,
-          "code": "11",
-          "uvKat": 1
+          "faktor": 3,
+          "code": "11"
         },
         {
+          "uvKat": 1,
+          "qty": 1,
           "code": "32",
-          "qty": 1,
-          "faktor": 3,
-          "uvKat": 1
+          "faktor": 3
         },
         {
+          "faktor": 3,
           "code": "890",
-          "qty": 1,
-          "faktor": 3,
-          "uvKat": 3
+          "uvKat": 3,
+          "qty": 1
         },
         {
           "faktor": 3,
           "code": "812",
-          "qty": 2,
-          "uvKat": 4
+          "uvKat": 4,
+          "qty": 2
         },
         {
-          "faktor": 3,
           "qty": 1,
+          "uvKat": 4,
           "code": "835",
-          "uvKat": 4
+          "faktor": 3
         },
         {
+          "uvKat": 4,
           "qty": 1,
-          "code": "836",
           "faktor": 3,
-          "uvKat": 4
+          "code": "836"
         },
         {
-          "faktor": 3,
+          "uvKat": 1,
+          "qty": 1,
           "code": "230",
-          "qty": 1,
-          "uvKat": 1
+          "faktor": 3
         }
       ],
-      "color": "#7C3AED"
+      "name": "Kontrolle + Sono + Röntgen [UV]",
+      "id": "o5wnbry"
     },
     {
-      "color": "#1E40AF",
       "positions": [
         {
-          "faktor": 3,
-          "code": "11",
+          "uvKat": 1,
           "qty": 1,
-          "uvKat": 1
+          "faktor": 3,
+          "code": "11"
         },
         {
-          "faktor": 3,
+          "uvKat": 1,
           "qty": 1,
           "code": "32",
-          "uvKat": 1
+          "faktor": 3
         },
         {
-          "faktor": 3,
+          "uvKat": 3,
+          "qty": 1,
           "code": "100",
-          "qty": 1,
-          "uvKat": 3
+          "faktor": 3
         },
         {
-          "faktor": 3,
           "code": "114",
-          "qty": 1,
-          "uvKat": 3
+          "faktor": 3,
+          "uvKat": 3,
+          "qty": 1
         },
         {
           "qty": 1,
+          "uvKat": 1,
           "code": "230",
-          "faktor": 3,
-          "uvKat": 1
+          "faktor": 3
         },
         {
           "type": "free",
-          "name": "PRP",
           "betrag": 398.96,
+          "qty": 1,
+          "name": "PRP"
+        }
+      ],
+      "name": "Eigenblutinfiltration [UV]",
+      "color": "#1E40AF",
+      "id": "316fu05"
+    },
+    {
+      "id": "ekdl0g2",
+      "positions": [
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "faktor": 3,
+          "code": "11"
+        },
+        {
+          "code": "32",
+          "faktor": 3,
+          "qty": 1,
+          "uvKat": 1
+        },
+        {
+          "faktor": 3,
+          "code": "890",
+          "qty": 1,
+          "uvKat": 3
+        },
+        {
+          "code": "125",
+          "faktor": 3,
+          "uvKat": 3,
+          "qty": 1
+        },
+        {
+          "code": "230",
+          "faktor": 3,
+          "uvKat": 1,
           "qty": 1
         }
       ],
-      "id": "316fu05",
-      "name": "Eigenblutinfiltration [UV]"
-    },
-    {
-      "positions": [
-        {
-          "qty": 1,
-          "code": "11",
-          "faktor": 3,
-          "uvKat": 1
-        },
-        {
-          "faktor": 3,
-          "code": "32",
-          "qty": 1,
-          "uvKat": 1
-        },
-        {
-          "qty": 1,
-          "code": "890",
-          "faktor": 3,
-          "uvKat": 3
-        },
-        {
-          "faktor": 3,
-          "qty": 1,
-          "code": "125",
-          "uvKat": 3
-        },
-        {
-          "faktor": 3,
-          "qty": 1,
-          "code": "230",
-          "uvKat": 1
-        }
-      ],
-      "color": "#065F46",
       "name": "US-gesteuerte Infiltration [UV]",
-      "id": "ekdl0g2"
+      "color": "#065F46"
     },
     {
       "color": "#374151",
       "positions": [
         {
           "qty": 1,
+          "uvKat": 3,
           "code": "100",
+          "faktor": 3
+        },
+        {
           "faktor": 3,
+          "code": "230",
+          "uvKat": 1,
+          "qty": 1
+        }
+      ],
+      "name": "Blutabnahme [UV]",
+      "id": "1c2y014"
+    },
+    {
+      "positions": [
+        {
+          "qty": 1,
+          "code": "18"
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "qty": 1,
+          "code": "230"
+        },
+        {
+          "qty": 1,
+          "code": "239"
+        },
+        {
+          "betrag": 0.58,
+          "type": "free",
+          "name": "Mein Honorar",
+          "qty": 1
+        }
+      ],
+      "name": "Erstuntersuchung (ärztl. Zuweisung)",
+      "color": "#0369A1",
+      "id": "qg6n3at"
+    },
+    {
+      "id": "lvgtmnr",
+      "color": "#0369A1",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "18"
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "code": "890",
+          "qty": 1
+        },
+        {
+          "code": "230",
+          "qty": 1
+        },
+        {
+          "name": "Mein Honorar",
+          "qty": 1,
+          "type": "free",
+          "betrag": 4.5
+        }
+      ],
+      "name": "Erstuntersuchung + Sono (ärztl. Zuweisung)"
+    },
+    {
+      "id": "ms4tt0i",
+      "name": "Erstuntersuchung + Röntgen (ärztl. Zuweisung)",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "18"
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "qty": 2,
+          "code": "812"
+        },
+        {
+          "code": "835",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "836"
+        },
+        {
+          "code": "230",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "name": "Mein Honorar",
+          "type": "free",
+          "betrag": 15.83
+        }
+      ],
+      "color": "#0369A1"
+    },
+    {
+      "id": "aycsaoo",
+      "color": "#0369A1",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "18"
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "code": "890",
+          "faktor": 2.4,
+          "qty": 1
+        },
+        {
+          "code": "812",
+          "qty": 2
+        },
+        {
+          "qty": 1,
+          "code": "835"
+        },
+        {
+          "code": "836",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "faktor": 2,
+          "code": "230"
+        }
+      ],
+      "name": "Erstuntersuchung + Sono + Röntgen (ärztl. Zuweisung)"
+    },
+    {
+      "id": "v7vbnfc",
+      "color": "#185FA5",
+      "name": "Erstuntersuchung (KH-Zuweisung)",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "18EZ"
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "qty": 1,
+          "code": "230"
+        },
+        {
+          "qty": 1,
+          "name": "Mein Honorar",
+          "type": "free",
+          "betrag": 21.01
+        }
+      ]
+    },
+    {
+      "color": "#185FA5",
+      "positions": [
+        {
+          "code": "18EZ",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "code": "890",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "230"
+        },
+        {
+          "betrag": 4.5,
+          "type": "free",
+          "qty": 1,
+          "name": "Mein Honorar"
+        }
+      ],
+      "name": "Erstuntersuchung + Sono (KH-Zuweisung)",
+      "id": "kd7wkf7"
+    },
+    {
+      "color": "#185FA5",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "18EZ"
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "qty": 2,
+          "code": "812"
+        },
+        {
+          "qty": 1,
+          "code": "835"
+        },
+        {
+          "code": "836",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "230"
+        },
+        {
+          "qty": 1,
+          "name": "Mein Honorar",
+          "type": "free",
+          "betrag": 15.83
+        }
+      ],
+      "name": "Erstuntersuchung + Röntgen (KH-Zuweisung)",
+      "id": "p9agbzm"
+    },
+    {
+      "color": "#185FA5",
+      "name": "Erstuntersuchung + Sono + Röntgen (KH-Zuweisung)",
+      "positions": [
+        {
+          "code": "18EZ",
+          "faktor": 2.5,
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "qty": 1,
+          "code": "890"
+        },
+        {
+          "qty": 2,
+          "code": "812"
+        },
+        {
+          "qty": 1,
+          "code": "835"
+        },
+        {
+          "qty": 1,
+          "code": "836"
+        },
+        {
+          "code": "230",
+          "faktor": 1.4,
+          "qty": 1
+        }
+      ],
+      "id": "mftvq1q"
+    },
+    {
+      "color": "#1D9E75",
+      "positions": [
+        {
+          "code": "18NZ",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "qty": 1,
+          "code": "230"
+        },
+        {
+          "name": "Mein Honorar",
+          "qty": 1,
+          "type": "free",
+          "betrag": 12.36
+        }
+      ],
+      "name": "Kontrolle (KH-Zuweisung)",
+      "id": "6nohleu"
+    },
+    {
+      "name": "Kontrolle + Sono (KH-Zuweisung)",
+      "positions": [
+        {
+          "code": "18NZ",
+          "qty": 1
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "code": "890",
+          "qty": 1
+        },
+        {
+          "name": "Mein Honorar",
+          "qty": 1,
+          "type": "free",
+          "betrag": 8.1
+        }
+      ],
+      "color": "#1D9E75",
+      "id": "xy4qy9j"
+    },
+    {
+      "color": "#1D9E75",
+      "positions": [
+        {
+          "code": "18NZ",
+          "qty": 1
+        },
+        {
+          "code": "32",
+          "qty": 1
+        },
+        {
+          "qty": 2,
+          "code": "812"
+        },
+        {
+          "qty": 2,
+          "faktor": 2.5,
+          "code": "836"
+        },
+        {
+          "code": "230",
+          "qty": 1
+        },
+        {
+          "name": "Mein Honorar",
+          "qty": 1,
+          "type": "free",
+          "betrag": 19.43
+        }
+      ],
+      "name": "Kontrolle + Röntgen (KH-Zuweisung)",
+      "id": "8tjggn7"
+    },
+    {
+      "id": "rq7e0mg",
+      "color": "#1D9E75",
+      "name": "Kontrolle + Sono + Röntgen (KH-Zuweisung)",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "18NZ"
+        },
+        {
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "code": "890",
+          "qty": 1
+        },
+        {
+          "code": "812",
+          "qty": 2
+        },
+        {
+          "qty": 2,
+          "code": "836"
+        },
+        {
+          "code": "230",
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "name": "Mein Honorar",
+          "betrag": 2.92,
+          "type": "free"
+        }
+      ]
+    },
+    {
+      "color": "#991B1B",
+      "positions": [
+        {
+          "code": "18",
+          "qty": 1,
+          "uvKat": 1
+        },
+        {
+          "code": "32",
+          "uvKat": 1,
+          "qty": 1
+        },
+        {
+          "code": "230",
+          "qty": 1,
+          "uvKat": 1
+        },
+        {
+          "code": "239",
+          "qty": 1
+        }
+      ],
+      "name": "Erstuntersuchung (ärztl. Zuweisung) [UV]",
+      "id": "5wxgmgb",
+      "isUV": true
+    },
+    {
+      "color": "#991B1B",
+      "positions": [
+        {
+          "code": "18",
+          "qty": 1,
+          "uvKat": 1
+        },
+        {
+          "qty": 1,
+          "uvKat": 1,
+          "code": "32"
+        },
+        {
+          "uvKat": 3,
+          "qty": 1,
+          "code": "890"
+        },
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "230"
+        }
+      ],
+      "name": "Erstuntersuchung + Sono (ärztl. Zuweisung) [UV]",
+      "id": "f9ug4qi",
+      "isUV": true
+    },
+    {
+      "name": "Erstuntersuchung + Röntgen (ärztl. Zuweisung) [UV]",
+      "positions": [
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "18"
+        },
+        {
+          "code": "32",
+          "qty": 1,
+          "uvKat": 1
+        },
+        {
+          "qty": 2,
+          "uvKat": 4,
+          "code": "812"
+        },
+        {
+          "code": "835",
+          "uvKat": 4,
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "uvKat": 4,
+          "code": "836"
+        },
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "230"
+        }
+      ],
+      "color": "#991B1B",
+      "isUV": true,
+      "id": "ig3agyw"
+    },
+    {
+      "id": "emwkxf9",
+      "isUV": true,
+      "color": "#991B1B",
+      "name": "Erstuntersuchung + Sono + Röntgen (ärztl. Zuweisung) [UV]",
+      "positions": [
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "18"
+        },
+        {
+          "code": "32",
+          "uvKat": 1,
+          "qty": 1
+        },
+        {
+          "uvKat": 3,
+          "qty": 1,
+          "code": "890"
+        },
+        {
+          "code": "812",
+          "qty": 2,
+          "uvKat": 4
+        },
+        {
+          "qty": 1,
+          "uvKat": 4,
+          "code": "835"
+        },
+        {
+          "uvKat": 4,
+          "qty": 1,
+          "code": "836"
+        },
+        {
+          "qty": 1,
+          "uvKat": 1,
+          "code": "230"
+        }
+      ]
+    },
+    {
+      "positions": [
+        {
+          "code": "18EZ",
+          "uvKat": 1,
+          "qty": 1
+        },
+        {
+          "qty": 1,
+          "uvKat": 1,
+          "code": "32"
+        },
+        {
+          "qty": 1,
+          "uvKat": 1,
+          "code": "230"
+        }
+      ],
+      "name": "Erstuntersuchung (KH-Zuweisung) [UV]",
+      "color": "#A32D2D",
+      "isUV": true,
+      "id": "1u0faps"
+    },
+    {
+      "id": "hrunwdd",
+      "isUV": true,
+      "color": "#A32D2D",
+      "name": "Erstuntersuchung + Sono (KH-Zuweisung) [UV]",
+      "positions": [
+        {
+          "code": "18EZ",
+          "qty": 1,
+          "uvKat": 1
+        },
+        {
+          "qty": 1,
+          "uvKat": 1,
+          "code": "32"
+        },
+        {
+          "code": "890",
+          "qty": 1,
           "uvKat": 3
         },
         {
           "code": "230",
           "qty": 1,
-          "faktor": 3,
           "uvKat": 1
         }
-      ],
-      "id": "1c2y014",
-      "name": "Blutabnahme [UV]"
+      ]
     },
     {
-      "id": "ryiv5f4",
-      "name": "Neue Vorlage",
-      "color": "#185FA5",
-      "positions": []
+      "id": "8aklh5d",
+      "isUV": true,
+      "color": "#A32D2D",
+      "positions": [
+        {
+          "code": "18EZ",
+          "uvKat": 1,
+          "qty": 1
+        },
+        {
+          "code": "32",
+          "qty": 1,
+          "uvKat": 1
+        },
+        {
+          "uvKat": 4,
+          "qty": 2,
+          "code": "812"
+        },
+        {
+          "qty": 1,
+          "uvKat": 4,
+          "code": "835"
+        },
+        {
+          "uvKat": 4,
+          "qty": 1,
+          "code": "836"
+        },
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "230"
+        }
+      ],
+      "name": "Erstuntersuchung + Röntgen (KH-Zuweisung) [UV]"
+    },
+    {
+      "id": "3snbv9q",
+      "isUV": true,
+      "color": "#A32D2D",
+      "positions": [
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "18EZ"
+        },
+        {
+          "code": "32",
+          "qty": 1,
+          "uvKat": 1
+        },
+        {
+          "uvKat": 3,
+          "qty": 1,
+          "code": "890"
+        },
+        {
+          "uvKat": 4,
+          "qty": 2,
+          "code": "812"
+        },
+        {
+          "code": "835",
+          "qty": 1,
+          "uvKat": 4
+        },
+        {
+          "uvKat": 4,
+          "qty": 1,
+          "code": "836"
+        },
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "230"
+        }
+      ],
+      "name": "Erstuntersuchung + Sono + Röntgen (KH-Zuweisung) [UV]"
+    },
+    {
+      "id": "q4cl3xq",
+      "isUV": true,
+      "color": "#7C3AED",
+      "name": "Kontrolle (KH-Zuweisung) [UV]",
+      "positions": [
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "18NZ"
+        },
+        {
+          "qty": 1,
+          "uvKat": 1,
+          "code": "32"
+        },
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "230"
+        }
+      ]
+    },
+    {
+      "isUV": true,
+      "id": "mnc402q",
+      "name": "Kontrolle + Sono (KH-Zuweisung) [UV]",
+      "positions": [
+        {
+          "code": "18NZ",
+          "uvKat": 1,
+          "qty": 1
+        },
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "code": "890",
+          "qty": 1,
+          "uvKat": 3
+        },
+        {
+          "qty": 1,
+          "uvKat": 1,
+          "code": "230"
+        }
+      ],
+      "color": "#7C3AED"
+    },
+    {
+      "isUV": true,
+      "id": "mxarm6s",
+      "positions": [
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "18NZ"
+        },
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "32"
+        },
+        {
+          "code": "812",
+          "uvKat": 4,
+          "qty": 2
+        },
+        {
+          "qty": 2,
+          "uvKat": 4,
+          "code": "836"
+        },
+        {
+          "uvKat": 1,
+          "qty": 1,
+          "code": "230"
+        }
+      ],
+      "name": "Kontrolle + Röntgen (KH-Zuweisung) [UV]",
+      "color": "#7C3AED"
+    },
+    {
+      "id": "hukacv0",
+      "isUV": true,
+      "color": "#7C3AED",
+      "positions": [
+        {
+          "code": "18NZ",
+          "uvKat": 1,
+          "qty": 1
+        },
+        {
+          "code": "32",
+          "uvKat": 1,
+          "qty": 1
+        },
+        {
+          "code": "890",
+          "qty": 1,
+          "uvKat": 3
+        },
+        {
+          "qty": 2,
+          "uvKat": 4,
+          "code": "812"
+        },
+        {
+          "uvKat": 4,
+          "qty": 2,
+          "code": "836"
+        },
+        {
+          "code": "230",
+          "uvKat": 1,
+          "qty": 1
+        }
+      ],
+      "name": "Kontrolle + Sono + Röntgen (KH-Zuweisung) [UV]"
+    },
+    {
+      "color": "#5F5E5A",
+      "name": "Konsilium",
+      "positions": [
+        {
+          "qty": 1,
+          "code": "40"
+        },
+        {
+          "qty": 1,
+          "code": "41"
+        },
+        {
+          "qty": 1,
+          "code": "42"
+        },
+        {
+          "qty": 1,
+          "code": "43"
+        },
+        {
+          "qty": 1,
+          "code": "44"
+        }
+      ],
+      "id": "zy2eju5"
     }
   ],
   "settings": {
@@ -816,18 +1606,18 @@
         "code": "US12",
         "fix": 34.15
       },
-      "code": "890",
-      "pkt": 35,
-      "warn": true,
-      "cat": "Sonographie",
       "name": "Ein Organ (z.B. GB+Gallenwege, beide Nieren, Uterus)",
+      "cat": "Sonographie",
       "fix": null,
-      "_uvKat": 3,
+      "warn": true,
+      "pkt": 35,
       "svs": {
         "pkt": 60,
         "code": "US12",
         "pktWert": 0.548
-      }
+      },
+      "_uvKat": 3,
+      "code": "890"
     }
   ]
 }
