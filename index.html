@@ -402,6 +402,12 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
         <button class="btn" onclick="window.exportData()" style="font-size:12px;color:var(--text2)"><i class="ti ti-download"></i> Daten als JSON herunterladen</button>
         <div class="field-hint">Exportiert alle Vorlagen und Einstellungen als JSON-Datei (z.B. für Backup oder Weitergabe).</div>
       </div>
+      <div class="field-group" style="margin-top:10px">
+        <div class="field-label">Daten importieren</div>
+        <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="window.importData(this)">
+        <button class="btn" onclick="document.getElementById('import-file-input').click()" style="font-size:12px;color:var(--amber)"><i class="ti ti-upload"></i> Backup JSON laden</button>
+        <div class="field-hint" style="color:var(--amber)">⚠ Überschreibt alle aktuellen Vorlagen und Einstellungen!</div>
+      </div>
     </div>
   </div>
 
@@ -1853,6 +1859,24 @@ window._addNeueVorlagen = function() {
   renderAll();
   console.log('✓ 25 neue Vorlagen hinzugefügt und gespeichert.');
 };
+window.importData = async function(input) {
+  const file = input.files[0]; if (!file) return;
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if (!data.vorlagen) { alert('Ungültige Datei — "vorlagen" fehlt.'); return; }
+    if (!confirm(`${data.vorlagen.length} Vorlagen importieren? Aktuelle Daten werden überschrieben.`)) { input.value=''; return; }
+    state.vorlagen = data.vorlagen || [];
+    state.dbCustom = data.dbCustom || [];
+    state.settings = Object.assign({pkt:0.80,fak:2.5,ruck:80,name:'',adr:'',tel:'',uvFak:defUvFak,bvaeb:{ruck:90,selbst:10},svs:{ruck:80}}, data.settings || {});
+    state.activeId = state.vorlagen[0]?.id || null;
+    await save();
+    renderAll();
+    alert(`✓ ${state.vorlagen.length} Vorlagen erfolgreich importiert.`);
+  } catch(e) { alert('Fehler beim Importieren: ' + e.message); }
+  input.value = '';
+};
+
 window.exportData    = function() {
   const data = { vorlagen: state.vorlagen, settings: state.settings, dbCustom: state.dbCustom || [] };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
