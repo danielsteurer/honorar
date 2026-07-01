@@ -1868,7 +1868,7 @@ window.importData = async function(input) {
     if (!confirm(`${data.vorlagen.length} Vorlagen importieren? Aktuelle Daten werden überschrieben.`)) { input.value=''; return; }
     state.vorlagen = data.vorlagen || [];
     state.dbCustom = data.dbCustom || [];
-    state.settings = Object.assign({pkt:0.80,fak:2.5,ruck:80,name:'',adr:'',tel:'',uvFak:defUvFak,bvaeb:{ruck:90,selbst:10},svs:{ruck:80}}, data.settings || {});
+    state.settings = Object.assign({pkt:0.80,fak:2.5,ruck:80,name:'',adr:'',tel:'',uvFak:{1:4.90,2:3.85,3:2.70,4:2.00,5:1.64},bvaeb:{ruck:90,selbst:10},svs:{ruck:80}}, data.settings || {});
     state.activeId = state.vorlagen[0]?.id || null;
     await save();
     renderAll();
