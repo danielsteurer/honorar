@@ -371,6 +371,8 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
         <div class="field-label">Daten exportieren</div>
         <button class="btn" onclick="window.exportData()" style="font-size:12px;color:var(--text2)"><i class="ti ti-download"></i> Daten als JSON herunterladen</button>
         <div class="field-hint">Exportiert alle Vorlagen und Einstellungen als JSON-Datei (z.B. für Backup oder Weitergabe).</div>
+        <button class="btn" onclick="window.exportDynamed()" style="font-size:12px;color:var(--text2);margin-top:6px"><i class="ti ti-download"></i> Honorarsätze je Kasse als JSON herunterladen</button>
+        <div class="field-hint">Exportiert je Vorlage die Positionen pro Kasse (ÖGK/BVAEB/SVS) mit Honorarsatz (Kassensatz × Honorarfaktor).</div>
       </div>
     </div>
   </div>
@@ -1601,6 +1603,42 @@ function switchTab(tab) {
   if (tab==='katalog') { updateKatCatFilter(state.katKasse||'oegk'); renderKatalog(); }
 }
 
+function exportDynamed() {
+  const fullDB = getDB();
+  const KASSEN = { OeGK: { kasse: 'oegk', dbKey: null }, BVAEB: { kasse: 'bvaeb', dbKey: 'bva' }, SVS: { kasse: 'svs', dbKey: 'svs' } };
+  const out = {};
+  state.vorlagen.forEach(v => {
+    const entry = {};
+    Object.entries(KASSEN).forEach(([label, { dbKey }]) => {
+      entry[label] = (v.positions || [])
+        .filter(p => p.type !== 'free')
+        .map(p => {
+          const dbPos = fullDB.find(d => d.code === p.code);
+          if (!dbPos) return null;
+          if (dbKey && !dbPos[dbKey]) return null;
+          const fak = effFak(p) ?? state.settings.fak;
+          return {
+            pos: dbKey ? dbPos[dbKey].code : dbPos.code,
+            bezeichnung: dbPos.name,
+            menge: p.qty || 1,
+            honorarfaktor: fak,
+            honorarsatz: hon(dbPos, fak),
+          };
+        })
+        .filter(Boolean);
+    });
+    out[v.name] = entry;
+  });
+  const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'honorar-dynamed.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
 // ── START: Leseansicht direkt ohne Login ──
 document.getElementById('loading-screen').style.display = 'none';
 document.getElementById('app').style.display = 'flex';
@@ -1608,6 +1646,7 @@ populateCatSelects();
 load();
 
 // ── EXPOSE TO WINDOW ──
+window.exportDynamed = exportDynamed;
 window.selectV       = selectV;
 window.newVorlage    = newVorlage;
 window.renameVorlage = renameVorlage;
