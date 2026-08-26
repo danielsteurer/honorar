@@ -1632,26 +1632,43 @@ function switchTab(tab) {
 function exportDynamed() {
   const fullDB = getDB();
   const KASSEN = { OeGK: { kasse: 'oegk', dbKey: null }, BVAEB: { kasse: 'bvaeb', dbKey: 'bva' }, SVS: { kasse: 'svs', dbKey: 'svs' } };
+  const r4 = n => parseFloat((n||0).toFixed(4));
   const out = {};
   state.vorlagen.forEach(v => {
     const entry = {};
-    Object.entries(KASSEN).forEach(([label, { dbKey }]) => {
-      entry[label] = (v.positions || [])
-        .filter(p => p.type !== 'free')
-        .map(p => {
-          const dbPos = fullDB.find(d => d.code === p.code);
-          if (!dbPos) return null;
-          if (dbKey && !dbPos[dbKey]) return null;
-          const fak = effFak(p) ?? state.settings.fak;
-          return {
-            pos: dbKey ? dbPos[dbKey].code : dbPos.code,
-            bezeichnung: dbPos.name,
-            menge: p.qty || 1,
-            honorarfaktor: fak,
-            honorarsatz: hon(dbPos, fak),
-          };
-        })
-        .filter(Boolean);
+    Object.entries(KASSEN).forEach(([label, { kasse, dbKey }]) => {
+      const leistungen = [];
+      (v.positions || []).forEach(p => {
+        const privatUV = p.uvKat ?? (v.isUV ? 1 : null);
+        const menge = p.qty || 1;
+        if (p.type === 'free') {
+          const betrag = p.betrag || 0;
+          leistungen.push({
+            pos: null, bezeichnung: p.name || '', punkte: null, pktWert: null, fix: betrag,
+            preis: betrag, rueckerstattung: 0, honorar: betrag,
+            faktor: effFak(p) ?? state.settings.fak, menge, privatUV,
+          });
+          return;
+        }
+        const dbPos = fullDB.find(d => d.code === p.code);
+        if (!dbPos) return;
+        const kPos = dbKey ? dbPos[dbKey] : dbPos;
+        if (dbKey && !kPos) return;
+        const fak = effFak(p) ?? state.settings.fak;
+        const preis = ksK(dbPos, kasse);
+        const rueckerstattung = kasse === 'oegk' ? rueck(dbPos) : rueckK(dbPos, kasse);
+        const pktWert = kPos.fix != null ? null : (kasse === 'bvaeb' ? bvaPktWert(dbPos) : kasse === 'svs' ? svsPktWert(dbPos) : state.settings.pkt);
+        leistungen.push({
+          pos: kPos.code, bezeichnung: dbPos.name, punkte: kPos.pkt ?? null, pktWert, fix: kPos.fix ?? null,
+          preis, rueckerstattung, honorar: r4(preis * fak), faktor: fak, menge, privatUV,
+        });
+      });
+      entry[label] = {
+        leistungen,
+        gesamtpreis: r4(leistungen.reduce((s,l) => s + l.preis*l.menge, 0)),
+        gesamtrueckerstattung: r4(leistungen.reduce((s,l) => s + l.rueckerstattung*l.menge, 0)),
+        gesamthonorar: r4(leistungen.reduce((s,l) => s + l.honorar*l.menge, 0)),
+      };
     });
     out[v.name] = entry;
   });
