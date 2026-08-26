@@ -175,6 +175,7 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
     <div class="tab active" data-tab="vorlagen">Vorlagen</div>
     <div class="tab" data-tab="katalog">Positionenkatalog</div>
     <div class="topbar-right">
+      <button class="btn" onclick="window.exportDynamed()" style="font-size:12px;color:var(--text2)" title="Exportiert je Vorlage die Positionen pro Kasse (ÖGK/BVAEB/SVS) mit Honorarsatz"><i class="ti ti-download"></i> Honorarsätze je Kasse (JSON)</button>
       <span style="font-size:11px;color:var(--text3);padding:0 8px">Leseansicht</span>
     </div>
   </div>
@@ -371,8 +372,6 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
         <div class="field-label">Daten exportieren</div>
         <button class="btn" onclick="window.exportData()" style="font-size:12px;color:var(--text2)"><i class="ti ti-download"></i> Daten als JSON herunterladen</button>
         <div class="field-hint">Exportiert alle Vorlagen und Einstellungen als JSON-Datei (z.B. für Backup oder Weitergabe).</div>
-        <button class="btn" onclick="window.exportDynamed()" style="font-size:12px;color:var(--text2);margin-top:6px"><i class="ti ti-download"></i> Honorarsätze je Kasse als JSON herunterladen</button>
-        <div class="field-hint">Exportiert je Vorlage die Positionen pro Kasse (ÖGK/BVAEB/SVS) mit Honorarsatz (Kassensatz × Honorarfaktor).</div>
       </div>
     </div>
   </div>
