@@ -174,6 +174,7 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
     <div class="logo">werkeins · Honorar</div>
     <div class="tab active" data-tab="vorlagen">Vorlagen</div>
     <div class="tab" data-tab="katalog">Positionenkatalog</div>
+    <div class="tab" data-tab="settings">Einstellungen</div>
     <div class="topbar-right">
       <button class="btn" onclick="window.exportDynamed()" style="font-size:12px;color:var(--text2)" title="Exportiert je Vorlage die Positionen pro Kasse (ÖGK/BVAEB/SVS) mit Honorarsatz"><i class="ti ti-download"></i> Honorarsätze je Kasse (JSON)</button>
       <span style="font-size:11px;color:var(--text3);padding:0 8px">Leseansicht</span>
@@ -248,7 +249,7 @@ input,select,button{font-family:inherit;font-size:14px;color:var(--text)}
     </div>
   </div>
 
-  <!-- view-settings entfernt (Leseansicht) -->
+  <!-- view-settings: nur Anzeige, Felder readonly (Leseansicht) -->
   <div class="content" id="view-settings" style="display:none">
     <div class="settings-wrap">
       <div class="field-group">
@@ -1162,7 +1163,33 @@ function initDefaults() {
 function resetDefaults() { /* read-only */ }
 
 // ── RENDER ──
-function applySettings() { /* Leseansicht — kein Einstellungsformular */ }
+function applySettings() {
+  const s = state.settings;
+  document.getElementById('s-pkt').value = s.pkt;
+  document.getElementById('s-fak').value = s.fak;
+  document.getElementById('s-ruck').value = s.ruck;
+  document.getElementById('s-name').value = s.name||'';
+  document.getElementById('s-adr').value  = s.adr||'';
+  document.getElementById('s-tel').value  = s.tel||'';
+  const uvF = s.uvFak || {};
+  [1,2,3,4,5].forEach(k => {
+    const el = document.getElementById('s-uvk'+k);
+    if (el) el.value = uvF[k] ?? [4.90,3.85,2.70,2.00,1.64][k-1];
+  });
+  const b = s.bvaeb || {ruck:90, selbst:10, pkt1:1.3567, pkt2:1.2194, pkt3:1.1104, pkt4:1.2892};
+  document.getElementById('s-bvaeb-ruck').value   = b.ruck;
+  document.getElementById('s-bvaeb-selbst').value = b.selbst;
+  document.getElementById('s-bvaeb-pkt1').value   = b.pkt1 ?? 1.3567;
+  document.getElementById('s-bvaeb-pkt2').value   = b.pkt2 ?? 1.2194;
+  document.getElementById('s-bvaeb-pkt3').value   = b.pkt3 ?? 1.1104;
+  document.getElementById('s-bvaeb-pkt4').value   = b.pkt4 ?? 1.2892;
+  const sv = s.svs || {ruck:80, pkt1:0.7989, pkt2:0.5480, pkt3:0.5438};
+  document.getElementById('s-svs-ruck').value  = sv.ruck;
+  document.getElementById('s-svs-pkt1').value  = sv.pkt1 ?? 0.7989;
+  document.getElementById('s-svs-pkt2').value  = sv.pkt2 ?? 0.5480;
+  document.getElementById('s-svs-pkt3').value  = sv.pkt3 ?? 0.5438;
+  document.querySelectorAll('#view-settings input').forEach(el => el.readOnly = true);
+}
 
 function detectConflicts(codes) {
   const conflicts = []; const seen = new Set();
