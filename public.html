@@ -1629,21 +1629,28 @@ function switchTab(tab) {
   if (tab==='katalog') { updateKatCatFilter(state.katKasse||'oegk'); renderKatalog(); }
 }
 
+function hexToRgb(hex) {
+  const h = (hex || '').replace('#', '');
+  const full = h.length === 3 ? h.split('').map(c => c+c).join('') : h;
+  const n = parseInt(full, 16) || 0;
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
 function exportDynamed() {
   const fullDB = getDB();
   const KASSEN = { OeGK: { kasse: 'oegk', dbKey: null }, BVAEB: { kasse: 'bvaeb', dbKey: 'bva' }, SVS: { kasse: 'svs', dbKey: 'svs' } };
   const r4 = n => parseFloat((n||0).toFixed(4));
   const out = {};
   state.vorlagen.forEach(v => {
-    const entry = {};
+    const entry = { gruppeId: v.id, farbe: hexToRgb(v.color) };
     Object.entries(KASSEN).forEach(([label, { kasse, dbKey }]) => {
       const leistungen = [];
-      (v.positions || []).forEach(p => {
+      (v.positions || []).forEach((p, idx) => {
         const privatUV = p.uvKat ?? (v.isUV ? 1 : null);
         const menge = p.qty || 1;
         if (p.type === 'free') {
           const betrag = p.betrag || 0;
           leistungen.push({
+            leistungId: `${v.id}_${label}_frei-${idx}`,
             pos: null, bezeichnung: p.name || '', punkte: null, pktWert: null, fix: betrag,
             preis: betrag, rueckerstattung: 0, honorar: betrag,
             faktor: effFak(p) ?? state.settings.fak, menge, privatUV,
@@ -1659,6 +1666,7 @@ function exportDynamed() {
         const rueckerstattung = kasse === 'oegk' ? rueck(dbPos) : rueckK(dbPos, kasse);
         const pktWert = kPos.fix != null ? null : (kasse === 'bvaeb' ? bvaPktWert(dbPos) : kasse === 'svs' ? svsPktWert(dbPos) : state.settings.pkt);
         leistungen.push({
+          leistungId: `${v.id}_${label}_${kPos.code}`,
           pos: kPos.code, bezeichnung: dbPos.name, punkte: kPos.pkt ?? null, pktWert, fix: kPos.fix ?? null,
           preis, rueckerstattung, honorar: r4(preis * fak), faktor: fak, menge, privatUV,
         });
