@@ -1925,11 +1925,18 @@ window.exportDynamed = function() {
           preis, rueckerstattung, honorar: r4(preis * fak), faktor: fak, menge, privatUV,
         });
       });
+      const seenPos = new Set();
+      const deduped = leistungen.filter(l => {
+        if (l.pos == null) return true;
+        if (seenPos.has(l.pos)) return false;
+        seenPos.add(l.pos);
+        return true;
+      });
       entry[label] = {
-        leistungen,
-        gesamtpreis: r4(leistungen.reduce((s,l) => s + l.preis*l.menge, 0)),
-        gesamtrueckerstattung: r4(leistungen.reduce((s,l) => s + l.rueckerstattung*l.menge, 0)),
-        gesamthonorar: r4(leistungen.reduce((s,l) => s + l.honorar*l.menge, 0)),
+        leistungen: deduped,
+        gesamtpreis: r4(deduped.reduce((s,l) => s + l.preis*l.menge, 0)),
+        gesamtrueckerstattung: r4(deduped.reduce((s,l) => s + l.rueckerstattung*l.menge, 0)),
+        gesamthonorar: r4(deduped.reduce((s,l) => s + l.honorar*l.menge, 0)),
       };
     });
     out[v.name] = entry;
