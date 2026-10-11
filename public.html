@@ -453,18 +453,18 @@ const DB = [
 {code:'24',   name:'Mitbesuch, z.B. in Heimen , Familien oder Wohnblocks, bei nicht gehfähigen Patienten',      cat:'Krankenbesuch AM', pkt:20,  fix:8.16},
 {code:'25',   name:'Krankenbesuch im Wochenend(Feiertags)dienst, zusätzlich zum Pauschalbetrag',cat:'Krankenbesuch AM',pkt:4,  fix:86.81},
 // A/01/03 Zeitversäumnis
-{code:'30',   name:'Zuschlag für unvorhergesehenes Zeitversäumnis – bei Tag',            cat:'Zeitversäumnis',   pkt:20,  fix:null, bva:{code:'C1',name:'Zuschlag für Zeitversäumnis – bei Tag',pkt:8,pktWert:1.2194}},
-{code:'31',   name:'Zuschlag für unvorhergesehenes Zeitversäumnis – bei Nacht (20,00 - 7,00 Uhr)',          cat:'Zeitversäumnis',   pkt:40,  fix:null, bva:{code:'C2',name:'Zuschlag für Zeitversäumnis – bei Nacht (20 Uhr bis 7 Uhr)',pkt:12,pktWert:1.2194}, svs:{code:'3b',name:'Zuschlag für Zeitversäumnis – bei Nacht (von 20 bis 7 Uhr)',pkt:40,pktWert:0.7989}},
+{code:'30',   name:'bei Tag', grp:'Zuschlag für unvorhergesehenes Zeitversäumnis',            cat:'Zeitversäumnis',   pkt:20,  fix:null, bva:{code:'C1',grp:'Zuschlag für Zeitversäumnis',name:'bei Tag',pkt:8,pktWert:1.2194}},
+{code:'31',   name:'bei Nacht (20,00 - 7,00 Uhr)', grp:'Zuschlag für unvorhergesehenes Zeitversäumnis',          cat:'Zeitversäumnis',   pkt:40,  fix:null, bva:{code:'C2',grp:'Zuschlag für Zeitversäumnis',name:'bei Nacht (20 Uhr bis 7 Uhr)',pkt:12,pktWert:1.2194}, svs:{code:'3b',grp:'Zuschlag für Zeitversäumnis',name:'bei Nacht (von 20 bis 7 Uhr)',pkt:40,pktWert:0.7989}},
 {code:'32LC', name:'Zeitaufwand für Ordinationen und Krankenbesuche, die länger als 15 Minuten dauern (Ärztliches Gespräch); die ersten 15 Minuten sind mit der Ordination bzw. mit dem Besuch abgegolten; verrechenbar einmal pro Patient mit Long Covid-Verdacht (im Zeitraum ab der 5. Woche nach der nachgewiesenen Covid-Erkrankung); verrechenbar ab 1.7.2022',               cat:'Zeitversäumnis',   pkt:14,  fix:null},
-{code:'32',   name:'Zeitaufwand für Ordinationen und Krankenbesuche, die länger als 15 Minuten dauern, pro angefangene Viertelstunde (Ärztliches Gespräch)',      cat:'Zeitversäumnis',   pkt:14,  fix:null, bva:{code:'C1',name:'Zuschlag für Zeitversäumnis – bei Tag',pkt:8,pktWert:1.2194}, svs:{code:'3a',name:'Zuschlag für Zeitversäumnis – bei Tag',pkt:20,pktWert:0.7989}},
+{code:'32',   name:'Zeitaufwand für Ordinationen und Krankenbesuche, die länger als 15 Minuten dauern, pro angefangene Viertelstunde (Ärztliches Gespräch)',      cat:'Zeitversäumnis',   pkt:14,  fix:null, bva:{code:'C1',grp:'Zuschlag für Zeitversäumnis',name:'bei Tag',pkt:8,pktWert:1.2194}, svs:{code:'3a',grp:'Zuschlag für Zeitversäumnis',name:'bei Tag',pkt:20,pktWert:0.7989}},
 {code:'33',   name:'Psychosomatisch orientiertes Diagnoseund Behandlungsgespräch, pro 20 Minuten ab 1.1.1998',       cat:'Zeitversäumnis',   pkt:35,  fix:null, warn:true, bva:{code:'PS',name:'Psychosomatisch orientiertes Diagnose- und Behandlungsgespräch',fix:25.62}, svs:{code:'PS',name:'Psychosomatisch orientiertes Diagnose- und Behandlungsgespräch',fix:25.57}},
 {code:'34',   name:'Zuschlag für ärztliche Koordinierungstätigkeit durch den behandlungsführenden Arzt für Allgemeinmedizin oder Facharzt für Kinderund Jugendheilkunde.',cat:'Zeitversäumnis',   pkt:null,fix:24.80, bva:{code:'J1',name:'Ärztliche Koordinierungstätigkeit durch den behandlungsführenden Arzt',pkt:null,fix:18.412}, svs:{code:'1j',name:'Ärztliche Koordinierungstätigkeit durch den behandlungsführenden Arzt',pkt:23,pktWert:0.7989}},
 {code:'TA',   name:'Ausführliche diagnostisch-therapeutische Aussprache',        cat:'Zeitversäumnis',   pkt:null,fix:null, kasseOnly:['bvaeb','svs'], bva:{code:'TA',name:'Ausführliche diagnostisch-therapeutische Aussprache zwischen Arzt und Patient als integrierter Therapiebestandteil',fix:20.013}, svs:{code:'TA',name:'Ausführliche diagnostisch-therapeutische Aussprache zwischen Arzt und Patient als integrierter Therapiebestandteil',pkt:25,pktWert:0.7989}},
 // A/01/04 Konsilium
-{code:'40',   name:'Zuschlag für Konsilium – bei Tag für den Berufenen',                             cat:'Konsilium',        pkt:40,  fix:null, bva:{code:'D1',name:'Zuschlag für Konsilium – bei Tag',pkt:15,pktWert:1.2194}, svs:{code:'4a',name:'Konsilium bei Tag',pkt:30,pktWert:0.7989}},
-{code:'41',   name:'Zuschlag für Konsilium – bei Tag für den Berufenden',                            cat:'Konsilium',        pkt:30,  fix:null, bva:{code:'D1',name:'Zuschlag für Konsilium – bei Tag',pkt:15,pktWert:1.2194}, svs:{code:'4a',name:'Konsilium bei Tag',pkt:30,pktWert:0.7989}},
-{code:'42',   name:'Zuschlag für Konsilium – bei Nacht für den Berufenen',                           cat:'Konsilium',        pkt:80,  fix:null, bva:{code:'D2',name:'Zuschlag für Konsilium – bei Nacht (20 Uhr bis 7 Uhr)',pkt:20,pktWert:1.2194}},
-{code:'43',   name:'Zuschlag für Konsilium – bei Nacht für den Berufenden',                          cat:'Konsilium',        pkt:60,  fix:null, bva:{code:'D2',name:'Zuschlag für Konsilium – bei Nacht (20 Uhr bis 7 Uhr)',pkt:20,pktWert:1.2194}},
+{code:'40',   name:'bei Tag für den Berufenen', grp:'Zuschlag für Konsilium',                             cat:'Konsilium',        pkt:40,  fix:null, bva:{code:'D1',grp:'Zuschlag für Konsilium',name:'bei Tag',pkt:15,pktWert:1.2194}, svs:{code:'4a',name:'Konsilium bei Tag',pkt:30,pktWert:0.7989}},
+{code:'41',   name:'bei Tag für den Berufenden', grp:'Zuschlag für Konsilium',                            cat:'Konsilium',        pkt:30,  fix:null, bva:{code:'D1',grp:'Zuschlag für Konsilium',name:'bei Tag',pkt:15,pktWert:1.2194}, svs:{code:'4a',name:'Konsilium bei Tag',pkt:30,pktWert:0.7989}},
+{code:'42',   name:'bei Nacht für den Berufenen', grp:'Zuschlag für Konsilium',                           cat:'Konsilium',        pkt:80,  fix:null, bva:{code:'D2',grp:'Zuschlag für Konsilium',name:'bei Nacht (20 Uhr bis 7 Uhr)',pkt:20,pktWert:1.2194}},
+{code:'43',   name:'bei Nacht für den Berufenden', grp:'Zuschlag für Konsilium',                          cat:'Konsilium',        pkt:60,  fix:null, bva:{code:'D2',grp:'Zuschlag für Konsilium',name:'bei Nacht (20 Uhr bis 7 Uhr)',pkt:20,pktWert:1.2194}},
 {code:'44',   name:'Teilnahme am Schmerzboard gemäß Zielsteuerungsprojekt "Schmerzboard - Vorarlberg" laut Beschluss der Vorarlberger Landeszielsteuerungskommission vom 21. 11. 2016',             cat:'Konsilium',        pkt:null,fix:129.96},
 // A/02/01 Blutabnahme
 {code:'100',  name:'Blutabnahme aus der Vene',                                  cat:'Blutabnahme',      pkt:4,   fix:null, bva:{code:'10a',name:'Blutabnahme aus der Vene',pkt:4,pktWert:1.2194}, svs:{code:'10a',name:'Blutabnahme aus der Vene',pkt:8,pktWert:0.7989}},
@@ -502,11 +502,11 @@ const DB = [
 {code:'152',  name:'Intradermaler Pricktest, je',                               cat:'Allergietestungen',pkt:6,   fix:null},
 {code:'153',  name:'Therapeutische Impfung',                                    cat:'Allergietestungen',pkt:8,   fix:null},
 // A/02/06 Punktionen diagnostisch
-{code:'160',  name:'Punktionen (diagnostisch) – Aus oberflächlichen Körperteilen (z.B. Cysten, Schleimbeutel und Lymphknoten, Abszessen, Hämatomen, fraglichen Tumoren o.ä.', cat:'Punktionen diagn.',pkt:10,  fix:null},
-{code:'161',  name:'Punktionen (diagnostisch) – Aus einem Gelenk',                                   cat:'Punktionen diagn.',pkt:20,  fix:null},
-{code:'162',  name:'Punktionen (diagnostisch) – Aus der Brustoder Bauchhöhle',                           cat:'Punktionen diagn.',pkt:14,  fix:null},
-{code:'163',  name:'Punktionen (diagnostisch) – Aus dem Herzbeutel',                                       cat:'Punktionen diagn.',pkt:40,  fix:null},
-{code:'164',  name:'Punktionen (diagnostisch) – Aus dem Rückenmarkskanal (Lumbalpunktion)',                                            cat:'Punktionen diagn.',pkt:30,  fix:null},
+{code:'160',  name:'Aus oberflächlichen Körperteilen (z.B. Cysten, Schleimbeutel und Lymphknoten, Abszessen, Hämatomen, fraglichen Tumoren o.ä.', grp:'Punktionen (diagnostisch)', cat:'Punktionen diagn.',pkt:10,  fix:null},
+{code:'161',  name:'Aus einem Gelenk', grp:'Punktionen (diagnostisch)',                                   cat:'Punktionen diagn.',pkt:20,  fix:null},
+{code:'162',  name:'Aus der Brustoder Bauchhöhle', grp:'Punktionen (diagnostisch)',                           cat:'Punktionen diagn.',pkt:14,  fix:null},
+{code:'163',  name:'Aus dem Herzbeutel', grp:'Punktionen (diagnostisch)',                                       cat:'Punktionen diagn.',pkt:40,  fix:null},
+{code:'164',  name:'Aus dem Rückenmarkskanal (Lumbalpunktion)', grp:'Punktionen (diagnostisch)',                                            cat:'Punktionen diagn.',pkt:30,  fix:null},
 {code:'165',  name:'Suboccipitalpunktion',                                      cat:'Punktionen diagn.',pkt:30,  fix:null},
 {code:'166',  name:'Sternalpunktion',                                           cat:'Punktionen diagn.',pkt:30,  fix:null},
 {code:'167',  name:'Punktion der Prostata',                                     cat:'Punktionen diagn.',pkt:20,  fix:null},
@@ -514,15 +514,15 @@ const DB = [
 {code:'169',  name:'Punktion während der Laparoskopie',                         cat:'Punktionen diagn.',pkt:30,  fix:null},
 {code:'170',  name:'Punktion aus der Harnblase',                                    cat:'Punktionen diagn.',pkt:20,  fix:null},
 // A/02/07 Punktionen therapeutisch
-{code:'171',  name:'Punktionen (therapeutisch) – Aus einer Cyste, einem Schleimbeutel, einem Lymphknoten, einem Abszeß oder Hämatom',      cat:'Punktionen ther.', pkt:16,  fix:null},
-{code:'172',  name:'Punktionen (therapeutisch) – Aus größeren Gelenken einschließlich ev. Füllung',              cat:'Punktionen ther.', pkt:30,  fix:null},
-{code:'173',  name:'Punktionen (therapeutisch) – Aus der Brustoder Bauchhöhle oder Douglas',                  cat:'Punktionen ther.', pkt:50,  fix:null},
-{code:'174',  name:'Punktionen (therapeutisch) – Aus dem Herzbeutel',                       cat:'Punktionen ther.', pkt:60,  fix:null},
-{code:'175',  name:'Punktionen (therapeutisch) – Aus dem Rückenmarkskanal (Lumbalpunktion)',                             cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'171',  name:'Aus einer Cyste, einem Schleimbeutel, einem Lymphknoten, einem Abszeß oder Hämatom', grp:'Punktionen (therapeutisch)',      cat:'Punktionen ther.', pkt:16,  fix:null},
+{code:'172',  name:'Aus größeren Gelenken einschließlich ev. Füllung', grp:'Punktionen (therapeutisch)',              cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'173',  name:'Aus der Brustoder Bauchhöhle oder Douglas', grp:'Punktionen (therapeutisch)',                  cat:'Punktionen ther.', pkt:50,  fix:null},
+{code:'174',  name:'Aus dem Herzbeutel', grp:'Punktionen (therapeutisch)',                       cat:'Punktionen ther.', pkt:60,  fix:null},
+{code:'175',  name:'Aus dem Rückenmarkskanal (Lumbalpunktion)', grp:'Punktionen (therapeutisch)',                             cat:'Punktionen ther.', pkt:30,  fix:null},
 {code:'176',  name:'Suboccipitalpunktion',                       cat:'Punktionen ther.', pkt:30,  fix:null},
-{code:'177',  name:'Punktionen (therapeutisch) – Des Liquors bei Kindern aus der Fontanella',                         cat:'Punktionen ther.', pkt:30,  fix:null},
-{code:'178',  name:'Punktionen (therapeutisch) – Aus dem Wasserbruch mit Einspritzung',                     cat:'Punktionen ther.', pkt:20,  fix:null},
-{code:'179',  name:'Punktionen (therapeutisch) – Aus der Harnblase',                         cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'177',  name:'Des Liquors bei Kindern aus der Fontanella', grp:'Punktionen (therapeutisch)',                         cat:'Punktionen ther.', pkt:30,  fix:null},
+{code:'178',  name:'Aus dem Wasserbruch mit Einspritzung', grp:'Punktionen (therapeutisch)',                     cat:'Punktionen ther.', pkt:20,  fix:null},
+{code:'179',  name:'Aus der Harnblase', grp:'Punktionen (therapeutisch)',                         cat:'Punktionen ther.', pkt:30,  fix:null},
 // A/02/08 Betäubung
 {code:'180',  name:'Kälteoder Oberflächenanästhesie',                         cat:'Betäubung',        pkt:4,   fix:null},
 {code:'181',  name:'Infiltrationsanästhesie',                                   cat:'Betäubung',        pkt:8,   fix:null},
@@ -599,8 +599,8 @@ const DB = [
 {code:'334',  name:'Manuelle Therapie der Gelenke (nach den Richtlinien der Gesellschaft für manuelle Medizin) max. 3 mal pro Krankheitsfall',        cat:'Orthopädie',       pkt:12,  fix:null},
 {code:'335',  name:'Anleitung und Demonstration gymn. Übungen durch den Arzt (verrechenbar für Kinderärzte, Fachärzte für Orthopädie und Unfallchirurgie)',                    cat:'Orthopädie',       pkt:10,  fix:null},
 // A/04/05 Knochenbrüche
-{code:'340',  name:'Provisorische Versorgung kleiner Knochen (Finger, Zehen, Rippen)',cat:'Knochenbrüche',pkt:10,fix:null, bva:{code:'29a',name:'Knochenbrüche (Provisorische Versorgung - Notverband) – Kleine Knochen (Finger, Zehen, Rippen)',pkt:6,pktWert:1.2194}},
-{code:'341',  name:'Knochenbrüche – Alle übrigen Knochen',             cat:'Knochenbrüche',    pkt:30,  fix:null, bva:{code:'29b',name:'Knochenbrüche (Provisorische Versorgung - Notverband) – Alle übrigen Knochen',pkt:10,pktWert:1.2194}},
+{code:'340',  name:'Provisorische Versorgung kleiner Knochen (Finger, Zehen, Rippen)',cat:'Knochenbrüche',pkt:10,fix:null, bva:{code:'29a',grp:'Knochenbrüche (Provisorische Versorgung - Notverband)',name:'Kleine Knochen (Finger, Zehen, Rippen)',pkt:6,pktWert:1.2194}},
+{code:'341',  name:'Alle übrigen Knochen', grp:'Knochenbrüche',             cat:'Knochenbrüche',    pkt:30,  fix:null, bva:{code:'29b',grp:'Knochenbrüche (Provisorische Versorgung - Notverband)',name:'Alle übrigen Knochen',pkt:10,pktWert:1.2194}},
 // A/06/02 HNO – Therapeutische Verrichtungen (AM-relevant)
 {code:'376',  name:'Ohrmikroskopie',                                            cat:'HNO',              pkt:10,  fix:null},
 {code:'377',  name:'Stimmgabelprüfung',                                         cat:'HNO',              pkt:8,   fix:null},
@@ -661,8 +661,8 @@ const DB = [
 {code:'649',  name:'Troponin-T Test (die Kosten des Testsets sind mit dem Tarif abgegolten)',                                           cat:'Labor',            pkt:7,   fix:null, bva:{code:'4.20',name:'Troponin T oder Troponin I',pkt:7.2,pktWert:1.2892}},
 {code:'660',  name:'Phosphatase (alkalisch, saure); + Transaminasen (GOT, GPT) oder ähnliche Fermentbestimmungen im Serum',  cat:'Labor',            pkt:11,  fix:null},
 {code:'680',  name:'Harnuntersuchung mit Streifen, einzel oder mehrfach oder Sulfosalizylsäure',      cat:'Labor',            pkt:2,   fix:null, bva:{code:'5.01',name:'Chemischer Harnbefund mittels Streifentests inkl. spez. Gewicht und photometrische Auswertung',pkt:0.93,pktWert:1.2892}},
-{code:'681',  name:'Harnuntersuchungen – Spez. Gewicht',                                      cat:'Labor',            pkt:2,   fix:null},
-{code:'682',  name:'Harnuntersuchungen – Sediment',                                                  cat:'Labor',            pkt:8,   fix:null, bva:{code:'5.03',name:'Sediment (bei pathologischem Hinweis aus Position 5.01 oder 5.02)',pkt:0.93,pktWert:1.2892}},
+{code:'681',  name:'Spez. Gewicht', grp:'Harnuntersuchungen',                                      cat:'Labor',            pkt:2,   fix:null},
+{code:'682',  name:'Sediment', grp:'Harnuntersuchungen',                                                  cat:'Labor',            pkt:8,   fix:null, bva:{code:'5.03',name:'Sediment (bei pathologischem Hinweis aus Position 5.01 oder 5.02)',pkt:0.93,pktWert:1.2892}},
 {code:'683',  name:'Harnkultur nach Objektträgermethode (z.B. Urikult) mit Anbrütung',             cat:'Labor',            pkt:6,   fix:null},
 {code:'710',  name:'Stuhl auf Blut',                                            cat:'Labor',            pkt:4,   fix:null, bva:{code:'7.02',name:'Stuhl auf okkultes Blut (3mal; inkl. Testbriefchen)',pkt:2.0,pktWert:1.2892}},
 {code:'720',  name:'Bestimmung der Vitalkapazität',                             cat:'Labor',            pkt:10,  fix:null},
@@ -670,27 +670,27 @@ const DB = [
 {code:'726',  name:'Blutgasanalyse Limit: In 25 % der Fälle verrechenbar',                    cat:'Labor',            pkt:35,  fix:null},
 {code:'770',  name:'Serolog. Schwangerschaftstest (nur bei kurat. Notwendigkeit)',cat:'Labor',         pkt:32,  fix:null},
 // A/13/02 Röntgen Aufnahmen
-{code:'810',  name:'Aufnahmen – 9 x 12',                                              cat:'Röntgen Aufnahmen',pkt:null,fix:6.74,  warn:true, bva:{code:'r5a',name:'Aufnahme 9 x 12',fix:7.7243}},
-{code:'811',  name:'Aufnahmen – 10 x 10',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:8.72,  warn:true},
-{code:'812',  name:'Aufnahmen – 13 x 18',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:7.95,  warn:true, bva:{code:'r5b',name:'Aufnahme 13 x 18',fix:9.9796}, svs:{code:'r5b',name:'Aufnahme 13x18',pkt:22,pktWert:0.5438}},
-{code:'813',  name:'Aufnahmen – 18 x 24',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.09, warn:true, bva:{code:'r5c',name:'Aufnahme 18 x 24',fix:12.5848}},
-{code:'814',  name:'Aufnahmen – 15 x 40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.85, warn:true, bva:{code:'r5d',name:'Aufnahme 15 x 40',fix:15.5165}},
-{code:'815',  name:'Aufnahmen – 24 x 30',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:11.78, warn:true, bva:{code:'r5e',name:'Aufnahme 24 x 30',fix:16.8695}},
-{code:'816',  name:'Aufnahmen – 30 x 40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:16.06, warn:true, bva:{code:'r5f',name:'Aufnahme 30 x 40',fix:19.4294}},
-{code:'817',  name:'Aufnahmen – 35 x 35',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:17.62, warn:true, bva:{code:'r5g',name:'Aufnahme 35 x 35',fix:21.0194}},
-{code:'818',  name:'Aufnahmen – 20 x 40',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:14.18, warn:true, bva:{code:'r5i',name:'Aufnahme 20 x 40',fix:17.2416}},
-{code:'819',  name:'Aufnahmen – 35 x 43',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:20.96, warn:true},
-{code:'820',  name:'Aufnahmen – 30 x 90',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:49.54, warn:true},
+{code:'810',  name:'9 x 12', grp:'Aufnahmen',                                              cat:'Röntgen Aufnahmen',pkt:null,fix:6.74,  warn:true, bva:{code:'r5a',name:'Aufnahme 9 x 12',fix:7.7243}},
+{code:'811',  name:'10 x 10', grp:'Aufnahmen',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:8.72,  warn:true},
+{code:'812',  name:'13 x 18', grp:'Aufnahmen',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:7.95,  warn:true, bva:{code:'r5b',name:'Aufnahme 13 x 18',fix:9.9796}, svs:{code:'r5b',name:'Aufnahme 13x18',pkt:22,pktWert:0.5438}},
+{code:'813',  name:'18 x 24', grp:'Aufnahmen',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.09, warn:true, bva:{code:'r5c',name:'Aufnahme 18 x 24',fix:12.5848}},
+{code:'814',  name:'15 x 40', grp:'Aufnahmen',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:10.85, warn:true, bva:{code:'r5d',name:'Aufnahme 15 x 40',fix:15.5165}},
+{code:'815',  name:'24 x 30', grp:'Aufnahmen',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:11.78, warn:true, bva:{code:'r5e',name:'Aufnahme 24 x 30',fix:16.8695}},
+{code:'816',  name:'30 x 40', grp:'Aufnahmen',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:16.06, warn:true, bva:{code:'r5f',name:'Aufnahme 30 x 40',fix:19.4294}},
+{code:'817',  name:'35 x 35', grp:'Aufnahmen',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:17.62, warn:true, bva:{code:'r5g',name:'Aufnahme 35 x 35',fix:21.0194}},
+{code:'818',  name:'20 x 40', grp:'Aufnahmen',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:14.18, warn:true, bva:{code:'r5i',name:'Aufnahme 20 x 40',fix:17.2416}},
+{code:'819',  name:'35 x 43', grp:'Aufnahmen',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:20.96, warn:true},
+{code:'820',  name:'30 x 90', grp:'Aufnahmen',                                             cat:'Röntgen Aufnahmen',pkt:null,fix:49.54, warn:true},
 {code:'821',  name:'Zahnfilm je Aufnahme',                                    cat:'Röntgen Aufnahmen',pkt:null,fix:3.55,  warn:true, bva:{code:'r5h',name:'Zahnfilm',fix:5.1984}},
 // A/13/04 Röntgen Honorar Teilradiologen
-{code:'835',  name:'Honorar Teilradiologen – Erste Handhabung pro Quartal',              cat:'Röntgen Honorar',  pkt:8,   fix:null, warn:true},
-{code:'836',  name:'Honorar Teilradiologen – jede weitere',                   cat:'Röntgen Honorar',  pkt:2,   fix:null, warn:true},
+{code:'835',  name:'Erste Handhabung pro Quartal', grp:'Honorar Teilradiologen',              cat:'Röntgen Honorar',  pkt:8,   fix:null, warn:true},
+{code:'836',  name:'jede weitere', grp:'Honorar Teilradiologen',                   cat:'Röntgen Honorar',  pkt:2,   fix:null, warn:true},
 // A/14/01 Sonographie (AM mit Qualifikation)
-{code:'850',  name:'Sonographie-Tarife – Oberbauch (Leber, Gallenblase, Gallenwege, Milz, Pankreas, große Gefäße sowie gegebenenfalls Nieren und die in der Region liegenden Abschnitte des Magen-Darmtraktes)',cat:'Sonographie',     pkt:70,  fix:null, warn:true},
-{code:'860',  name:'Sonographie-Tarife – Nieren, Retroperitoneum, gegebenenfalls inklus. ableitende Harnwege, Harnblase und Prostata sowie Gefäße der Region',  cat:'Sonographie',      pkt:60,  fix:null, warn:true},
-{code:'870',  name:'Sonographie-Tarife – Weibliches Becken (Uterus, cervikale Abschnitte der Vagina, Adnexe beidseits, gegebenenfalls Harnblase, Gefäße und Darmabschnitte der Region)',               cat:'Sonographie',      pkt:50,  fix:null, warn:true},
-{code:'880',  name:'Sonographie-Tarife – Männliches Becken (Harnblase, Prostata, gegebenenfalls Gefäße und Darmabschnitte der Region)',     cat:'Sonographie',      pkt:38,  fix:null, warn:true},
-{code:'890',  name:'Sonographie-Tarife – Ein Organ (als ein Organ gelten z.B. Gallenblase und Gallenwege, beide Nieren, Uterus, Ovar, siehe auch erläuternde Bestimmungen)',      cat:'Sonographie',      pkt:35,  fix:null, warn:true, bva:{code:'US12',name:'First Line Sonographie',fix:34.15}, svs:{code:'US12',name:'First Line Sonographie',pkt:60,pktWert:0.5480}},
+{code:'850',  name:'Oberbauch (Leber, Gallenblase, Gallenwege, Milz, Pankreas, große Gefäße sowie gegebenenfalls Nieren und die in der Region liegenden Abschnitte des Magen-Darmtraktes)', grp:'Sonographie-Tarife',cat:'Sonographie',     pkt:70,  fix:null, warn:true},
+{code:'860',  name:'Nieren, Retroperitoneum, gegebenenfalls inklus. ableitende Harnwege, Harnblase und Prostata sowie Gefäße der Region', grp:'Sonographie-Tarife',  cat:'Sonographie',      pkt:60,  fix:null, warn:true},
+{code:'870',  name:'Weibliches Becken (Uterus, cervikale Abschnitte der Vagina, Adnexe beidseits, gegebenenfalls Harnblase, Gefäße und Darmabschnitte der Region)', grp:'Sonographie-Tarife',               cat:'Sonographie',      pkt:50,  fix:null, warn:true},
+{code:'880',  name:'Männliches Becken (Harnblase, Prostata, gegebenenfalls Gefäße und Darmabschnitte der Region)', grp:'Sonographie-Tarife',     cat:'Sonographie',      pkt:38,  fix:null, warn:true},
+{code:'890',  name:'Ein Organ (als ein Organ gelten z.B. Gallenblase und Gallenwege, beide Nieren, Uterus, Ovar, siehe auch erläuternde Bestimmungen)', grp:'Sonographie-Tarife',      cat:'Sonographie',      pkt:35,  fix:null, warn:true, bva:{code:'US12',name:'First Line Sonographie',fix:34.15}, svs:{code:'US12',name:'First Line Sonographie',pkt:60,pktWert:0.5480}},
 {code:'892',  name:'Endovaginale Sonographie',                                  cat:'Sonographie',      pkt:42,  fix:null, warn:true},
 {code:'893',  name:'Transrektale Prostatasonographie',                          cat:'Sonographie',      pkt:42,  fix:null, warn:true},
 {code:'894',  name:'Sonographie der Mamma bei unklarem Mammographiebefund',       cat:'Sonographie',      pkt:25,  fix:null, warn:true},
@@ -699,8 +699,8 @@ const DB = [
 {code:'910',  name:'Weiterführende differentialdiagnostische Untersuchung eines Feten nach vorangegangener Ultraschalluntersuchung mit Verdacht auf Schädigung, auf Mißbildung oder Erkrankung (siehe erläuternde Bestimmungen).',                      cat:'Sonographie',      pkt:70,  fix:null, warn:true},
 {code:'920',  name:'Echokardiographie (2-D-Bild + TM einschl. Dokumentation)',                         cat:'Sonographie',      pkt:80,  fix:null, warn:true},
 {code:'922',  name:'Dopplerechokardiographie bzw. Farbdoppler-Echokardiographie',  cat:'Sonographie',      pkt:100, fix:null, warn:true},
-{code:'930',  name:'Sonographie-Tarife – Schilddrüse',                                               cat:'Sonographie',      pkt:35,  fix:null, warn:true},
-{code:'940',  name:'Sonographie-Tarife – Hüftgelenke beim Säugling',                                 cat:'Sonographie',      pkt:35,  fix:null, warn:true},
+{code:'930',  name:'Schilddrüse', grp:'Sonographie-Tarife',                                               cat:'Sonographie',      pkt:35,  fix:null, warn:true},
+{code:'940',  name:'Hüftgelenke beim Säugling', grp:'Sonographie-Tarife',                                 cat:'Sonographie',      pkt:35,  fix:null, warn:true},
 {code:'945',  name:'Duplexsonographie des Carotis-vertebralis-Arteriensystems',              cat:'Sonographie',      pkt:90,  fix:null, warn:true},
 {code:'946',  name:'Farbduplexsonographie der Extremitätenarterien zur exakten Diagnostik von arteriellen Durchblutungsstörungen',     cat:'Sonographie',      pkt:50,  fix:null, warn:true},
 {code:'947',  name:'Farbduplexsonographie der Extremitätenvenen', cat:'Sonographie',      pkt:50,  fix:null, warn:true},
@@ -769,10 +769,18 @@ const SVS_CAT_LABEL = {
   'Röntgen Aufnahmen':    'Röntgen (A.XIII)',
   'Sonographie':          'Sonographie (A.XI)',
 };
-// Positionsnummer und Originalbezeichnung laut Tarif der gewählten Kasse
+// Positionsnummer und Originalbezeichnung laut Tarif der gewählten Kasse (Anzeige/Druck, mit Überschrift)
 function posLabel(dbPos, kk) {
   const kPos = kk==='bvaeb' ? dbPos.bva : kk==='svs' ? dbPos.svs : null;
-  return kPos ? { code: kPos.code, name: kPos.name || dbPos.name } : { code: dbPos.code, name: dbPos.name };
+  const src = kPos && kPos.name ? kPos : dbPos;
+  return { code: kPos ? kPos.code : dbPos.code, name: src.grp ? `${src.grp} – ${src.name}` : src.name };
+}
+// Positionstext für ELDA (über Dynamed): reiner Tariftext ohne Überschrift, eigene Namen ignoriert, max. 100 Zeichen
+const ELDA_TEXT_MAX = 100;
+function eldaText(dbPos, kk) {
+  const std = DB.find(d => d.code===dbPos.code) || dbPos;
+  const kPos = kk==='bvaeb' ? std.bva : kk==='svs' ? std.svs : null;
+  return ((kPos && kPos.name) || std.name).slice(0, ELDA_TEXT_MAX);
 }
 function catLabel(cat, kk) {
   if (kk==='bvaeb') return BVA_CAT_LABEL[cat] || GRP_LABEL[cat] || cat;
@@ -1672,7 +1680,7 @@ function exportDynamed() {
         const pktWert = kPos.fix != null ? null : (kasse === 'bvaeb' ? bvaPktWert(dbPos) : kasse === 'svs' ? svsPktWert(dbPos) : state.settings.pkt);
         leistungen.push({
           leistungId: `${v.id}_${label}_${kPos.code}`,
-          pos: kPos.code, bezeichnung: posLabel(dbPos, kasse).name, punkte: kPos.pkt ?? null, pktWert, fix: kPos.fix ?? null,
+          pos: kPos.code, bezeichnung: eldaText(dbPos, kasse), punkte: kPos.pkt ?? null, pktWert, fix: kPos.fix ?? null,
           preis, rueckerstattung, honorar: r4(preis * fak), faktor: fak, menge, privatUV,
         });
       });
